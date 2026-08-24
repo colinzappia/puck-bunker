@@ -256,6 +256,7 @@
         PUCK BUNKER <span class="admin-tag mono">Admin</span>
       </div>
       <div class="nav-actions">
+        <span class="mono" id="reporterBadge" style="font-size:11px; color:var(--ice-dim); letter-spacing:0.06em; text-transform:uppercase;"></span>
         <button class="btn btn-ghost" id="newDraftBtn">+ New Report</button>
         <button class="btn btn-ghost" id="lockBtn">Log Out</button>
       </div>
@@ -396,14 +397,28 @@
     "OZ Hockey Sense", "DZ Hockey Sense", "Compete", "Physicality"
   ];
 
+  // Maps each admin's login email to how their name should display on reports.
+  const REPORTER_NAMES = {
+    "puckbunker@gmail.com": "Rocco Zappia",
+    "darrenboyce8181@gmail.com": "Darren Boyce",
+  };
+  let currentReporterName = "";
+
   // ============ AUTH / GATE ============
   const gateForm = document.getElementById('gateForm');
   const gateError = document.getElementById('gateError');
   const gateSubmitBtn = document.getElementById('gateSubmitBtn');
 
-  function showAdmin(){
+  async function showAdmin(){
     document.getElementById('gate').style.display = 'none';
     document.getElementById('admin').classList.add('active');
+
+    const { data } = await sb.auth.getUser();
+    const email = data && data.user ? data.user.email : '';
+    currentReporterName = REPORTER_NAMES[email] || email || 'Unknown';
+    const badge = document.getElementById('reporterBadge');
+    if (badge) badge.textContent = currentReporterName;
+
     initAdmin();
   }
   function showGate(msg){
@@ -431,6 +446,11 @@
 
   document.getElementById('lockBtn').addEventListener('click', async () => {
     await sb.auth.signOut();
+    currentReporterName = "";
+    const badge = document.getElementById('reporterBadge');
+    if (badge) badge.textContent = "";
+    document.getElementById('gateEmail').value = '';
+    document.getElementById('gatePassword').value = '';
     showGate();
   });
 
@@ -465,6 +485,7 @@
       scores: row.scores || Object.fromEntries(CATEGORIES.map(c => [c, 5])),
       notes: row.notes || '',
       videoUrl: row.video_url || '',
+      reporterName: row.reporter_name || '',
       status: row.status || 'draft',
       updated: new Date(row.updated_at || row.created_at).getTime()
     }));
@@ -606,7 +627,7 @@
         : '<span style="color:var(--ice-dim);">DRAFT</span>';
       el.innerHTML = `
         <div class="name">${d.name || 'Untitled prospect'}</div>
-        <div class="meta">FILE #${d.fileNum || '----'} · ${d.position || ''} · ${dateStr} · ${statusTag}</div>
+        <div class="meta">FILE #${d.fileNum || '----'} · ${d.position || ''} · ${d.reporterName || ''} · ${dateStr} · ${statusTag}</div>
       `;
       el.addEventListener('click', () => loadDraft(d.id));
       list.appendChild(el);
@@ -674,7 +695,7 @@
       // Insert new report as a draft
       const { data: inserted, error } = await sb
         .from('puckbunker_reports')
-        .insert({ ...row, status: 'draft' })
+        .insert({ ...row, status: 'draft', reporter_name: currentReporterName })
         .select()
         .single();
       if (error) { setSaveStatus('Save failed: ' + error.message); return; }
