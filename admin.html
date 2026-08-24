@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@700;800;900&family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root{
     --black:#0B0C0D;
@@ -237,11 +238,12 @@
     <h1 class="stencil">Admin Access</h1>
     <p>Puck Bunker scouting desk — authorized personnel only.</p>
     <form class="gate-form" id="gateForm">
-      <input type="password" id="gatePassword" placeholder="Enter access code" autocomplete="off">
+      <input type="email" id="gateEmail" placeholder="Email" autocomplete="username">
+      <input type="password" id="gatePassword" placeholder="Password" autocomplete="current-password">
       <div class="gate-error" id="gateError"></div>
-      <button type="submit" class="btn btn-primary">Enter the Bunker</button>
+      <button type="submit" class="btn btn-primary" id="gateSubmitBtn">Log In</button>
     </form>
-    <div class="gate-note">This page isn't linked from the public site and isn't indexed by search engines. The code is set in the file itself — see the comment near the top of admin.html to change it.</div>
+    <div class="gate-note">This page isn't linked from the public site and isn't indexed by search engines. Accounts are managed in the Supabase dashboard — there's no public sign-up.</div>
   </div>
 </div>
 
@@ -255,7 +257,7 @@
       </div>
       <div class="nav-actions">
         <button class="btn btn-ghost" id="newDraftBtn">+ New Report</button>
-        <button class="btn btn-ghost" id="lockBtn">Lock</button>
+        <button class="btn btn-ghost" id="lockBtn">Log Out</button>
       </div>
     </nav>
   </header>
@@ -354,6 +356,7 @@
         <div class="panel">
           <div class="action-bar">
             <button class="btn btn-primary" id="saveBtn">Save Draft</button>
+            <button class="btn btn-ghost" id="publishBtn">Publish to Site</button>
             <button class="btn btn-ghost" id="exportSnippetBtn">Export Dossier HTML</button>
             <button class="btn btn-ghost" id="exportJsonBtn">Export JSON</button>
             <span class="save-status mono" id="saveStatus"></span>
@@ -384,60 +387,96 @@
 
 <script>
   // ============ CONFIG ============
-  // Change this to your own access code. This is a client-side check only —
-  // it keeps casual visitors out of an unlinked page, it is NOT real security.
-  // Do not use this page for anything actually sensitive.
-  const ADMIN_CODE = "bunker2027";
+  const SUPABASE_URL = "https://bwexpvzstgkllkjaitzy.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_AqjW7wYPhZ6OTpM1W-jVew_1L18nkZE";
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
   const CATEGORIES = [
     "Skating", "Shot", "Puck Skills", "Playmaking",
     "OZ Hockey Sense", "DZ Hockey Sense", "Compete", "Physicality"
   ];
 
-  const STORAGE_KEY = "puckbunker_admin_drafts";
-
-  // ============ GATE ============
+  // ============ AUTH / GATE ============
   const gateForm = document.getElementById('gateForm');
   const gateError = document.getElementById('gateError');
-  gateForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const val = document.getElementById('gatePassword').value;
-    if (val === ADMIN_CODE) {
-      document.getElementById('gate').style.display = 'none';
-      document.getElementById('admin').classList.add('active');
-      initAdmin();
-    } else {
-      gateError.textContent = 'Incorrect code.';
-      document.getElementById('gatePassword').value = '';
-    }
-  });
+  const gateSubmitBtn = document.getElementById('gateSubmitBtn');
 
-  document.getElementById('lockBtn').addEventListener('click', () => {
+  function showAdmin(){
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('admin').classList.add('active');
+    initAdmin();
+  }
+  function showGate(msg){
     document.getElementById('admin').classList.remove('active');
     document.getElementById('gate').style.display = 'flex';
-    document.getElementById('gatePassword').value = '';
+    gateError.textContent = msg || '';
+  }
+
+  gateForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
     gateError.textContent = '';
+    gateSubmitBtn.disabled = true;
+    gateSubmitBtn.textContent = 'Logging in…';
+    const email = document.getElementById('gateEmail').value.trim();
+    const password = document.getElementById('gatePassword').value;
+    const { error } = await sb.auth.signInWithPassword({ email, password });
+    gateSubmitBtn.disabled = false;
+    gateSubmitBtn.textContent = 'Log In';
+    if (error) {
+      gateError.textContent = error.message || 'Login failed.';
+      return;
+    }
+    showAdmin();
+  });
+
+  document.getElementById('lockBtn').addEventListener('click', async () => {
+    await sb.auth.signOut();
+    showGate();
+  });
+
+  // On page load, check if there's already an active session (e.g. returning visit)
+  sb.auth.getSession().then(({ data }) => {
+    if (data && data.session) {
+      showAdmin();
+    }
   });
 
   // ============ STATE ============
   let drafts = [];
   let currentId = null;
 
-  function loadDrafts(){
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      drafts = raw ? JSON.parse(raw) : [];
-    } catch(e) { drafts = []; }
+  async function loadDrafts(){
+    const { data, error } = await sb
+      .from('puckbunker_reports')
+      .select('*')
+      .order('updated_at', { ascending: false });
+    if (error) {
+      console.error('Failed to load reports:', error);
+      drafts = [];
+      return;
+    }
+    // Map DB rows (snake_case) to the shape the rest of the UI expects
+    drafts = (data || []).map(row => ({
+      id: row.id,
+      name: row.name || '',
+      position: row.position || 'C',
+      fileNum: row.file_num || '',
+      title: row.title || '',
+      scores: row.scores || Object.fromEntries(CATEGORIES.map(c => [c, 5])),
+      notes: row.notes || '',
+      videoUrl: row.video_url || '',
+      status: row.status || 'draft',
+      updated: new Date(row.updated_at || row.created_at).getTime()
+    }));
   }
-  function persistDrafts(){
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(drafts));
-  }
+
   function newDraftObj(){
     return {
-      id: 'd' + Date.now(),
+      id: null, // null until first saved — Supabase assigns the real id
       name: '', position: 'C', fileNum: '', title: '',
       scores: Object.fromEntries(CATEGORIES.map(c => [c, 5])),
       notes: '', videoUrl: '',
+      status: 'draft',
       updated: Date.now()
     };
   }
@@ -553,7 +592,7 @@
     const list = document.getElementById('draftsList');
     document.getElementById('draftsCount').textContent = drafts.length;
     if (!drafts.length){
-      list.innerHTML = '<div class="drafts-empty">No drafts yet. Fill out a report and hit Save.</div>';
+      list.innerHTML = '<div class="drafts-empty">No reports yet. Fill one out and hit Save.</div>';
       return;
     }
     const sorted = [...drafts].sort((a,b) => b.updated - a.updated);
@@ -562,9 +601,12 @@
       const el = document.createElement('div');
       el.className = 'draft-item' + (d.id === currentId ? ' active' : '');
       const dateStr = new Date(d.updated).toLocaleDateString(undefined, {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'});
+      const statusTag = d.status === 'published'
+        ? '<span style="color:var(--hazard);">LIVE</span>'
+        : '<span style="color:var(--ice-dim);">DRAFT</span>';
       el.innerHTML = `
         <div class="name">${d.name || 'Untitled prospect'}</div>
-        <div class="meta">FILE #${d.fileNum || '----'} · ${d.position || ''} · ${dateStr}</div>
+        <div class="meta">FILE #${d.fileNum || '----'} · ${d.position || ''} · ${dateStr} · ${statusTag}</div>
       `;
       el.addEventListener('click', () => loadDraft(d.id));
       list.appendChild(el);
@@ -577,17 +619,29 @@
     currentId = id;
     fillForm(d);
     renderDraftsList();
+    updatePublishBtn();
     setSaveStatus('');
   }
 
   function startNewDraft(){
     const d = newDraftObj();
-    currentId = d.id;
+    currentId = null;
     fillForm(d);
+    updatePublishBtn();
     setSaveStatus('');
   }
 
-  // ============ SAVE / DELETE ============
+  function updatePublishBtn(){
+    const d = drafts.find(x => x.id === currentId);
+    const btn = document.getElementById('publishBtn');
+    if (d && d.status === 'published') {
+      btn.textContent = 'Unpublish (Move to Draft)';
+    } else {
+      btn.textContent = 'Publish to Site';
+    }
+  }
+
+  // ============ SAVE / DELETE / PUBLISH ============
   function setSaveStatus(msg, saved){
     const el = document.getElementById('saveStatus');
     el.textContent = msg;
@@ -595,27 +649,84 @@
   }
   function markUnsaved(){ setSaveStatus('Unsaved changes'); }
 
-  function saveCurrentDraft(){
+  function formToDbRow(data){
+    const vals = Object.values(data.scores);
+    const avg = vals.reduce((a,b) => a+b, 0) / vals.length;
+    return {
+      name: data.name,
+      position: data.position,
+      file_num: data.fileNum,
+      title: data.title,
+      scores: data.scores,
+      overall_score: Math.round(avg * 10) / 10,
+      overall_grade: letterGrade(avg),
+      notes: data.notes,
+      video_url: data.videoUrl,
+    };
+  }
+
+  async function saveCurrentDraft(){
     const data = readForm();
-    let d = drafts.find(x => x.id === currentId);
-    if (!d){
-      d = newDraftObj();
-      currentId = d.id;
-      drafts.push(d);
+    const row = formToDbRow(data);
+    setSaveStatus('Saving…');
+
+    if (!currentId) {
+      // Insert new report as a draft
+      const { data: inserted, error } = await sb
+        .from('puckbunker_reports')
+        .insert({ ...row, status: 'draft' })
+        .select()
+        .single();
+      if (error) { setSaveStatus('Save failed: ' + error.message); return; }
+      currentId = inserted.id;
+    } else {
+      // Update existing report, keep its current status
+      const { error } = await sb
+        .from('puckbunker_reports')
+        .update(row)
+        .eq('id', currentId);
+      if (error) { setSaveStatus('Save failed: ' + error.message); return; }
     }
-    Object.assign(d, data, { updated: Date.now() });
-    persistDrafts();
+
+    await loadDrafts();
     renderDraftsList();
+    updatePublishBtn();
     setSaveStatus('Saved ' + new Date().toLocaleTimeString(), true);
   }
 
-  function deleteCurrentDraft(){
+  async function togglePublish(){
+    if (!currentId) {
+      setSaveStatus('Save the report first, then publish.');
+      return;
+    }
+    const d = drafts.find(x => x.id === currentId);
+    const newStatus = (d && d.status === 'published') ? 'draft' : 'published';
+    setSaveStatus(newStatus === 'published' ? 'Publishing…' : 'Unpublishing…');
+
+    // Save current form contents at the same time, so Publish also captures edits
+    const data = readForm();
+    const row = formToDbRow(data);
+    const { error } = await sb
+      .from('puckbunker_reports')
+      .update({ ...row, status: newStatus })
+      .eq('id', currentId);
+    if (error) { setSaveStatus('Failed: ' + error.message); return; }
+
+    await loadDrafts();
+    renderDraftsList();
+    updatePublishBtn();
+    setSaveStatus(newStatus === 'published' ? 'Live on the site' : 'Moved back to draft', true);
+  }
+
+  async function deleteCurrentDraft(){
     if (!currentId) return;
     const d = drafts.find(x => x.id === currentId);
     if (!d) return;
-    if (!confirm(`Delete the draft for "${d.name || 'this prospect'}"? This can't be undone.`)) return;
-    drafts = drafts.filter(x => x.id !== currentId);
-    persistDrafts();
+    if (!confirm(`Delete the report for "${d.name || 'this prospect'}"? This can't be undone.`)) return;
+    const { error } = await sb.from('puckbunker_reports').delete().eq('id', currentId);
+    if (error) { alert('Delete failed: ' + error.message); return; }
+
+    await loadDrafts();
     if (drafts.length){
       loadDraft([...drafts].sort((a,b) => b.updated - a.updated)[0].id);
     } else {
@@ -692,9 +803,9 @@
   }
 
   // ============ INIT ============
-  function initAdmin(){
-    loadDrafts();
+  async function initAdmin(){
     buildGradeGrid();
+    await loadDrafts();
     renderDraftsList();
     if (drafts.length){
       loadDraft([...drafts].sort((a,b) => b.updated - a.updated)[0].id);
@@ -712,6 +823,7 @@
     });
 
     document.getElementById('saveBtn').addEventListener('click', saveCurrentDraft);
+    document.getElementById('publishBtn').addEventListener('click', togglePublish);
     document.getElementById('newDraftBtn').addEventListener('click', startNewDraft);
     document.getElementById('deleteDraftBtn').addEventListener('click', deleteCurrentDraft);
 
