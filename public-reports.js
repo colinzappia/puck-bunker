@@ -40,7 +40,9 @@ function pbBuildCard(report) {
     .map(([k]) => k);
   const firstLine = (report.notes || '').split('\n').filter(Boolean)[0] || 'Full breakdown inside.';
   const title = report.title || `${report.name || 'Prospect'}: Scouting Report`;
-  const displayName = report.position ? `${pbEscape(report.name)} — ${pbEscape(report.position)}` : pbEscape(report.name);
+  const byline = report.reporter_name
+    ? `<div style="font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--steel); margin-bottom:10px;">SCOUTED BY ${pbEscape(report.reporter_name.toUpperCase())}</div>`
+    : '';
 
   return `<article class="dossier hud" data-pos="${pbEscape(report.position || '')}">
     <span class="hud-bl"></span><span class="hud-br"></span>
@@ -51,6 +53,7 @@ function pbBuildCard(report) {
     </div>
     <div class="dossier-body">
       <h3>${pbEscape(title)}</h3>
+      ${byline}
       <p>${pbEscape(firstLine)}</p>
       <div class="tool-tags">${topTags.map(t => `<span>${pbEscape(t)}</span>`).join('')}</div>
     </div>
