@@ -598,7 +598,7 @@
       <h2 class="stencil">Fresh off the desk.</h2>
       <p>New dossiers every week — full breakdowns, graded and filed.</p>
     </div>
-    <div class="dossier-grid">
+    <div class="dossier-grid" id="intelGrid">
       <article class="dossier hud reveal">
         <span class="hud-bl"></span><span class="hud-br"></span>
         <div class="dossier-thumb">
@@ -859,6 +859,11 @@
   }, { threshold: 0.3 });
   gauges.forEach(el => gaugeIO.observe(el));
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-client.js"></script>
+<script src="public-reports.js"></script>
+<script>pbLoadPublished('intelGrid', 3);</script>
 
 </body>
 </html>
