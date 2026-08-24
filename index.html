@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Puck Bunker — Hockey Scouting, Dug In</title>
+<title>Puck Bunker — Scouting Reports</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@700;800;900&family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -480,6 +480,40 @@
     nav .btn-primary{ padding:8px 12px !important; font-size:11px; }
   }
 </style>
+<style>
+  .page-header{ padding:64px 0 46px; border-bottom:1px solid var(--steel); position:relative; overflow:hidden; }
+  .page-header .grid-bg{ opacity:0.7; }
+  .page-header .wrap{ position:relative; z-index:2; }
+  .page-header h1{ font-size:clamp(40px,7vw,68px); margin-top:14px; line-height:0.92; }
+  .page-header p{ color:var(--ice-dim); margin-top:14px; max-width:560px; font-size:16px; }
+
+  .filter-row{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:36px; }
+  .filter-chip{
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:0.05em; text-transform:uppercase;
+    padding:9px 16px; border:1px solid var(--steel); color:var(--ice-dim); cursor:pointer; background:none;
+    transition:border-color .15s,color .15s,background .15s;
+  }
+  .filter-chip:hover{ border-color:var(--cyan-dim); color:var(--ice); }
+  .filter-chip.active{ border-color:var(--hazard); color:var(--hazard); background:rgba(203,174,126,0.08); }
+
+  .article-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:22px; margin-top:20px; }
+  .article-card{ background:var(--panel); border:1px solid var(--steel); padding:26px 24px; transition:border-color .2s, transform .2s; }
+  .article-card:hover{ border-color:var(--cyan-dim); transform:translateY(-4px); }
+  .article-card .a-meta{ font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--hazard); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:12px; }
+  .article-card h3{ font-size:20px; margin-bottom:10px; line-height:1.25; }
+  .article-card p{ color:var(--ice-dim); font-size:14px; margin-bottom:18px; }
+  .article-card .a-foot{ display:flex; justify-content:space-between; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--steel); border-top:1px solid var(--steel-soft); padding-top:14px; }
+
+  .analytics-grid{ display:grid; grid-template-columns:1fr 1fr; gap:28px; margin-top:20px; align-items:start; }
+  @media (max-width:860px){ .analytics-grid{ grid-template-columns:1fr; } }
+  .analytics-note{
+    font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--ice-dim);
+    border:1px dashed var(--steel); padding:14px 16px; margin-top:32px; max-width:640px;
+  }
+
+  section{ padding:64px 0; }
+</style>
+
 </head>
 <body>
 
@@ -489,10 +523,10 @@
 
 <header>
   <nav>
-    <div class="brand stencil">
+    <a href="index.html" class="brand stencil" style="text-decoration:none;">
       <img src="puck-bunker-logo.png" alt="Puck Bunker logo" class="brand-mark">
       PUCK BUNKER
-    </div>
+    </a>
     <ul class="nav-links">
       <li class="dropdown" id="browseDropdown">
         <button class="dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false" onclick="document.getElementById('browseDropdown').classList.toggle('open'); this.setAttribute('aria-expanded', document.getElementById('browseDropdown').classList.contains('open'));">
@@ -506,10 +540,10 @@
           <a href="analytics.html">Analytics</a>
         </div>
       </li>
-      <li><a href="#intel">Intel</a></li>
-      <li><a href="#board">The Board</a></li>
-      <li><a href="#method">The M.O.</a></li>
-      <li><a href="#join">Join</a></li>
+      <li><a href="index.html#intel">Intel</a></li>
+      <li><a href="index.html#board">The Board</a></li>
+      <li><a href="index.html#method">The M.O.</a></li>
+      <li><a href="index.html#join">Join</a></li>
     </ul>
     <div style="display:flex; align-items:center; gap:12px;">
       <a href="https://www.youtube.com/@PuckBunker" target="_blank" rel="noopener" class="btn btn-primary" style="padding:10px 18px;">Subscribe</a>
@@ -525,81 +559,37 @@
     <a href="articles.html">Articles</a>
     <a href="analytics.html">Analytics</a>
     <div class="mobile-section-label">Site</div>
-    <a href="#intel">Intel</a>
-    <a href="#board">The Board</a>
-    <a href="#method">The M.O.</a>
-    <a href="#join" class="mobile-primary">Join the Bunker</a>
+    <a href="index.html#intel">Intel</a>
+    <a href="index.html#board">The Board</a>
+    <a href="index.html#method">The M.O.</a>
+    <a href="index.html#join" class="mobile-primary">Join the Bunker</a>
   </div>
 </header>
 
-<section class="hero">
+
+<section class="page-header">
   <div class="grid-bg"></div>
-  <div class="radar"></div>
-  <div class="crosshair">
-    <svg viewBox="0 0 120 120" fill="none" stroke="var(--cyan)" stroke-width="1.5">
-      <circle cx="60" cy="60" r="50" opacity="0.5"/>
-      <circle cx="60" cy="60" r="30" opacity="0.7"/>
-      <line x1="60" y1="0" x2="60" y2="24" opacity="0.8"/>
-      <line x1="60" y1="96" x2="60" y2="120" opacity="0.8"/>
-      <line x1="0" y1="60" x2="24" y2="60" opacity="0.8"/>
-      <line x1="96" y1="60" x2="120" y2="60" opacity="0.8"/>
-    </svg>
-  </div>
-  <div class="wrap hero-inner">
-    <div class="hero-crest"><img src="puck-bunker-logo.png" alt="Puck Bunker crest"></div>
-    <div class="eyebrow">FILE #0142 — TRANSMISSION ACTIVE</div>
-    <h1 class="stencil">
-      <span class="line">Hockey scouting,</span>
-      <span class="line">dug in.</span>
-    </h1>
-    <p class="tagline stencil">The tape doesn't lie. <span class="glow">Neither do we.</span></p>
-    <p class="lede">Puck Bunker breaks down prospects the way NHL scouts do — frame by frame, tool by tool — and puts the report on YouTube for anyone willing to watch the tape.</p>
-    <div class="cta-row">
-      <a href="#intel" class="btn btn-primary">
-        <svg viewBox="0 0 24 24"><path fill="currentColor" d="M8 5v14l11-7z"/></svg>
-        Watch Latest Report
-      </a>
-      <a href="https://www.youtube.com/@PuckBunker" target="_blank" rel="noopener" class="btn btn-ghost">Subscribe on YouTube</a>
-    </div>
-  </div>
-  <div class="ticker">
-    <div class="ticker-track">
-      <span><b>FILE #0142</b> — Kowalski: edge work under pressure</span>
-      <span><b>FILE #0141</b> — 2027 board update: risers &amp; fallers</span>
-      <span><b>FILE #0140</b> — Andersson: shot mechanics deep dive</span>
-      <span><b>FILE #0139</b> — Bunker Mailbag: reading gap control</span>
-      <span><b>FILE #0142</b> — Kowalski: edge work under pressure</span>
-      <span><b>FILE #0141</b> — 2027 board update: risers &amp; fallers</span>
-      <span><b>FILE #0140</b> — Andersson: shot mechanics deep dive</span>
-      <span><b>FILE #0139</b> — Bunker Mailbag: reading gap control</span>
-    </div>
+  <div class="wrap">
+    <div class="eyebrow">The archive</div>
+    <h1 class="stencil">Scouting reports.</h1>
+    <p>Every prospect we've filed a report on, graded across all eight tools. Filter by position.</p>
   </div>
 </section>
 
-<section id="mission">
+<section>
   <div class="wrap">
-    <div class="sec-head reveal">
-      <div class="eyebrow">Briefing</div>
-      <h2 class="stencil">Hockey scouting<br><em>underground.</em></h2>
-      <p>Two scouts, one screening room, no agenda. We watch full games — not just highlight clips — and grade what actually translates to the next level. No hot takes, just the tape.</p>
+    <div class="filter-row" id="filterRow">
+      <button class="filter-chip active" data-filter="all">All</button>
+      <button class="filter-chip" data-filter="C">Centers</button>
+      <button class="filter-chip" data-filter="LW">Left Wing</button>
+      <button class="filter-chip" data-filter="RW">Right Wing</button>
+      <button class="filter-chip" data-filter="D">Defense</button>
+      <button class="filter-chip" data-filter="G">Goaltenders</button>
     </div>
-    <div class="stat-row reveal">
-      <div class="stat"><div class="num mono" data-count="312">0</div><div class="label">Reports filed</div></div>
-      <div class="stat"><div class="num mono" data-count="41" data-suffix="K">0</div><div class="label">Players scouted</div></div>
-      <div class="stat"><div class="num mono" data-count="86">0</div><div class="label">Deep dive videos</div></div>
-    </div>
-  </div>
-</section>
 
-<section id="intel">
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <div class="eyebrow">Latest intel</div>
-      <h2 class="stencil">Fresh off the desk.</h2>
-      <p>New dossiers every week — full breakdowns, graded and filed.</p>
-    </div>
-    <div class="dossier-grid" id="intelGrid">
-      <article class="dossier hud reveal">
+    <div class="dossier-grid" id="reportsGrid">
+
+      <article class="dossier hud" data-pos="D">
         <span class="hud-bl"></span><span class="hud-br"></span>
         <div class="dossier-thumb">
           <span class="file-tag">FILE #0142</span>
@@ -607,12 +597,13 @@
           <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
         </div>
         <div class="dossier-body">
-          <h3>Kowalski: Edge Work Under Pressure</h3>
-          <p>Full-game breakdown of a draft-eligible defenseman who never loses his stick angle.</p>
-          <div class="tool-tags"><span>Skating</span><span>Gap Control</span><span>IQ</span></div>
+          <h3>J. Kowalski — D</h3>
+          <p>Edge work and stick angle that already reads like an NHL shutdown pairing.</p>
+          <div class="tool-tags"><span>Skating</span><span>DZ Sense</span><span>Compete</span></div>
         </div>
       </article>
-      <article class="dossier hud reveal">
+
+      <article class="dossier hud" data-pos="C">
         <span class="hud-bl"></span><span class="hud-br"></span>
         <div class="dossier-thumb">
           <span class="file-tag">FILE #0140</span>
@@ -620,12 +611,27 @@
           <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
         </div>
         <div class="dossier-body">
-          <h3>Andersson: Shot Mechanics Deep Dive</h3>
-          <p>Release speed, weight transfer, and why his wrister beats goalies clean.</p>
-          <div class="tool-tags"><span>Shot</span><span>Release</span></div>
+          <h3>T. Andersson — C</h3>
+          <p>Release speed and weight transfer that beats set goalies clean.</p>
+          <div class="tool-tags"><span>Shot</span><span>Playmaking</span></div>
         </div>
       </article>
-      <article class="dossier hud reveal">
+
+      <article class="dossier hud" data-pos="LW">
+        <span class="hud-bl"></span><span class="hud-br"></span>
+        <div class="dossier-thumb">
+          <span class="file-tag">FILE #0137</span>
+          <span class="grade-stamp grade-B">GRADE B+</span>
+          <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+        </div>
+        <div class="dossier-body">
+          <h3>R. Ilkanen — LW</h3>
+          <p>Undersized but wins puck races against defensemen twice his size.</p>
+          <div class="tool-tags"><span>Skating</span><span>Compete</span></div>
+        </div>
+      </article>
+
+      <article class="dossier hud" data-pos="RW">
         <span class="hud-bl"></span><span class="hud-br"></span>
         <div class="dossier-thumb">
           <span class="file-tag">FILE #0138</span>
@@ -633,124 +639,72 @@
           <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
         </div>
         <div class="dossier-body">
-          <h3>Boucher: Raw Tools, Rough Reads</h3>
-          <p>Elite compete level, but his decision-making still lags a full step behind.</p>
-          <div class="tool-tags"><span>Compete</span><span>IQ</span></div>
+          <h3>M. Boucher — RW</h3>
+          <p>Elite compete level, but decision-making still lags a full step behind.</p>
+          <div class="tool-tags"><span>Compete</span><span>OZ Sense</span></div>
         </div>
       </article>
-    </div>
-  </div>
-</section>
 
-<section id="board">
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <div class="eyebrow">The board</div>
-      <h2 class="stencil">2027 rankings,<br><em>updated monthly.</em></h2>
-      <p>Our live draft board — repositioned every time a prospect earns it or loses it on tape.</p>
-    </div>
-    <div class="board mono reveal">
-      <div class="board-row head"><span>Rk</span><span>Prospect</span><span>Trend</span><span>Grade</span></div>
-      <div class="board-row">
-        <span class="rank">01</span>
-        <span class="name" style="font-family:'Archivo',sans-serif;">J. Kowalski <span class="pos">D</span></span>
-        <span class="trend trend-up">▲ +2</span>
-        <span class="grade-pill" style="color:var(--cyan);border-color:var(--cyan);">A-</span>
-      </div>
-      <div class="board-row">
-        <span class="rank">02</span>
-        <span class="name" style="font-family:'Archivo',sans-serif;">T. Andersson <span class="pos">C</span></span>
-        <span class="trend trend-flat">— 0</span>
-        <span class="grade-pill" style="color:var(--ice);">B+</span>
-      </div>
-      <div class="board-row">
-        <span class="rank">03</span>
-        <span class="name" style="font-family:'Archivo',sans-serif;">R. Ilkanen <span class="pos">LW</span></span>
-        <span class="trend trend-up">▲ +5</span>
-        <span class="grade-pill" style="color:var(--ice);">B+</span>
-      </div>
-      <div class="board-row">
-        <span class="rank">04</span>
-        <span class="name" style="font-family:'Archivo',sans-serif;">M. Boucher <span class="pos">RW</span></span>
-        <span class="trend trend-down">▼ -1</span>
-        <span class="grade-pill" style="color:var(--hazard);border-color:var(--hazard);">C+</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="method">
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <div class="eyebrow">The M.O.</div>
-      <h2 class="stencil">Eight tools.<br><em>No shortcuts.</em></h2>
-    </div>
-    <div class="method-layout">
-      <div class="method-copy reveal">
-        <p>Every prospect gets scored on the same eight tools NHL scouts actually track — not vibes, not box scores. We watch shifts without the puck as closely as the ones with it.</p>
-        <p><strong style="color:var(--ice);">Skating</strong> — edges, first-three-steps, top speed under pressure.</p>
-        <p><strong style="color:var(--ice);">Shot</strong> — release, accuracy, and whether it beats a set goalie.</p>
-        <p><strong style="color:var(--ice);">Puck Skills</strong> — hands in tight spaces, protection, and control at speed.</p>
-        <p><strong style="color:var(--ice);">Playmaking</strong> — vision, timing, and setting teammates up to score.</p>
-        <p><strong style="color:var(--ice);">OZ Hockey Sense</strong> — reads and support with the puck in the attacking zone.</p>
-        <p><strong style="color:var(--ice);">DZ Hockey Sense</strong> — gap control, positioning, and reads without the puck.</p>
-        <p><strong style="color:var(--ice);">Compete</strong> — puck battles, board work, what happens after the whistle.</p>
-        <p><strong style="color:var(--ice);">Physicality</strong> — strength on the puck, contact, and willingness to engage.</p>
-      </div>
-      <div class="gauge-card hud reveal">
+      <article class="dossier hud" data-pos="C">
         <span class="hud-bl"></span><span class="hud-br"></span>
-        <div class="file-line"><span>SAMPLE READOUT</span><span>FILE #0142</span></div>
-        <div class="gauge">
-          <div class="gauge-label"><span>Skating</span><b>8.4</b></div>
-          <div class="gauge-track"><div class="gauge-fill" data-fill="84"></div></div>
+        <div class="dossier-thumb">
+          <span class="file-tag">FILE #0135</span>
+          <span class="grade-stamp grade-A">GRADE A-</span>
+          <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
         </div>
-        <div class="gauge">
-          <div class="gauge-label"><span>Shot</span><b>7.1</b></div>
-          <div class="gauge-track"><div class="gauge-fill" data-fill="71"></div></div>
+        <div class="dossier-body">
+          <h3>E. Voss — C</h3>
+          <p>Vision and timing that make everyone on the ice around him better.</p>
+          <div class="tool-tags"><span>Playmaking</span><span>OZ Sense</span></div>
         </div>
-        <div class="gauge">
-          <div class="gauge-label"><span>Puck Skills</span><b>8.0</b></div>
-          <div class="gauge-track"><div class="gauge-fill" data-fill="80"></div></div>
+      </article>
+
+      <article class="dossier hud" data-pos="D">
+        <span class="hud-bl"></span><span class="hud-br"></span>
+        <div class="dossier-thumb">
+          <span class="file-tag">FILE #0134</span>
+          <span class="grade-stamp grade-B">GRADE B-</span>
+          <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
         </div>
-        <div class="gauge">
-          <div class="gauge-label"><span>Playmaking</span><b>7.6</b></div>
-          <div class="gauge-track"><div class="gauge-fill" data-fill="76"></div></div>
+        <div class="dossier-body">
+          <h3>N. Petrov — D</h3>
+          <p>A heavy, engaged defenseman whose frame still needs a full off-season.</p>
+          <div class="tool-tags"><span>Physicality</span><span>Puck Skills</span></div>
         </div>
-        <div class="gauge">
-          <div class="gauge-label"><span>OZ Hockey Sense</span><b>8.7</b></div>
-          <div class="gauge-track"><div class="gauge-fill" data-fill="87"></div></div>
+      </article>
+
+      <article class="dossier hud" data-pos="G">
+        <span class="hud-bl"></span><span class="hud-br"></span>
+        <div class="dossier-thumb">
+          <span class="file-tag">FILE #0131</span>
+          <span class="grade-stamp grade-B">GRADE B</span>
+          <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
         </div>
-        <div class="gauge">
-          <div class="gauge-label"><span>DZ Hockey Sense</span><b>7.9</b></div>
-          <div class="gauge-track"><div class="gauge-fill" data-fill="79"></div></div>
+        <div class="dossier-body">
+          <h3>A. Reyes — G</h3>
+          <p>Calm depth and clean rebound control against high-danger second chances.</p>
+          <div class="tool-tags"><span>Hockey IQ</span><span>Compete</span></div>
         </div>
-        <div class="gauge">
-          <div class="gauge-label"><span>Compete</span><b>8.8</b></div>
-          <div class="gauge-track"><div class="gauge-fill" data-fill="88"></div></div>
+      </article>
+
+      <article class="dossier hud" data-pos="LW">
+        <span class="hud-bl"></span><span class="hud-br"></span>
+        <div class="dossier-thumb">
+          <span class="file-tag">FILE #0129</span>
+          <span class="grade-stamp grade-C">GRADE C</span>
+          <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
         </div>
-        <div class="gauge">
-          <div class="gauge-label"><span>Physicality</span><b>7.3</b></div>
-          <div class="gauge-track"><div class="gauge-fill" data-fill="73"></div></div>
+        <div class="dossier-body">
+          <h3>D. Whitfield — LW</h3>
+          <p>Good size and a heavy shot, but skating needs to catch up before he's draftable.</p>
+          <div class="tool-tags"><span>Shot</span><span>Physicality</span></div>
         </div>
-      </div>
+      </article>
+
     </div>
   </div>
 </section>
 
-<section id="join" class="recruit">
-  <div class="grid-bg" style="opacity:0.6;"></div>
-  <div class="wrap reveal">
-    <div class="eyebrow">Enlist</div>
-    <h2 class="stencil">Join the bunker.</h2>
-    <p>New reports every week, straight to your feed. No noise, no clickbait grades — just the tape and the truth.</p>
-    <div class="cta-row">
-      <a href="https://www.youtube.com/@PuckBunker" target="_blank" rel="noopener" class="btn btn-primary">
-        <svg viewBox="0 0 24 24"><path fill="currentColor" d="M8 5v14l11-7z"/></svg>
-        Subscribe on YouTube
-      </a>
-    </div>
-  </div>
-</section>
 
 <footer>
   <div class="wrap">
@@ -858,12 +812,28 @@
     });
   }, { threshold: 0.3 });
   gauges.forEach(el => gaugeIO.observe(el));
+
+  // Position filter on the Scouting Reports archive
+  const filterRow = document.getElementById('filterRow');
+  if (filterRow) {
+    filterRow.addEventListener('click', (e) => {
+      const btn = e.target.closest('.filter-chip');
+      if (!btn) return;
+      filterRow.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+      document.querySelectorAll('#reportsGrid .dossier').forEach(card => {
+        card.style.display = (filter === 'all' || card.dataset.pos === filter) ? '' : 'none';
+      });
+    });
+  }
+
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-client.js"></script>
 <script src="public-reports.js"></script>
-<script>pbLoadPublished('intelGrid', 3);</script>
+<script>pbLoadPublished('reportsGrid', null);</script>
 
 </body>
 </html>
