@@ -578,7 +578,7 @@
 
 <section>
   <div class="wrap">
-    <div class="dossier-grid">
+    <div class="dossier-grid" id="episodesGrid">
 
       <article class="dossier hud">
         <span class="hud-bl"></span><span class="hud-br"></span>
@@ -815,6 +815,11 @@
   }, { threshold: 0.3 });
   gauges.forEach(el => gaugeIO.observe(el));
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-client.js"></script>
+<script src="public-reports.js"></script>
+<script>pbLoadPublished('episodesGrid', 12);</script>
 
 </body>
 </html>
