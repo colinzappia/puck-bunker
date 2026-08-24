@@ -227,6 +227,50 @@
   .modal-foot{ padding:14px 20px; border-top:1px solid var(--steel); display:flex; gap:10px; justify-content:flex-end; }
 
   :focus-visible{ outline:2px solid var(--hazard); outline-offset:2px; }
+
+  /* ---------- Phone / tablet tightening ---------- */
+  html{ overflow-x:hidden; }
+  body{ overflow-x:hidden; }
+
+  @media (max-width:720px){
+    .wrap{ padding:24px 16px 60px; }
+    nav{ padding:12px 16px; }
+    .brand{ font-size:15px; gap:8px; }
+    .brand-mark{ width:22px; height:22px; }
+    .admin-tag{ font-size:9px; padding:2px 6px; }
+    #reporterBadge{ width:100%; order:-1; margin-bottom:2px; }
+    .nav-actions .btn{ padding:9px 14px; font-size:11px; }
+
+    .gate-card{ padding:28px 22px; }
+
+    .panel-head{ padding:14px 16px; }
+    .panel-body{ padding:18px 16px; }
+    .field-row{ gap:12px; margin-bottom:12px; }
+
+    .grade-grid{ grid-template-columns:1fr; gap:14px; }
+    .overall-readout{ padding:16px; gap:14px; }
+    .overall-readout .letter{ font-size:36px; }
+
+    .video-preview{ margin-top:12px; }
+
+    .action-bar{ padding:16px; gap:10px; }
+    .action-bar .btn{ width:100%; justify-content:center; }
+    .save-status{ margin-left:0; width:100%; text-align:center; order:99; }
+
+    .drafts-list{ max-height:280px; }
+
+    .modal{ max-height:90vh; }
+    .modal-body{ padding:14px; }
+    .modal-body textarea{ min-height:200px; font-size:11px; }
+    .modal-foot{ flex-direction:column-reverse; }
+    .modal-foot .btn{ width:100%; justify-content:center; }
+  }
+
+  @media (max-width:420px){
+    .gate-card h1{ font-size:28px; }
+    .drafts-head, .drafts-foot{ padding:12px 14px; }
+    .draft-item{ padding:11px 14px; }
+  }
 </style>
 </head>
 <body>
