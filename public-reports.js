@@ -44,7 +44,8 @@ function pbBuildCard(report) {
     ? `<div style="font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--steel); margin-bottom:10px;">SCOUTED BY ${pbEscape(report.reporter_name.toUpperCase())}</div>`
     : '';
 
-  return `<article class="dossier hud" data-pos="${pbEscape(report.position || '')}">
+  return `<a href="/api/report/${report.id}" style="text-decoration:none; color:inherit; display:block;">
+  <article class="dossier hud" data-pos="${pbEscape(report.position || '')}">
     <span class="hud-bl"></span><span class="hud-br"></span>
     <div class="dossier-thumb">${thumbInner}
       <span class="file-tag">FILE #${pbEscape(report.file_num || '----')}</span>
@@ -57,7 +58,8 @@ function pbBuildCard(report) {
       <p>${pbEscape(firstLine)}</p>
       <div class="tool-tags">${topTags.map(t => `<span>${pbEscape(t)}</span>`).join('')}</div>
     </div>
-  </article>`;
+  </article>
+  </a>`;
 }
 
 async function pbLoadPublished(gridId, limit) {
