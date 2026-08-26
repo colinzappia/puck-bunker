@@ -516,8 +516,23 @@
   .radar-wrap{
     background:var(--panel); border:1px solid var(--steel); padding:32px;
     display:flex; align-items:center; justify-content:center;
+    position:relative;
   }
   .radar-wrap svg{ width:100%; max-width:560px; height:auto; }
+  .radar-point{ cursor:pointer; }
+  .radar-point-hit{ fill:transparent; }
+  .radar-tooltip{
+    position:absolute; pointer-events:none;
+    background:var(--panel-2); border:1px solid var(--hazard-2);
+    padding:9px 13px; font-family:'JetBrains Mono',monospace; font-size:12px;
+    color:var(--ice); white-space:nowrap; z-index:50;
+    opacity:0; transform:translate(-50%,-100%) translateY(-10px);
+    transition:opacity .12s;
+    box-shadow:0 10px 24px -8px rgba(0,0,0,0.7);
+  }
+  .radar-tooltip.visible{ opacity:1; }
+  .radar-tooltip .t-cat{ color:var(--ice-dim); font-size:10.5px; text-transform:uppercase; letter-spacing:0.04em; margin-bottom:3px; }
+  .radar-tooltip .t-val{ font-weight:700; font-size:14px; }
   .compare-legend{ display:flex; gap:24px; flex-wrap:wrap; margin-top:24px; justify-content:center; }
   .compare-legend-item{ display:flex; align-items:center; gap:8px; font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--ice-dim); }
   .compare-legend-item .dot{ width:10px; height:10px; border-radius:50%; }
@@ -759,6 +774,10 @@
     return [cx + r * Math.cos(angle), cy + r * Math.sin(angle)];
   }
 
+  function pbEscapeAttr(str) {
+    return String(str || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+  }
+
   function pbBuildRadarSVG(datasets) {
     const cx = 250, cy = 250, maxR = 175;
     const rings = [0.2, 0.4, 0.6, 0.8, 1.0];
@@ -793,11 +812,17 @@
       PB_CATEGORIES.forEach((cat, i) => {
         const val = (ds.scores && typeof ds.scores[cat] === "number") ? ds.scores[cat] : 0;
         const [px, py] = pbAxisPoint(i, val / 10, cx, cy, maxR);
-        svg += `<circle cx="${px}" cy="${py}" r="3.5" fill="${ds.color}"/>`;
+        // Larger invisible circle for an easier hover/tap target, plus the
+        // small visible dot on top of it. Both carry the same data so
+        // hovering or tapping anywhere near the dot shows the tooltip.
+        svg += `<circle class="radar-point radar-point-hit" cx="${px}" cy="${py}" r="11"
+          data-name="${pbEscapeAttr(ds.name)}" data-cat="${pbEscapeAttr(cat)}" data-val="${val.toFixed(1)}" data-color="${pbEscapeAttr(ds.color)}"/>`;
+        svg += `<circle cx="${px}" cy="${py}" r="3.5" fill="${ds.color}" style="pointer-events:none;"/>`;
       });
     });
 
     svg += `</svg>`;
+    svg += `<div id="radarTooltip" class="radar-tooltip"></div>`;
     return svg;
   }
 
@@ -828,7 +853,63 @@
     ).join('');
   }
 
+  function pbSetupRadarTooltip() {
+    const wrap = document.getElementById('radarWrap');
+    let activeKey = '';
+
+    function positionTip(tip, target) {
+      const wrapRect = wrap.getBoundingClientRect();
+      const svg = wrap.querySelector('svg');
+      if (!svg) return;
+      const svgRect = svg.getBoundingClientRect();
+      const cx = parseFloat(target.getAttribute('cx'));
+      const cy = parseFloat(target.getAttribute('cy'));
+      const scaleX = svgRect.width / 500;
+      const scaleY = svgRect.height / 500;
+      tip.style.left = ((svgRect.left - wrapRect.left) + cx * scaleX) + 'px';
+      tip.style.top = ((svgRect.top - wrapRect.top) + cy * scaleY) + 'px';
+    }
+
+    function showTip(target) {
+      const tip = document.getElementById('radarTooltip');
+      if (!tip) return;
+      const name = target.getAttribute('data-name');
+      const cat = target.getAttribute('data-cat');
+      const val = target.getAttribute('data-val');
+      const color = target.getAttribute('data-color');
+      tip.innerHTML = `<div class="t-cat">${cat} — ${name}</div><div class="t-val" style="color:${color};">${val} / 10</div>`;
+      positionTip(tip, target);
+      tip.classList.add('visible');
+      activeKey = name + '|' + cat;
+    }
+
+    function hideTip() {
+      const tip = document.getElementById('radarTooltip');
+      if (tip) tip.classList.remove('visible');
+      activeKey = '';
+    }
+
+    wrap.addEventListener('mouseover', (e) => {
+      const pt = e.target.closest('.radar-point');
+      if (pt) showTip(pt);
+    });
+    wrap.addEventListener('mouseout', (e) => {
+      const pt = e.target.closest('.radar-point');
+      if (pt) hideTip();
+    });
+    // Click/tap: works for touch devices where hover isn't available.
+    // Tapping the same point again, or tapping elsewhere, closes it.
+    wrap.addEventListener('click', (e) => {
+      const pt = e.target.closest('.radar-point');
+      if (!pt) { hideTip(); return; }
+      const key = pt.getAttribute('data-name') + '|' + pt.getAttribute('data-cat');
+      if (key === activeKey) hideTip();
+      else showTip(pt);
+    });
+  }
+
   async function pbInitCompare() {
+    pbSetupRadarTooltip();
     const wrap = document.getElementById('radarWrap');
     const selects = [document.getElementById('pick1'), document.getElementById('pick2'), document.getElementById('pick3')];
 
