@@ -192,7 +192,7 @@ function renderReportPage(report, reqHost) {
       <span class="mono" style="font-size:12px; color:var(--steel);">FILE #${escapeHtml(report.file_num || "----")}</span>
     </div>
     <h1 class="stencil">${escapeHtml(title)}</h1>
-    <div class="subline">${escapeHtml(report.name || "")}${report.position ? " — " + escapeHtml(report.position) : ""}</div>
+    <div class="subline">${escapeHtml(report.name || "")}${report.position ? " — " + escapeHtml(report.position) : ""}${report.team ? " · " + escapeHtml(report.team) : ""}</div>
     ${bylineHtml}
 
     ${videoHtml}
