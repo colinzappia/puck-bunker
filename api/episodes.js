@@ -6,11 +6,19 @@
 // not committed to this file or the repo — unlike Supabase's "publishable"
 // key, a YouTube API key isn't meant to be public.
 //
+// Videos on the "excluded episodes" list (managed from admin.html) are
+// filtered out here, and the pool is backfilled from further back in the
+// upload history so the page still shows the requested count.
+//
 // URL: https://www.puckbunker.com/api/episodes
 // Optional: ?limit=12 (defaults to 12, max 50)
 
 const CHANNEL_HANDLE = "@PuckBunker";
 const DEFAULT_LIMIT = 12;
+const FETCH_POOL_SIZE = 50; // max allowed per YouTube API call; gives room to backfill around exclusions
+
+const SUPABASE_URL = "https://bwexpvzstgkllkjaitzy.supabase.co";
+const SUPABASE_KEY = "sb_publishable_AqjW7wYPhZ6OTpM1W-jVew_1L18nkZE";
 
 // Cached for the lifetime of a warm serverless instance, so repeat
 // invocations don't re-resolve the channel -> uploads-playlist mapping
@@ -35,16 +43,34 @@ async function resolveUploadsPlaylistId(apiKey) {
   return playlistId;
 }
 
+async function fetchExcludedIds() {
+  try {
+    const url = `${SUPABASE_URL}/rest/v1/puckbunker_excluded_episodes?select=video_id`;
+    const res = await fetch(url, {
+      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
+    });
+    if (!res.ok) return new Set();
+    const rows = await res.json();
+    return new Set((rows || []).map(r => r.video_id));
+  } catch (e) {
+    console.error("Failed to load excluded episodes list, showing all videos:", e);
+    return new Set(); // fail open — never let an exclusion-list hiccup take the whole page down
+  }
+}
+
 async function fetchLatestVideos(apiKey, limit) {
   const playlistId = await resolveUploadsPlaylistId(apiKey);
 
-  const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${encodeURIComponent(playlistId)}&maxResults=${limit}&key=${apiKey}`;
-  const res = await fetch(url);
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Playlist fetch failed (${res.status}): ${body}`);
+  const [playlistRes, excludedIds] = await Promise.all([
+    fetch(`https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${encodeURIComponent(playlistId)}&maxResults=${FETCH_POOL_SIZE}&key=${apiKey}`),
+    fetchExcludedIds(),
+  ]);
+
+  if (!playlistRes.ok) {
+    const body = await playlistRes.text();
+    throw new Error(`Playlist fetch failed (${playlistRes.status}): ${body}`);
   }
-  const data = await res.json();
+  const data = await playlistRes.json();
 
   const videos = (data.items || [])
     .filter(item => item.snippet && item.snippet.resourceId && item.snippet.resourceId.videoId)
@@ -59,7 +85,9 @@ async function fetchLatestVideos(apiKey, limit) {
         thumbnail: thumb.url || "",
       };
     })
-    .sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
+    .filter(v => !excludedIds.has(v.id))
+    .sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt))
+    .slice(0, limit);
 
   return videos;
 }
@@ -74,15 +102,16 @@ module.exports = async (req, res) => {
   }
 
   const rawLimit = parseInt((req.query && req.query.limit) || DEFAULT_LIMIT, 10);
-  const limit = Math.min(Math.max(Number.isFinite(rawLimit) ? rawLimit : DEFAULT_LIMIT, 1), 50);
+  const limit = Math.min(Math.max(Number.isFinite(rawLimit) ? rawLimit : DEFAULT_LIMIT, 1), FETCH_POOL_SIZE);
 
   try {
     const videos = await fetchLatestVideos(apiKey, limit);
     res.statusCode = 200;
     res.setHeader("Content-Type", "application/json");
-    // Cache at the edge for 30 minutes so repeat page loads don't re-hit
-    // the YouTube API (and don't spend quota) for the same data.
-    res.setHeader("Cache-Control", "public, s-maxage=1800, stale-while-revalidate=3600");
+    // Cache at the edge for 5 minutes — short enough that hiding a video
+    // from admin.html takes effect quickly, long enough to avoid hammering
+    // the YouTube API on every page load.
+    res.setHeader("Cache-Control", "public, s-maxage=300, stale-while-revalidate=600");
     res.end(JSON.stringify({ videos }));
   } catch (err) {
     console.error("episodes endpoint error:", err);
