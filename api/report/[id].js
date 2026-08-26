@@ -93,7 +93,6 @@ function renderReportPage(report, reqHost) {
   const letter = report.overall_grade || "B";
   const gClass = gradeClass(letter);
   const ytId = youtubeId(report.video_url);
-  const title = report.title || `${report.name}: Scouting Report`;
   const pageTitle = `${report.name} — Grade ${letter} | Puck Bunker`;
   const firstLine = (report.notes || "").split("\n").filter(Boolean)[0] || `Full scouting breakdown of ${report.name}, graded across all eight tools.`;
   const ogImage = ytId ? `https://img.youtube.com/vi/${ytId}/hqdefault.jpg` : LOGO_URL;
@@ -167,6 +166,11 @@ function renderReportPage(report, reqHost) {
   .grade-A{ color:var(--cyan); } .grade-B{ color:var(--ice); } .grade-C{ color:var(--hazard); }
   h1{ font-size:clamp(32px,6vw,52px); line-height:0.95; }
   .subline{ color:var(--ice-dim); font-size:14px; margin-top:6px; }
+  .prospect-meta{
+    font-family:'JetBrains Mono',monospace; font-size:14px; font-weight:700;
+    letter-spacing:0.05em; text-transform:uppercase; color:var(--hazard);
+    margin-top:10px;
+  }
   .byline{ font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--steel); margin:18px 0; letter-spacing:0.06em; }
   .video-embed{ aspect-ratio:16/9; margin:28px 0; border:1px solid var(--steel); background:var(--panel); }
   .video-embed iframe{ width:100%; height:100%; border:none; }
@@ -191,8 +195,9 @@ function renderReportPage(report, reqHost) {
       <span class="grade-pill mono ${gClass}">GRADE ${escapeHtml(letter)}</span>
       <span class="mono" style="font-size:12px; color:var(--steel);">FILE #${escapeHtml(report.file_num || "----")}</span>
     </div>
-    <h1 class="stencil">${escapeHtml(title)}</h1>
-    <div class="subline">${escapeHtml(report.name || "")}${report.position ? " — " + escapeHtml(report.position) : ""}${report.team ? " · " + escapeHtml(report.team) : ""}</div>
+    <h1 class="stencil">${escapeHtml(report.name || "Unnamed Prospect")}</h1>
+    ${(report.position || report.team) ? `<div class="prospect-meta">${[report.position, report.team].filter(Boolean).map(escapeHtml).join(" · ")}</div>` : ""}
+    ${report.title && report.title.trim() ? `<div class="subline" style="font-style:italic;">${escapeHtml(report.title)}</div>` : ""}
     ${bylineHtml}
 
     ${videoHtml}
