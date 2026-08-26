@@ -131,6 +131,18 @@
   .drafts-head h2{ font-size:12px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--ice-dim); }
   .drafts-count{ font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--hazard); }
   .drafts-list{ max-height:520px; overflow-y:auto; }
+  .exclude-item{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    padding:12px 14px; background:var(--black); border:1px solid var(--steel-soft);
+    margin-bottom:8px; font-size:13px;
+  }
+  .exclude-item .ex-title{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .exclude-item .ex-id{ font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--ice-dim); }
+  .exclude-item button{
+    flex-shrink:0; background:none; border:1px solid var(--red); color:var(--red);
+    font-family:'JetBrains Mono',monospace; font-size:11px; padding:5px 10px; cursor:pointer;
+  }
+  .exclude-item button:hover{ background:rgba(193,104,74,0.12); }
   .draft-item{
     padding:13px 18px; border-bottom:1px solid var(--steel-soft);
     cursor:pointer; transition:background .15s;
@@ -420,6 +432,25 @@
             <button class="btn btn-ghost" id="exportSnippetBtn">Export Dossier HTML</button>
             <button class="btn btn-ghost" id="exportJsonBtn">Export JSON</button>
             <span class="save-status mono" id="saveStatus"></span>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h2>Hidden Episodes</h2></div>
+          <div class="panel-body">
+            <p style="font-size:13px; color:var(--ice-dim); margin-bottom:16px;">
+              Hide a video from the public Episodes page. It stays on YouTube — this only removes it from puckbunker.com. The next most recent video takes its place automatically.
+            </p>
+            <div class="field-row">
+              <div class="field" style="grid-column:1 / -1;">
+                <label>YouTube URL or Video ID</label>
+                <input type="text" id="excludeInput" placeholder="https://youtube.com/watch?v=... or just the video ID">
+              </div>
+            </div>
+            <button class="btn btn-ghost" id="excludeAddBtn" type="button">Hide This Video</button>
+            <div id="excludeStatus" class="mono" style="font-size:11px; color:var(--ice-dim); margin-top:10px;"></div>
+
+            <div id="excludeList" style="margin-top:22px;"></div>
           </div>
         </div>
 
@@ -889,11 +920,78 @@
     document.getElementById('exportModal').classList.remove('active');
   }
 
+  // ============ EXCLUDED EPISODES ============
+  async function fetchVideoTitle(videoId){
+    try {
+      const res = await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`);
+      if (!res.ok) return '';
+      const data = await res.json();
+      return data.title || '';
+    } catch(e) { return ''; }
+  }
+
+  async function loadExcludedEpisodes(){
+    const list = document.getElementById('excludeList');
+    const { data, error } = await sb
+      .from('puckbunker_excluded_episodes')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (error) {
+      list.innerHTML = `<div style="font-size:12px; color:var(--ice-dim);">Couldn't load the hidden list.</div>`;
+      return;
+    }
+    if (!data.length) {
+      list.innerHTML = `<div style="font-size:12px; color:var(--ice-dim);">Nothing hidden right now.</div>`;
+      return;
+    }
+    list.innerHTML = data.map(row => `
+      <div class="exclude-item">
+        <div style="overflow:hidden;">
+          <div class="ex-title">${row.video_title || 'Untitled video'}</div>
+          <div class="ex-id">${row.video_id}</div>
+        </div>
+        <button data-id="${row.id}" type="button">Unhide</button>
+      </div>
+    `).join('');
+    list.querySelectorAll('button[data-id]').forEach(btn => {
+      btn.addEventListener('click', () => removeExclusion(btn.dataset.id));
+    });
+  }
+
+  async function addExclusion(){
+    const input = document.getElementById('excludeInput');
+    const status = document.getElementById('excludeStatus');
+    const videoId = extractYoutubeId(input.value.trim());
+    if (!videoId) {
+      status.textContent = 'Paste a valid YouTube URL or 11-character video ID.';
+      return;
+    }
+    status.textContent = 'Hiding…';
+    const title = await fetchVideoTitle(videoId);
+    const { error } = await sb
+      .from('puckbunker_excluded_episodes')
+      .insert({ video_id: videoId, video_title: title });
+    if (error) {
+      status.textContent = error.message.includes('duplicate') ? 'That video is already hidden.' : 'Failed: ' + error.message;
+      return;
+    }
+    input.value = '';
+    status.textContent = 'Hidden.';
+    loadExcludedEpisodes();
+  }
+
+  async function removeExclusion(id){
+    const { error } = await sb.from('puckbunker_excluded_episodes').delete().eq('id', id);
+    if (error) { alert('Failed to unhide: ' + error.message); return; }
+    loadExcludedEpisodes();
+  }
+
   // ============ INIT ============
   async function initAdmin(){
     buildGradeGrid();
     await loadDrafts();
     renderDraftsList();
+    loadExcludedEpisodes();
     if (drafts.length){
       loadDraft([...drafts].sort((a,b) => b.updated - a.updated)[0].id);
     } else {
@@ -913,6 +1011,7 @@
     document.getElementById('publishBtn').addEventListener('click', togglePublish);
     document.getElementById('newDraftBtn').addEventListener('click', startNewDraft);
     document.getElementById('deleteDraftBtn').addEventListener('click', deleteCurrentDraft);
+    document.getElementById('excludeAddBtn').addEventListener('click', addExclusion);
 
     document.getElementById('exportSnippetBtn').addEventListener('click', () => {
       openModal('Dossier HTML — paste into index.html', buildDossierSnippet());
