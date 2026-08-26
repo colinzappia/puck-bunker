@@ -302,7 +302,7 @@
     color:var(--cyan);
     text-shadow:0 0 22px rgba(220,221,221,0.55), 0 0 60px rgba(220,221,221,0.25);
   }
-  .hero p.lede{ font-size:19px; color:var(--ice-dim); max-width:540px; margin:0 auto 36px; }
+  .hero p.lede{ font-size:18px; color:var(--ice-dim); max-width:620px; margin:0 auto 36px; }
   .cta-row{ display:flex; gap:16px; flex-wrap:wrap; margin-bottom:56px; justify-content:center; }
 
   .crosshair{
@@ -571,7 +571,7 @@
       <span class="line">dug in.</span>
     </h1>
     <p class="tagline stencil">The tape doesn't lie. <span class="glow">Neither do we.</span></p>
-    <p class="lede">Puck Bunker breaks down prospects the way NHL scouts do — frame by frame, tool by tool — and puts the report on YouTube for anyone willing to watch the tape.</p>
+    <p class="lede">Two scouts, one screening room, no agenda. We break down prospects the way NHL scouts do — frame by frame, tool by tool, full games not highlight clips — and grade what actually translates to the next level. No hot takes. Just the tape, published every week on YouTube.</p>
     <div class="cta-row">
       <a href="#intel" class="btn btn-primary">
         <svg viewBox="0 0 24 24"><path fill="currentColor" d="M8 5v14l11-7z"/></svg>
@@ -594,20 +594,7 @@
   </div>
 </section>
 
-<section id="mission">
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <div class="eyebrow">Briefing</div>
-      <h2 class="stencil">Hockey scouting<br><em>underground.</em></h2>
-      <p>Two scouts, one screening room, no agenda. We watch full games — not just highlight clips — and grade what actually translates to the next level. No hot takes, just the tape.</p>
-    </div>
-    <div class="stat-row reveal">
-      <div class="stat"><div class="num mono" id="statReportsFiled" data-count="312">0</div><div class="label">Reports filed</div></div>
-      <div class="stat"><div class="num mono" id="statPlayersScouted" data-count="41">0</div><div class="label">Players scouted</div></div>
-      <div class="stat"><div class="num mono" id="statDeepDiveVideos" data-count="86">0</div><div class="label">Deep dive videos</div></div>
-    </div>
-  </div>
-</section>
+
 
 <section id="intel">
   <div class="wrap">
@@ -841,64 +828,6 @@
     });
   }, { threshold: 0.15 });
   reveals.forEach(el => io.observe(el));
-
-  // Count-up stats — fetch real numbers from Supabase first, THEN animate,
-  // so the count-up always reflects actual published report data. If the
-  // fetch fails for any reason, it falls back to the placeholder numbers
-  // already sitting in the HTML rather than showing a blank/broken stat.
-  async function initStatsAndCounters(){
-    if (typeof puckBunkerDB !== 'undefined') {
-      try {
-        const { data, error } = await puckBunkerDB
-          .from('puckbunker_reports')
-          .select('name, video_url')
-          .eq('status', 'published');
-
-        if (!error && data) {
-          const reportsFiled = data.length;
-          const playersScouted = new Set(data.map(r => r.name).filter(Boolean)).size;
-          const deepDiveVideos = data.filter(r => r.video_url && r.video_url.trim()).length;
-
-          const elReports = document.getElementById('statReportsFiled');
-          const elPlayers = document.getElementById('statPlayersScouted');
-          const elVideos = document.getElementById('statDeepDiveVideos');
-          // Only override the placeholder once there's at least one published
-          // report — otherwise keep the placeholder numbers so the section
-          // never shows all zeros before the bunker has published anything.
-          if (reportsFiled > 0) {
-            if (elReports) elReports.setAttribute('data-count', reportsFiled);
-            if (elPlayers) elPlayers.setAttribute('data-count', playersScouted);
-            if (elVideos) elVideos.setAttribute('data-count', deepDiveVideos);
-          }
-        }
-      } catch (e) {
-        console.error('Puck Bunker: failed to load live stats, using placeholders', e);
-      }
-    }
-
-    const counters = document.querySelectorAll('[data-count]');
-    const countIO = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if(e.isIntersecting){
-          const el = e.target;
-          const target = parseInt(el.getAttribute('data-count'), 10);
-          const suffix = el.getAttribute('data-suffix') || '';
-          const duration = 1200;
-          const start = performance.now();
-          function tick(now){
-            const p = Math.min((now - start) / duration, 1);
-            const eased = 1 - Math.pow(1 - p, 3);
-            el.textContent = Math.round(eased * target) + suffix;
-            if(p < 1) requestAnimationFrame(tick);
-          }
-          requestAnimationFrame(tick);
-          countIO.unobserve(el);
-        }
-      });
-    }, { threshold: 0.4 });
-    counters.forEach(el => countIO.observe(el));
-  }
-  initStatsAndCounters();
 
   // Gauge fill on reveal
   const gauges = document.querySelectorAll('.gauge-fill');
