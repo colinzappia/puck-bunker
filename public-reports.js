@@ -39,13 +39,13 @@ function pbBuildCard(report) {
     .slice(0, 3)
     .map(([k]) => k);
   const firstLine = (report.notes || '').split('\n').filter(Boolean)[0] || 'Full breakdown inside.';
-  const title = report.title || `${report.name || 'Prospect'}: Scouting Report`;
   const byline = report.reporter_name
     ? `<div style="font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--steel); margin-bottom:10px;">SCOUTED BY ${pbEscape(report.reporter_name.toUpperCase())}</div>`
     : '';
   const metaBits = [report.position, report.team].filter(Boolean).map(pbEscape).join(' · ');
-  const metaLine = metaBits
-    ? `<div style="font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--ice-dim); margin-bottom:8px;">${metaBits}</div>`
+  const hasCustomTitle = report.title && report.title.trim();
+  const subtitleHtml = hasCustomTitle
+    ? `<div style="font-size:13px; color:var(--ice-dim); font-style:italic; margin-bottom:10px;">${pbEscape(report.title)}</div>`
     : '';
 
   return `<a href="/api/report/${report.id}" style="text-decoration:none; color:inherit; display:block;">
@@ -57,8 +57,9 @@ function pbBuildCard(report) {
       <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
     </div>
     <div class="dossier-body">
-      <h3>${pbEscape(title)}</h3>
-      ${metaLine}
+      <h3>${pbEscape(report.name || 'Unnamed Prospect')}</h3>
+      ${metaBits ? `<div class="prospect-meta">${metaBits}</div>` : ''}
+      ${subtitleHtml}
       ${byline}
       <p>${pbEscape(firstLine)}</p>
       <div class="tool-tags">${topTags.map(t => `<span>${pbEscape(t)}</span>`).join('')}</div>
