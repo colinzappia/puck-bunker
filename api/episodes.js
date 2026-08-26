@@ -1,6 +1,6 @@
-// Vercel Serverless Function — fetches the channel's latest YouTube uploads
-// via the official YouTube Data API v3, so episodes.html always reflects
-// whatever's actually live on the channel, no manual updates needed.
+// Vercel Serverless Function — fetches videos from a specific YouTube
+// playlist via the official YouTube Data API v3, so episodes.html always
+// reflects whatever's in that playlist, no manual updates needed.
 //
 // The API key is read from a Vercel Environment Variable (YOUTUBE_API_KEY),
 // not committed to this file or the repo — unlike Supabase's "publishable"
@@ -8,40 +8,18 @@
 //
 // Videos on the "excluded episodes" list (managed from admin.html) are
 // filtered out here, and the pool is backfilled from further back in the
-// upload history so the page still shows the requested count.
+// playlist so the page still shows the requested count.
 //
 // URL: https://www.puckbunker.com/api/episodes
 // Optional: ?limit=12 (defaults to 12, max 50)
 
-const CHANNEL_HANDLE = "@PuckBunker";
+// From https://www.youtube.com/playlist?list=PL9daGlYHwUmYSqegIlvo9hrXx_Uiz8deo
+const PLAYLIST_ID = "PL9daGlYHwUmYSqegIlvo9hrXx_Uiz8deo";
 const DEFAULT_LIMIT = 12;
 const FETCH_POOL_SIZE = 50; // max allowed per YouTube API call; gives room to backfill around exclusions
 
 const SUPABASE_URL = "https://bwexpvzstgkllkjaitzy.supabase.co";
 const SUPABASE_KEY = "sb_publishable_AqjW7wYPhZ6OTpM1W-jVew_1L18nkZE";
-
-// Cached for the lifetime of a warm serverless instance, so repeat
-// invocations don't re-resolve the channel -> uploads-playlist mapping
-// (saves a small amount of quota; harmless either way since it's 1 unit).
-let cachedUploadsPlaylistId = null;
-
-async function resolveUploadsPlaylistId(apiKey) {
-  if (cachedUploadsPlaylistId) return cachedUploadsPlaylistId;
-
-  const url = `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&forHandle=${encodeURIComponent(CHANNEL_HANDLE)}&key=${apiKey}`;
-  const res = await fetch(url);
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Channel lookup failed (${res.status}): ${body}`);
-  }
-  const data = await res.json();
-  const item = data.items && data.items[0];
-  if (!item) throw new Error(`No channel found for handle ${CHANNEL_HANDLE}`);
-
-  const playlistId = item.contentDetails.relatedPlaylists.uploads;
-  cachedUploadsPlaylistId = playlistId;
-  return playlistId;
-}
 
 async function fetchExcludedIds() {
   try {
@@ -59,10 +37,8 @@ async function fetchExcludedIds() {
 }
 
 async function fetchLatestVideos(apiKey, limit) {
-  const playlistId = await resolveUploadsPlaylistId(apiKey);
-
   const [playlistRes, excludedIds] = await Promise.all([
-    fetch(`https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${encodeURIComponent(playlistId)}&maxResults=${FETCH_POOL_SIZE}&key=${apiKey}`),
+    fetch(`https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${encodeURIComponent(PLAYLIST_ID)}&maxResults=${FETCH_POOL_SIZE}&key=${apiKey}`),
     fetchExcludedIds(),
   ]);
 
