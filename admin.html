@@ -347,10 +347,16 @@
             </div>
             <div class="field-row">
               <div class="field">
+                <label>Current Team</label>
+                <input type="text" id="fTeam" placeholder="e.g. Storm City Wolves">
+              </div>
+              <div class="field">
                 <label>File Number</label>
                 <input type="text" id="fFileNum" placeholder="e.g. 0143">
               </div>
-              <div class="field">
+            </div>
+            <div class="field-row">
+              <div class="field" style="grid-column:1 / -1;">
                 <label>Report Title</label>
                 <input type="text" id="fTitle" placeholder="e.g. Edge Work Under Pressure">
               </div>
@@ -524,6 +530,7 @@
       id: row.id,
       name: row.name || '',
       position: row.position || 'C',
+      team: row.team || '',
       fileNum: row.file_num || '',
       title: row.title || '',
       scores: row.scores || Object.fromEntries(CATEGORIES.map(c => [c, 5])),
@@ -538,7 +545,7 @@
   function newDraftObj(){
     return {
       id: null, // null until first saved — Supabase assigns the real id
-      name: '', position: 'C', fileNum: '', title: '',
+      name: '', position: 'C', team: '', fileNum: '', title: '',
       scores: Object.fromEntries(CATEGORIES.map(c => [c, 5])),
       notes: '', videoUrl: '',
       status: 'draft',
@@ -627,6 +634,7 @@
   function fillForm(draft){
     document.getElementById('fName').value = draft.name || '';
     document.getElementById('fPosition').value = draft.position || 'C';
+    document.getElementById('fTeam').value = draft.team || '';
     document.getElementById('fFileNum').value = draft.fileNum || '';
     document.getElementById('fTitle').value = draft.title || '';
     document.getElementById('fNotes').value = draft.notes || '';
@@ -644,6 +652,7 @@
     return {
       name: document.getElementById('fName').value.trim(),
       position: document.getElementById('fPosition').value,
+      team: document.getElementById('fTeam').value.trim(),
       fileNum: document.getElementById('fFileNum').value.trim(),
       title: document.getElementById('fTitle').value.trim(),
       notes: document.getElementById('fNotes').value,
@@ -671,7 +680,7 @@
         : '<span style="color:var(--ice-dim);">DRAFT</span>';
       el.innerHTML = `
         <div class="name">${d.name || 'Untitled prospect'}</div>
-        <div class="meta">FILE #${d.fileNum || '----'} · ${d.position || ''} · ${d.reporterName || ''} · ${dateStr} · ${statusTag}</div>
+        <div class="meta">FILE #${d.fileNum || '----'} · ${d.position || ''}${d.team ? ' · ' + d.team : ''} · ${d.reporterName || ''} · ${dateStr} · ${statusTag}</div>
       `;
       el.addEventListener('click', () => loadDraft(d.id));
       list.appendChild(el);
@@ -720,6 +729,7 @@
     return {
       name: data.name,
       position: data.position,
+      team: data.team,
       file_num: data.fileNum,
       title: data.title,
       scores: data.scores,
@@ -879,7 +889,7 @@
     }
 
     // mark unsaved on any input change
-    ['fName','fPosition','fFileNum','fTitle','fNotes'].forEach(id => {
+    ['fName','fPosition','fTeam','fFileNum','fTitle','fNotes'].forEach(id => {
       document.getElementById(id).addEventListener('input', markUnsaved);
     });
     document.getElementById('fVideoUrl').addEventListener('input', () => {
