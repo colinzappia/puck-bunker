@@ -1,98 +1,1232 @@
-// Vercel Serverless Function — fetches videos from a specific YouTube
-// playlist via the official YouTube Data API v3, so episodes.html always
-// reflects whatever's in that playlist, no manual updates needed.
-//
-// The API key is read from a Vercel Environment Variable (YOUTUBE_API_KEY),
-// not committed to this file or the repo — unlike Supabase's "publishable"
-// key, a YouTube API key isn't meant to be public.
-//
-// Videos on the "excluded episodes" list (managed from admin.html) are
-// filtered out here, and the pool is backfilled from further back in the
-// playlist so the page still shows the requested count.
-//
-// URL: https://www.puckbunker.com/api/episodes
-// Optional: ?limit=12 (defaults to 12, max 50)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Puck Bunker — Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@700;800;900&family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{
+    --black:#0B0C0D;
+    --panel:#17181A;
+    --panel-2:#1D1F21;
+    --steel:#33363A;
+    --steel-soft:#28292C;
+    --ice:#F2F2EF;
+    --ice-dim:#B2B4B7;
+    --hazard:#CBAE7E;
+    --hazard-2:#96805F;
+    --cyan:#DCDDDD;
+    --cyan-dim:#8B8D90;
+    --red:#C1684A;
+    --radius:2px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    background:var(--black);
+    color:var(--ice);
+    font-family:'Archivo',sans-serif;
+    line-height:1.5;
+    min-height:100vh;
+  }
+  .stencil{ font-family:'Big Shoulders Stencil Display',sans-serif; text-transform:uppercase; letter-spacing:0.01em; }
+  .mono{ font-family:'JetBrains Mono',monospace; }
+  a{ color:inherit; }
+  ::selection{ background:var(--cyan); color:#131A0F; }
 
-// From https://www.youtube.com/playlist?list=PL9daGlYHwUmYSqegIlvo9hrXx_Uiz8deo
-const PLAYLIST_ID = "PL9daGlYHwUmYSqegIlvo9hrXx_Uiz8deo";
-const DEFAULT_LIMIT = 12;
-const FETCH_POOL_SIZE = 50; // max allowed per YouTube API call; gives room to backfill around exclusions
+  /* ---------- Gate screen ---------- */
+  .gate{
+    min-height:100vh;
+    display:flex; align-items:center; justify-content:center;
+    padding:24px;
+    background:
+      radial-gradient(600px circle at 50% 0%, rgba(203,174,126,0.08), transparent 60%);
+  }
+  .gate-card{
+    width:100%; max-width:380px;
+    background:var(--panel); border:1px solid var(--steel);
+    padding:36px 32px;
+    text-align:center;
+  }
+  .gate-eyebrow{
+    font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.18em;
+    color:var(--hazard); text-transform:uppercase; margin-bottom:14px;
+    display:flex; align-items:center; justify-content:center; gap:9px;
+  }
+  .gate-eyebrow::before{
+    content:""; width:6px; height:6px; background:var(--hazard); border-radius:50%;
+    box-shadow:0 0 8px 1px rgba(203,174,126,0.6);
+  }
+  .gate-card h1{ font-size:34px; margin-bottom:8px; }
+  .gate-card p{ color:var(--ice-dim); font-size:13px; margin-bottom:26px; }
+  .gate-form{ display:flex; flex-direction:column; gap:12px; }
+  .gate-form input{
+    background:var(--black); border:1px solid var(--steel); color:var(--ice);
+    font-family:'JetBrains Mono',monospace; font-size:14px;
+    padding:13px 14px; letter-spacing:0.04em;
+    text-align:center;
+  }
+  .gate-form input:focus{ outline:none; border-color:var(--hazard); }
+  .gate-error{ color:var(--red); font-size:12px; font-family:'JetBrains Mono',monospace; min-height:16px; }
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    padding:13px 20px; font-size:13px; font-weight:700;
+    letter-spacing:0.08em; text-transform:uppercase;
+    border:1px solid transparent; cursor:pointer; transition:transform .12s, background .15s, border-color .15s;
+  }
+  .btn-primary{ background:var(--hazard); color:#1c1608; }
+  .btn-primary:hover{ background:#ddc498; transform:translateY(-1px); }
+  .btn-ghost{ border-color:var(--steel); color:var(--ice); background:none; }
+  .btn-ghost:hover{ border-color:var(--hazard); color:var(--hazard); }
+  .btn-danger{ border-color:var(--red); color:var(--red); background:none; }
+  .btn-danger:hover{ background:rgba(193,104,74,0.12); }
+  .gate-note{ margin-top:18px; font-size:11px; color:var(--ice-dim); line-height:1.6; }
+  .gate-back-link{
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:'JetBrains Mono',monospace; font-size:11.5px; letter-spacing:0.05em;
+    color:var(--ice-dim); text-decoration:none; margin-bottom:20px;
+    transition:color .15s;
+  }
+  .gate-back-link:hover{ color:var(--hazard); }
 
-const SUPABASE_URL = "https://bwexpvzstgkllkjaitzy.supabase.co";
-const SUPABASE_KEY = "sb_publishable_AqjW7wYPhZ6OTpM1W-jVew_1L18nkZE";
+  /* ---------- Admin shell ---------- */
+  .admin{ display:none; min-height:100vh; }
+  .admin.active{ display:block; }
+  header{
+    position:sticky; top:0; z-index:20;
+    background:rgba(11,12,13,0.92); backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--steel);
+  }
+  nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 28px; max-width:1280px; margin:0 auto; gap:16px; flex-wrap:wrap;
+  }
+  .brand{ display:flex; align-items:center; gap:10px; font-size:18px; }
+  .brand-mark{ width:26px; height:26px; border-radius:50%; border:1px solid var(--steel); box-shadow:0 0 10px 1px rgba(220,221,221,0.25); }
+  .admin-tag{
+    font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.1em;
+    color:var(--hazard); border:1px solid var(--hazard-2); padding:2px 8px;
+    text-transform:uppercase;
+  }
+  .nav-actions{ display:flex; gap:10px; align-items:center; }
 
-async function fetchExcludedIds() {
-  try {
-    const url = `${SUPABASE_URL}/rest/v1/puckbunker_excluded_episodes?select=video_id`;
-    const res = await fetch(url, {
-      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
+  .wrap{ max-width:1280px; margin:0 auto; padding:36px 28px 80px; }
+
+  .layout{ display:grid; grid-template-columns:280px 1fr; gap:28px; align-items:start; }
+  @media (max-width:960px){ .layout{ grid-template-columns:1fr; } }
+
+  /* ---------- Drafts sidebar ---------- */
+  .drafts-panel{
+    background:var(--panel); border:1px solid var(--steel);
+    position:sticky; top:88px;
+  }
+  .drafts-head{
+    padding:16px 18px; border-bottom:1px solid var(--steel);
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .drafts-head h2{ font-size:12px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--ice-dim); }
+  .drafts-count{ font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--hazard); }
+  .drafts-list{ max-height:520px; overflow-y:auto; }
+  .exclude-item{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    padding:12px 14px; background:var(--black); border:1px solid var(--steel-soft);
+    margin-bottom:8px; font-size:13px;
+  }
+  .exclude-item .ex-title{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .exclude-item .ex-id{ font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--ice-dim); }
+  .exclude-item button{
+    flex-shrink:0; background:none; border:1px solid var(--red); color:var(--red);
+    font-family:'JetBrains Mono',monospace; font-size:11px; padding:5px 10px; cursor:pointer;
+  }
+  .exclude-item button:hover{ background:rgba(193,104,74,0.12); }
+  .board-item{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    padding:12px 14px; background:var(--black); border:1px solid var(--steel-soft);
+    margin-bottom:8px; font-size:13px;
+  }
+  .board-item .bi-rank{ font-family:'JetBrains Mono',monospace; color:var(--hazard); font-weight:700; margin-right:10px; }
+  .board-item .bi-meta{ font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--ice-dim); margin-top:2px; }
+  .board-item .bi-actions{ display:flex; gap:8px; flex-shrink:0; }
+  .board-item .bi-actions button{
+    background:none; border:1px solid var(--steel); color:var(--ice-dim);
+    font-family:'JetBrains Mono',monospace; font-size:11px; padding:5px 10px; cursor:pointer;
+  }
+  .board-item .bi-actions button:hover{ border-color:var(--hazard); color:var(--hazard); }
+  .board-item .bi-actions button.bi-delete:hover{ border-color:var(--red); color:var(--red); background:rgba(193,104,74,0.12); }
+  .draft-item{
+    padding:13px 18px; border-bottom:1px solid var(--steel-soft);
+    cursor:pointer; transition:background .15s;
+    display:flex; flex-direction:column; gap:3px;
+  }
+  .draft-item:hover{ background:var(--panel-2); }
+  .draft-item.active{ background:rgba(203,174,126,0.08); border-left:2px solid var(--hazard); }
+  .draft-item .name{ font-size:13px; font-weight:700; }
+  .draft-item .meta{ font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--ice-dim); }
+  .drafts-empty{ padding:24px 18px; font-size:12px; color:var(--ice-dim); text-align:center; }
+  .drafts-foot{ padding:14px 18px; border-top:1px solid var(--steel); }
+  .drafts-foot .btn{ width:100%; }
+
+  /* ---------- Form ---------- */
+  .panel{ background:var(--panel); border:1px solid var(--steel); }
+  .panel + .panel{ margin-top:22px; }
+  .panel-head{
+    padding:16px 20px; border-bottom:1px solid var(--steel);
+    display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;
+  }
+  .panel-head h2{ font-size:12px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--ice-dim); }
+  .panel-body{ padding:22px 20px; }
+
+  .field-row{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
+  @media (max-width:600px){ .field-row{ grid-template-columns:1fr; } }
+  .field{ display:flex; flex-direction:column; gap:7px; }
+  .field label{ font-size:11px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--ice-dim); }
+  .field input, .field select, .field textarea{
+    background:var(--black); border:1px solid var(--steel); color:var(--ice);
+    padding:11px 13px; font-family:'Archivo',sans-serif; font-size:14px;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{ outline:none; border-color:var(--hazard); }
+  .field textarea{ resize:vertical; min-height:160px; font-size:14px; line-height:1.6; font-family:'Archivo',sans-serif; }
+  .field .hint{ font-size:11px; color:var(--ice-dim); }
+
+  /* Category grades */
+  .grade-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:20px; }
+  .grade-item{ background:var(--black); border:1px solid var(--steel-soft); padding:14px 16px; }
+  .grade-item .g-label{
+    display:flex; justify-content:space-between; align-items:baseline;
+    font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.05em; color:var(--ice-dim);
+    margin-bottom:9px;
+  }
+  .grade-item .g-label b{ font-family:'JetBrains Mono',monospace; color:var(--hazard); font-size:15px; }
+  .grade-item input[type="range"]{
+    width:100%; accent-color:var(--hazard); height:4px;
+  }
+
+  .overall-readout{
+    display:flex; align-items:center; gap:20px; flex-wrap:wrap;
+    background:var(--black); border:1px solid var(--steel-soft); padding:18px 20px; margin-top:20px;
+  }
+  .overall-readout .letter{
+    font-family:'Big Shoulders Stencil Display',sans-serif; font-size:44px; color:var(--hazard);
+    text-shadow:0 0 20px rgba(203,174,126,0.35);
+  }
+  .overall-readout .num{ font-family:'JetBrains Mono',monospace; font-size:16px; color:var(--ice-dim); }
+  .overall-readout .label{ font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:var(--ice-dim); }
+
+  /* Video preview */
+  .video-preview{
+    aspect-ratio:16/9; background:var(--black); border:1px solid var(--steel-soft);
+    display:flex; align-items:center; justify-content:center; margin-top:14px;
+    position:relative; overflow:hidden;
+  }
+  .video-preview iframe{ width:100%; height:100%; border:none; }
+  .video-placeholder{ text-align:center; color:var(--ice-dim); }
+  .video-placeholder svg{ width:40px; height:40px; margin:0 auto 10px; opacity:0.5; }
+  .video-placeholder p{ font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.06em; }
+
+  /* Action bar */
+  .action-bar{
+    display:flex; gap:12px; flex-wrap:wrap; padding:20px; border-top:1px solid var(--steel);
+    align-items:center;
+  }
+  .save-status{ font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--ice-dim); margin-left:auto; }
+  .save-status.saved{ color:var(--hazard); }
+
+  /* Export modal */
+  .modal-overlay{
+    display:none; position:fixed; inset:0; background:rgba(0,0,0,0.72);
+    z-index:100; align-items:center; justify-content:center; padding:24px;
+  }
+  .modal-overlay.active{ display:flex; }
+  .modal{
+    background:var(--panel); border:1px solid var(--steel);
+    width:100%; max-width:700px; max-height:80vh; display:flex; flex-direction:column;
+  }
+  .modal-head{
+    padding:16px 20px; border-bottom:1px solid var(--steel);
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .modal-head h3{ font-size:14px; letter-spacing:0.06em; text-transform:uppercase; }
+  .modal-close{ background:none; border:none; color:var(--ice-dim); cursor:pointer; font-size:20px; line-height:1; padding:0 4px; }
+  .modal-close:hover{ color:var(--ice); }
+  .modal-body{ padding:20px; overflow-y:auto; }
+  .modal-body textarea{
+    width:100%; min-height:260px; background:var(--black); border:1px solid var(--steel);
+    color:var(--cyan); font-family:'JetBrains Mono',monospace; font-size:12px; padding:14px; line-height:1.6;
+  }
+  .modal-foot{ padding:14px 20px; border-top:1px solid var(--steel); display:flex; gap:10px; justify-content:flex-end; }
+
+  :focus-visible{ outline:2px solid var(--hazard); outline-offset:2px; }
+
+  /* ---------- Phone / tablet tightening ---------- */
+  html{ overflow-x:hidden; }
+  body{ overflow-x:hidden; }
+
+  @media (max-width:720px){
+    .wrap{ padding:24px 16px 60px; }
+    nav{ padding:12px 16px; }
+    .brand{ font-size:15px; gap:8px; }
+    .brand-mark{ width:22px; height:22px; }
+    .admin-tag{ font-size:9px; padding:2px 6px; }
+    #reporterBadge{ width:100%; order:-1; margin-bottom:2px; }
+    .nav-actions .btn{ padding:9px 14px; font-size:11px; }
+
+    .gate-card{ padding:28px 22px; }
+
+    .panel-head{ padding:14px 16px; }
+    .panel-body{ padding:18px 16px; }
+    .field-row{ gap:12px; margin-bottom:12px; }
+
+    .grade-grid{ grid-template-columns:1fr; gap:14px; }
+    .overall-readout{ padding:16px; gap:14px; }
+    .overall-readout .letter{ font-size:36px; }
+
+    .video-preview{ margin-top:12px; }
+
+    .action-bar{ padding:16px; gap:10px; }
+    .action-bar .btn{ width:100%; justify-content:center; }
+    .save-status{ margin-left:0; width:100%; text-align:center; order:99; }
+
+    .drafts-list{ max-height:280px; }
+
+    .modal{ max-height:90vh; }
+    .modal-body{ padding:14px; }
+    .modal-body textarea{ min-height:200px; font-size:11px; }
+    .modal-foot{ flex-direction:column-reverse; }
+    .modal-foot .btn{ width:100%; justify-content:center; }
+  }
+
+  @media (max-width:420px){
+    .gate-card h1{ font-size:28px; }
+    .drafts-head, .drafts-foot{ padding:12px 14px; }
+    .draft-item{ padding:11px 14px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= PASSWORD GATE ================= -->
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <a href="index.html" class="gate-back-link">← Back to Puck Bunker</a>
+    <div class="gate-eyebrow">Restricted</div>
+    <h1 class="stencil">Admin Access</h1>
+    <p>Puck Bunker scouting desk — authorized personnel only.</p>
+    <form class="gate-form" id="gateForm">
+      <input type="email" id="gateEmail" placeholder="Email" autocomplete="username">
+      <input type="password" id="gatePassword" placeholder="Password" autocomplete="current-password">
+      <div class="gate-error" id="gateError"></div>
+      <button type="submit" class="btn btn-primary" id="gateSubmitBtn">Log In</button>
+    </form>
+    <div class="gate-note">This page isn't linked from the public site and isn't indexed by search engines. Accounts are managed in the Supabase dashboard — there's no public sign-up.</div>
+  </div>
+</div>
+
+<!-- ================= ADMIN TOOL ================= -->
+<div class="admin" id="admin">
+  <header>
+    <nav>
+      <div class="brand stencil">
+        <img src="puck-bunker-logo.png" alt="Puck Bunker logo" class="brand-mark">
+        PUCK BUNKER <span class="admin-tag mono">Admin</span>
+      </div>
+      <div class="nav-actions">
+        <span class="mono" id="reporterBadge" style="font-size:11px; color:var(--ice-dim); letter-spacing:0.06em; text-transform:uppercase;"></span>
+        <a href="index.html" class="btn btn-ghost" style="text-decoration:none;">View Site</a>
+        <button class="btn btn-ghost" id="newDraftBtn">+ New Report</button>
+        <button class="btn btn-ghost" id="lockBtn">Log Out</button>
+      </div>
+    </nav>
+  </header>
+
+  <div class="wrap">
+    <div class="layout">
+
+      <!-- DRAFTS SIDEBAR -->
+      <div class="drafts-panel">
+        <div class="drafts-head">
+          <h2>Saved Drafts</h2>
+          <span class="drafts-count mono" id="draftsCount">0</span>
+        </div>
+        <div class="drafts-list" id="draftsList">
+          <div class="drafts-empty">No drafts yet. Fill out a report and hit Save.</div>
+        </div>
+        <div class="drafts-foot">
+          <button class="btn btn-danger" id="deleteDraftBtn" style="width:100%;">Delete This Draft</button>
+        </div>
+      </div>
+
+      <!-- REPORT FORM -->
+      <div>
+        <div class="panel">
+          <div class="panel-head"><h2>Prospect File</h2></div>
+          <div class="panel-body">
+            <div class="field-row">
+              <div class="field">
+                <label>Prospect Name</label>
+                <input type="text" id="fName" placeholder="e.g. J. Kowalski">
+              </div>
+              <div class="field">
+                <label>Position</label>
+                <select id="fPosition">
+                  <option value="C">Center</option>
+                  <option value="LW">Left Wing</option>
+                  <option value="RW">Right Wing</option>
+                  <option value="D">Defenseman</option>
+                  <option value="G">Goaltender</option>
+                </select>
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label>Current Team</label>
+                <input type="text" id="fTeam" placeholder="e.g. Storm City Wolves">
+              </div>
+              <div class="field">
+                <label>File Number</label>
+                <input type="text" id="fFileNum" placeholder="e.g. 0143">
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field" style="grid-column:1 / -1;">
+                <label>Report Title</label>
+                <input type="text" id="fTitle" placeholder="e.g. Edge Work Under Pressure">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h2>The M.O. — Category Scores</h2></div>
+          <div class="panel-body">
+            <div class="grade-grid" id="gradeGrid"></div>
+            <div class="overall-readout">
+              <div class="letter mono" id="overallLetter">—</div>
+              <div>
+                <div class="num" id="overallNum">0.0 / 10</div>
+                <div class="label">Overall Grade</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h2>Scouting Notes</h2></div>
+          <div class="panel-body">
+            <div class="field">
+              <textarea id="fNotes" placeholder="Full breakdown — what translates, what doesn't, projection, comparables..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h2>Video</h2></div>
+          <div class="panel-body">
+            <div class="field">
+              <label>YouTube URL (or video ID)</label>
+              <input type="text" id="fVideoUrl" placeholder="https://youtube.com/watch?v=... or leave blank">
+              <span class="hint">Paste a link once the breakdown video is live. Leave blank to keep a placeholder on export.</span>
+            </div>
+            <div class="video-preview" id="videoPreview">
+              <div class="video-placeholder">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M10 9l5 3-5 3z" fill="currentColor" stroke="none"/></svg>
+                <p>NO VIDEO LINKED YET</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="action-bar">
+            <button class="btn btn-primary" id="saveBtn">Save Draft</button>
+            <button class="btn btn-ghost" id="publishBtn">Publish to Site</button>
+            <button class="btn btn-ghost" id="exportSnippetBtn">Export Dossier HTML</button>
+            <button class="btn btn-ghost" id="exportJsonBtn">Export JSON</button>
+            <span class="save-status mono" id="saveStatus"></span>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h2>Hidden Episodes</h2></div>
+          <div class="panel-body">
+            <p style="font-size:13px; color:var(--ice-dim); margin-bottom:16px;">
+              Hide a video from the public Episodes page. It stays on YouTube — this only removes it from puckbunker.com. The next most recent video takes its place automatically.
+            </p>
+            <div class="field-row">
+              <div class="field" style="grid-column:1 / -1;">
+                <label>YouTube URL or Video ID</label>
+                <input type="text" id="excludeInput" placeholder="https://youtube.com/watch?v=... or just the video ID">
+              </div>
+            </div>
+            <button class="btn btn-ghost" id="excludeAddBtn" type="button">Hide This Video</button>
+            <div id="excludeStatus" class="mono" style="font-size:11px; color:var(--ice-dim); margin-top:10px;"></div>
+
+            <div id="excludeList" style="margin-top:22px;"></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h2>Draft Board</h2></div>
+          <div class="panel-body">
+            <p style="font-size:13px; color:var(--ice-dim); margin-bottom:18px;">
+              Shared board — any admin can add, edit, reorder, or remove entries. Changes go live on the homepage immediately.
+            </p>
+
+            <div class="field-row">
+              <div class="field">
+                <label>Rank</label>
+                <input type="number" id="boardRank" min="1" step="1" placeholder="1">
+              </div>
+              <div class="field">
+                <label>Position</label>
+                <select id="boardPosition">
+                  <option value="C">Center</option>
+                  <option value="LW">Left Wing</option>
+                  <option value="RW">Right Wing</option>
+                  <option value="D">Defenseman</option>
+                  <option value="G">Goaltender</option>
+                </select>
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field" style="grid-column:1 / -1;">
+                <label>Prospect Name</label>
+                <input type="text" id="boardName" placeholder="e.g. J. Kowalski">
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label>Grade</label>
+                <input type="text" id="boardGrade" placeholder="e.g. A-">
+              </div>
+              <div class="field">
+                <label>Trend</label>
+                <select id="boardTrend">
+                  <option value="up">Up</option>
+                  <option value="flat" selected>Flat</option>
+                  <option value="down">Down</option>
+                </select>
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field" style="grid-column:1 / -1;">
+                <label>Trend Change (e.g. 2 for "+2", 0 for flat)</label>
+                <input type="number" id="boardDelta" min="0" step="1" value="0">
+              </div>
+            </div>
+
+            <div style="display:flex; gap:10px; margin-bottom:8px;">
+              <button class="btn btn-primary" id="boardSaveBtn" type="button">Add to Board</button>
+              <button class="btn btn-ghost" id="boardCancelBtn" type="button" style="display:none;">Cancel Edit</button>
+            </div>
+            <div id="boardStatus" class="mono" style="font-size:11px; color:var(--ice-dim); margin-bottom:8px;"></div>
+
+            <div id="boardList" style="margin-top:18px;"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= EXPORT MODAL ================= -->
+<div class="modal-overlay" id="exportModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 class="mono" id="modalTitle">Export</h3>
+      <button class="modal-close" id="modalCloseBtn">&times;</button>
+    </div>
+    <div class="modal-body">
+      <textarea id="exportOutput" readonly></textarea>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" id="modalCloseBtn2">Close</button>
+      <button class="btn btn-primary" id="copyOutputBtn">Copy to Clipboard</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ============ CONFIG ============
+  const SUPABASE_URL = "https://bwexpvzstgkllkjaitzy.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_AqjW7wYPhZ6OTpM1W-jVew_1L18nkZE";
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  const CATEGORIES = [
+    "Skating", "Shot", "Puck Skills", "Playmaking",
+    "OZ Hockey Sense", "DZ Hockey Sense", "Compete", "Physicality"
+  ];
+
+  // Maps each admin's login email to how their name should display on reports.
+  const REPORTER_NAMES = {
+    "puckbunker@gmail.com": "Rocco Zappia",
+    "darrenboyce8181@gmail.com": "Darren Boyce",
+  };
+  let currentReporterName = "";
+  let currentUserId = null;
+
+  // ============ AUTH / GATE ============
+  const gateForm = document.getElementById('gateForm');
+  const gateError = document.getElementById('gateError');
+  const gateSubmitBtn = document.getElementById('gateSubmitBtn');
+
+  async function showAdmin(){
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('admin').classList.add('active');
+
+    const { data } = await sb.auth.getUser();
+    const email = data && data.user ? data.user.email : '';
+    currentUserId = data && data.user ? data.user.id : null;
+    currentReporterName = REPORTER_NAMES[email] || email || 'Unknown';
+    const badge = document.getElementById('reporterBadge');
+    if (badge) badge.textContent = currentReporterName;
+
+    initAdmin();
+  }
+  function showGate(msg){
+    document.getElementById('admin').classList.remove('active');
+    document.getElementById('gate').style.display = 'flex';
+    gateError.textContent = msg || '';
+  }
+
+  gateForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    gateError.textContent = '';
+    gateSubmitBtn.disabled = true;
+    gateSubmitBtn.textContent = 'Logging in…';
+    const email = document.getElementById('gateEmail').value.trim();
+    const password = document.getElementById('gatePassword').value;
+    const { error } = await sb.auth.signInWithPassword({ email, password });
+    gateSubmitBtn.disabled = false;
+    gateSubmitBtn.textContent = 'Log In';
+    if (error) {
+      gateError.textContent = error.message || 'Login failed.';
+      return;
+    }
+    showAdmin();
+  });
+
+  document.getElementById('lockBtn').addEventListener('click', async () => {
+    await sb.auth.signOut();
+    currentReporterName = "";
+    const badge = document.getElementById('reporterBadge');
+    if (badge) badge.textContent = "";
+    document.getElementById('gateEmail').value = '';
+    document.getElementById('gatePassword').value = '';
+    showGate();
+  });
+
+  // On page load, check if there's already an active session (e.g. returning visit)
+  sb.auth.getSession().then(({ data }) => {
+    if (data && data.session) {
+      showAdmin();
+    }
+  });
+
+  // ============ STATE ============
+  let drafts = [];
+  let currentId = null;
+
+  async function loadDrafts(){
+    const { data, error } = await sb
+      .from('puckbunker_reports')
+      .select('*')
+      .eq('created_by', currentUserId)
+      .order('updated_at', { ascending: false });
+    if (error) {
+      console.error('Failed to load reports:', error);
+      drafts = [];
+      return;
+    }
+    // Map DB rows (snake_case) to the shape the rest of the UI expects
+    drafts = (data || []).map(row => ({
+      id: row.id,
+      name: row.name || '',
+      position: row.position || 'C',
+      team: row.team || '',
+      fileNum: row.file_num || '',
+      title: row.title || '',
+      scores: row.scores || Object.fromEntries(CATEGORIES.map(c => [c, 5])),
+      notes: row.notes || '',
+      videoUrl: row.video_url || '',
+      reporterName: row.reporter_name || '',
+      status: row.status || 'draft',
+      updated: new Date(row.updated_at || row.created_at).getTime()
+    }));
+  }
+
+  function newDraftObj(){
+    return {
+      id: null, // null until first saved — Supabase assigns the real id
+      name: '', position: 'C', team: '', fileNum: '', title: '',
+      scores: Object.fromEntries(CATEGORIES.map(c => [c, 5])),
+      notes: '', videoUrl: '',
+      status: 'draft',
+      updated: Date.now()
+    };
+  }
+
+  // ============ BUILD GRADE GRID ============
+  const gradeGrid = document.getElementById('gradeGrid');
+  function buildGradeGrid(){
+    gradeGrid.innerHTML = '';
+    CATEGORIES.forEach(cat => {
+      const item = document.createElement('div');
+      item.className = 'grade-item';
+      item.innerHTML = `
+        <div class="g-label"><span>${cat}</span><b class="mono" data-val="${cat}">5.0</b></div>
+        <input type="range" min="0" max="10" step="0.1" value="5" data-cat="${cat}">
+      `;
+      gradeGrid.appendChild(item);
+      item.querySelector('input').addEventListener('input', (e) => {
+        item.querySelector('b').textContent = parseFloat(e.target.value).toFixed(1);
+        updateOverall();
+        markUnsaved();
+      });
     });
-    if (!res.ok) return new Set();
-    const rows = await res.json();
-    return new Set((rows || []).map(r => r.video_id));
-  } catch (e) {
-    console.error("Failed to load excluded episodes list, showing all videos:", e);
-    return new Set(); // fail open — never let an exclusion-list hiccup take the whole page down
-  }
-}
-
-async function fetchLatestVideos(apiKey, limit) {
-  const [playlistRes, excludedIds] = await Promise.all([
-    fetch(`https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${encodeURIComponent(PLAYLIST_ID)}&maxResults=${FETCH_POOL_SIZE}&key=${apiKey}`),
-    fetchExcludedIds(),
-  ]);
-
-  if (!playlistRes.ok) {
-    const body = await playlistRes.text();
-    throw new Error(`Playlist fetch failed (${playlistRes.status}): ${body}`);
-  }
-  const data = await playlistRes.json();
-
-  const videos = (data.items || [])
-    .filter(item => item.snippet && item.snippet.resourceId && item.snippet.resourceId.videoId)
-    .map(item => {
-      const sn = item.snippet;
-      const thumb = (sn.thumbnails && (sn.thumbnails.high || sn.thumbnails.medium || sn.thumbnails.default)) || {};
-      return {
-        id: sn.resourceId.videoId,
-        title: sn.title || "",
-        description: sn.description || "",
-        publishedAt: sn.publishedAt || null,
-        thumbnail: thumb.url || "",
-      };
-    })
-    .filter(v => !excludedIds.has(v.id))
-    .sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt))
-    .slice(0, limit);
-
-  return videos;
-}
-
-module.exports = async (req, res) => {
-  const apiKey = process.env.YOUTUBE_API_KEY;
-  if (!apiKey) {
-    res.statusCode = 500;
-    res.setHeader("Content-Type", "application/json");
-    res.end(JSON.stringify({ error: "YOUTUBE_API_KEY is not configured on the server." }));
-    return;
   }
 
-  const rawLimit = parseInt((req.query && req.query.limit) || DEFAULT_LIMIT, 10);
-  const limit = Math.min(Math.max(Number.isFinite(rawLimit) ? rawLimit : DEFAULT_LIMIT, 1), FETCH_POOL_SIZE);
-
-  try {
-    const videos = await fetchLatestVideos(apiKey, limit);
-    res.statusCode = 200;
-    res.setHeader("Content-Type", "application/json");
-    // Cache at the edge for 5 minutes — short enough that hiding a video
-    // from admin.html takes effect quickly, long enough to avoid hammering
-    // the YouTube API on every page load.
-    res.setHeader("Cache-Control", "public, s-maxage=300, stale-while-revalidate=600");
-    res.end(JSON.stringify({ videos }));
-  } catch (err) {
-    console.error("episodes endpoint error:", err);
-    res.statusCode = 502;
-    res.setHeader("Content-Type", "application/json");
-    res.end(JSON.stringify({ error: "Failed to load videos from YouTube.", detail: String(err && err.message || err) }));
+  function letterGrade(avg){
+    if (avg >= 9.3) return 'A+';
+    if (avg >= 8.7) return 'A';
+    if (avg >= 8.3) return 'A-';
+    if (avg >= 7.7) return 'B+';
+    if (avg >= 7.3) return 'B';
+    if (avg >= 6.7) return 'B-';
+    if (avg >= 6.3) return 'C+';
+    if (avg >= 5.7) return 'C';
+    if (avg >= 5.0) return 'C-';
+    return 'D+';
   }
-};
+
+  function getScores(){
+    const scores = {};
+    document.querySelectorAll('#gradeGrid input[type="range"]').forEach(inp => {
+      scores[inp.dataset.cat] = parseFloat(inp.value);
+    });
+    return scores;
+  }
+
+  function updateOverall(){
+    const scores = getScores();
+    const vals = Object.values(scores);
+    const avg = vals.reduce((a,b) => a+b, 0) / vals.length;
+    document.getElementById('overallLetter').textContent = letterGrade(avg);
+    document.getElementById('overallNum').textContent = avg.toFixed(1) + ' / 10';
+  }
+
+  // ============ VIDEO PREVIEW ============
+  function extractYoutubeId(url){
+    if (!url) return null;
+    const patterns = [
+      /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([A-Za-z0-9_-]{11})/,
+    ];
+    for (const p of patterns){
+      const m = url.match(p);
+      if (m) return m[1];
+    }
+    if (/^[A-Za-z0-9_-]{11}$/.test(url.trim())) return url.trim();
+    return null;
+  }
+  function updateVideoPreview(){
+    const url = document.getElementById('fVideoUrl').value;
+    const id = extractYoutubeId(url);
+    const preview = document.getElementById('videoPreview');
+    if (id){
+      preview.innerHTML = `<iframe src="https://www.youtube.com/embed/${id}" allowfullscreen></iframe>`;
+    } else {
+      preview.innerHTML = `
+        <div class="video-placeholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M10 9l5 3-5 3z" fill="currentColor" stroke="none"/></svg>
+          <p>NO VIDEO LINKED YET</p>
+        </div>`;
+    }
+  }
+
+  // ============ FORM <-> DRAFT ============
+  function fillForm(draft){
+    document.getElementById('fName').value = draft.name || '';
+    document.getElementById('fPosition').value = draft.position || 'C';
+    document.getElementById('fTeam').value = draft.team || '';
+    document.getElementById('fFileNum').value = draft.fileNum || '';
+    document.getElementById('fTitle').value = draft.title || '';
+    document.getElementById('fNotes').value = draft.notes || '';
+    document.getElementById('fVideoUrl').value = draft.videoUrl || '';
+    document.querySelectorAll('#gradeGrid input[type="range"]').forEach(inp => {
+      const v = (draft.scores && draft.scores[inp.dataset.cat] != null) ? draft.scores[inp.dataset.cat] : 5;
+      inp.value = v;
+      inp.closest('.grade-item').querySelector('b').textContent = parseFloat(v).toFixed(1);
+    });
+    updateOverall();
+    updateVideoPreview();
+  }
+
+  function readForm(){
+    return {
+      name: document.getElementById('fName').value.trim(),
+      position: document.getElementById('fPosition').value,
+      team: document.getElementById('fTeam').value.trim(),
+      fileNum: document.getElementById('fFileNum').value.trim(),
+      title: document.getElementById('fTitle').value.trim(),
+      notes: document.getElementById('fNotes').value,
+      videoUrl: document.getElementById('fVideoUrl').value.trim(),
+      scores: getScores(),
+    };
+  }
+
+  // ============ DRAFTS LIST UI ============
+  function renderDraftsList(){
+    const list = document.getElementById('draftsList');
+    document.getElementById('draftsCount').textContent = drafts.length;
+    if (!drafts.length){
+      list.innerHTML = '<div class="drafts-empty">No reports yet. Fill one out and hit Save.</div>';
+      return;
+    }
+    const sorted = [...drafts].sort((a,b) => b.updated - a.updated);
+    list.innerHTML = '';
+    sorted.forEach(d => {
+      const el = document.createElement('div');
+      el.className = 'draft-item' + (d.id === currentId ? ' active' : '');
+      const dateStr = new Date(d.updated).toLocaleDateString(undefined, {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'});
+      const statusTag = d.status === 'published'
+        ? '<span style="color:var(--hazard);">LIVE</span>'
+        : '<span style="color:var(--ice-dim);">DRAFT</span>';
+      el.innerHTML = `
+        <div class="name">${d.name || 'Untitled prospect'}</div>
+        <div class="meta">FILE #${d.fileNum || '----'} · ${d.position || ''}${d.team ? ' · ' + d.team : ''} · ${d.reporterName || ''} · ${dateStr} · ${statusTag}</div>
+      `;
+      el.addEventListener('click', () => loadDraft(d.id));
+      list.appendChild(el);
+    });
+  }
+
+  function loadDraft(id){
+    const d = drafts.find(x => x.id === id);
+    if (!d) return;
+    currentId = id;
+    fillForm(d);
+    renderDraftsList();
+    updatePublishBtn();
+    setSaveStatus('');
+  }
+
+  function startNewDraft(){
+    const d = newDraftObj();
+    currentId = null;
+    fillForm(d);
+    updatePublishBtn();
+    setSaveStatus('');
+  }
+
+  function updatePublishBtn(){
+    const d = drafts.find(x => x.id === currentId);
+    const btn = document.getElementById('publishBtn');
+    if (d && d.status === 'published') {
+      btn.textContent = 'Unpublish (Move to Draft)';
+    } else {
+      btn.textContent = 'Publish to Site';
+    }
+  }
+
+  // ============ SAVE / DELETE / PUBLISH ============
+  function setSaveStatus(msg, saved){
+    const el = document.getElementById('saveStatus');
+    el.textContent = msg;
+    el.classList.toggle('saved', !!saved);
+  }
+  function markUnsaved(){ setSaveStatus('Unsaved changes'); }
+
+  function formToDbRow(data){
+    const vals = Object.values(data.scores);
+    const avg = vals.reduce((a,b) => a+b, 0) / vals.length;
+    return {
+      name: data.name,
+      position: data.position,
+      team: data.team,
+      file_num: data.fileNum,
+      title: data.title,
+      scores: data.scores,
+      overall_score: Math.round(avg * 10) / 10,
+      overall_grade: letterGrade(avg),
+      notes: data.notes,
+      video_url: data.videoUrl,
+    };
+  }
+
+  async function saveCurrentDraft(){
+    const data = readForm();
+    const row = formToDbRow(data);
+    setSaveStatus('Saving…');
+
+    if (!currentId) {
+      // Insert new report as a draft
+      const { data: inserted, error } = await sb
+        .from('puckbunker_reports')
+        .insert({ ...row, status: 'draft', reporter_name: currentReporterName })
+        .select()
+        .single();
+      if (error) { setSaveStatus('Save failed: ' + error.message); return; }
+      currentId = inserted.id;
+    } else {
+      // Update existing report, keep its current status
+      const { error } = await sb
+        .from('puckbunker_reports')
+        .update(row)
+        .eq('id', currentId);
+      if (error) { setSaveStatus('Save failed: ' + error.message); return; }
+    }
+
+    await loadDrafts();
+    renderDraftsList();
+    updatePublishBtn();
+    setSaveStatus('Saved ' + new Date().toLocaleTimeString(), true);
+  }
+
+  async function togglePublish(){
+    if (!currentId) {
+      setSaveStatus('Save the report first, then publish.');
+      return;
+    }
+    const d = drafts.find(x => x.id === currentId);
+    const newStatus = (d && d.status === 'published') ? 'draft' : 'published';
+    setSaveStatus(newStatus === 'published' ? 'Publishing…' : 'Unpublishing…');
+
+    // Save current form contents at the same time, so Publish also captures edits
+    const data = readForm();
+    const row = formToDbRow(data);
+    const { error } = await sb
+      .from('puckbunker_reports')
+      .update({ ...row, status: newStatus })
+      .eq('id', currentId);
+    if (error) { setSaveStatus('Failed: ' + error.message); return; }
+
+    await loadDrafts();
+    renderDraftsList();
+    updatePublishBtn();
+    setSaveStatus(newStatus === 'published' ? 'Live on the site' : 'Moved back to draft', true);
+  }
+
+  async function deleteCurrentDraft(){
+    if (!currentId) return;
+    const d = drafts.find(x => x.id === currentId);
+    if (!d) return;
+    if (!confirm(`Delete the report for "${d.name || 'this prospect'}"? This can't be undone.`)) return;
+    const { error } = await sb.from('puckbunker_reports').delete().eq('id', currentId);
+    if (error) { alert('Delete failed: ' + error.message); return; }
+
+    await loadDrafts();
+    if (drafts.length){
+      loadDraft([...drafts].sort((a,b) => b.updated - a.updated)[0].id);
+    } else {
+      startNewDraft();
+    }
+    renderDraftsList();
+  }
+
+  // ============ EXPORT: DOSSIER HTML ============
+  function gradeClass(letter){
+    if (letter.startsWith('A')) return 'grade-A';
+    if (letter.startsWith('B')) return 'grade-B';
+    return 'grade-C';
+  }
+
+  function escapeHtml(str){
+    return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function buildDossierSnippet(){
+    const data = readForm();
+    const scores = data.scores;
+    const vals = Object.values(scores);
+    const avg = vals.reduce((a,b)=>a+b,0) / vals.length;
+    const letter = letterGrade(avg);
+    const gClass = gradeClass(letter);
+    const id = extractYoutubeId(data.videoUrl);
+    const fileNum = data.fileNum || '----';
+    const title = data.title || `${data.name || 'Prospect'}: Scouting Report`;
+    const notesShort = escapeHtml((data.notes || '').split('\n').filter(Boolean)[0] || 'Full breakdown inside.');
+
+    // pick top 3 scored categories as tool tags
+    const topTags = Object.entries(scores).sort((a,b) => b[1]-a[1]).slice(0,3).map(([k]) => k);
+
+    const thumbInner = id
+      ? `<img src="https://img.youtube.com/vi/${id}/hqdefault.jpg" alt="" style="width:100%;height:100%;object-fit:cover;">`
+      : '';
+
+    return `<article class="dossier hud reveal">
+  <span class="hud-bl"></span><span class="hud-br"></span>
+  <div class="dossier-thumb">${thumbInner}
+    <span class="file-tag">FILE #${escapeHtml(fileNum)}</span>
+    <span class="grade-stamp ${gClass}">GRADE ${letter}</span>
+    <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+  </div>
+  <div class="dossier-body">
+    <h3>${escapeHtml(title)}</h3>
+    <p>${notesShort}</p>
+    <div class="tool-tags">${topTags.map(t => `<span>${escapeHtml(t)}</span>`).join('')}</div>
+  </div>
+</article>`;
+  }
+
+  function buildJsonExport(){
+    const data = readForm();
+    const scores = data.scores;
+    const vals = Object.values(scores);
+    const avg = vals.reduce((a,b)=>a+b,0) / vals.length;
+    return JSON.stringify({
+      ...data,
+      overallScore: Math.round(avg*10)/10,
+      overallGrade: letterGrade(avg),
+      exportedAt: new Date().toISOString()
+    }, null, 2);
+  }
+
+  function openModal(title, content){
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('exportOutput').value = content;
+    document.getElementById('exportModal').classList.add('active');
+  }
+  function closeModal(){
+    document.getElementById('exportModal').classList.remove('active');
+  }
+
+  // ============ EXCLUDED EPISODES ============
+  async function fetchVideoTitle(videoId){
+    try {
+      const res = await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`);
+      if (!res.ok) return '';
+      const data = await res.json();
+      return data.title || '';
+    } catch(e) { return ''; }
+  }
+
+  async function loadExcludedEpisodes(){
+    const list = document.getElementById('excludeList');
+    const { data, error } = await sb
+      .from('puckbunker_excluded_episodes')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (error) {
+      list.innerHTML = `<div style="font-size:12px; color:var(--ice-dim);">Couldn't load the hidden list.</div>`;
+      return;
+    }
+    if (!data.length) {
+      list.innerHTML = `<div style="font-size:12px; color:var(--ice-dim);">Nothing hidden right now.</div>`;
+      return;
+    }
+    list.innerHTML = data.map(row => `
+      <div class="exclude-item">
+        <div style="overflow:hidden;">
+          <div class="ex-title">${row.video_title || 'Untitled video'}</div>
+          <div class="ex-id">${row.video_id}</div>
+        </div>
+        <button data-id="${row.id}" type="button">Unhide</button>
+      </div>
+    `).join('');
+    list.querySelectorAll('button[data-id]').forEach(btn => {
+      btn.addEventListener('click', () => removeExclusion(btn.dataset.id));
+    });
+  }
+
+  async function addExclusion(){
+    const input = document.getElementById('excludeInput');
+    const status = document.getElementById('excludeStatus');
+    const videoId = extractYoutubeId(input.value.trim());
+    if (!videoId) {
+      status.textContent = 'Paste a valid YouTube URL or 11-character video ID.';
+      return;
+    }
+    status.textContent = 'Hiding…';
+    const title = await fetchVideoTitle(videoId);
+    const { error } = await sb
+      .from('puckbunker_excluded_episodes')
+      .insert({ video_id: videoId, video_title: title });
+    if (error) {
+      status.textContent = error.message.includes('duplicate') ? 'That video is already hidden.' : 'Failed: ' + error.message;
+      return;
+    }
+    input.value = '';
+    status.textContent = 'Hidden.';
+    loadExcludedEpisodes();
+  }
+
+  async function removeExclusion(id){
+    const { error } = await sb.from('puckbunker_excluded_episodes').delete().eq('id', id);
+    if (error) { alert('Failed to unhide: ' + error.message); return; }
+    loadExcludedEpisodes();
+  }
+
+  // ============ DRAFT BOARD ============
+  let currentBoardEditId = null;
+  let boardEntries = [];
+
+  function trendSymbol(trend, delta){
+    if (trend === 'up') return `▲ +${delta}`;
+    if (trend === 'down') return `▼ -${delta}`;
+    return `— 0`;
+  }
+
+  async function loadBoard(){
+    const list = document.getElementById('boardList');
+    const { data, error } = await sb
+      .from('puckbunker_draft_board')
+      .select('*')
+      .order('rank', { ascending: true });
+    if (error) {
+      list.innerHTML = `<div style="font-size:12px; color:var(--ice-dim);">Couldn't load the board.</div>`;
+      return;
+    }
+    boardEntries = data || [];
+    if (!boardEntries.length) {
+      list.innerHTML = `<div style="font-size:12px; color:var(--ice-dim);">No entries yet — add the first prospect above.</div>`;
+      return;
+    }
+    list.innerHTML = boardEntries.map(row => `
+      <div class="board-item">
+        <div style="overflow:hidden;">
+          <span class="bi-rank">#${row.rank}</span><strong>${row.name}</strong> ${row.position ? `<span style="color:var(--ice-dim);">— ${row.position}</span>` : ''}
+          <div class="bi-meta">GRADE ${row.grade || '—'} · ${trendSymbol(row.trend, row.trend_delta)}</div>
+        </div>
+        <div class="bi-actions">
+          <button data-edit="${row.id}" type="button">Edit</button>
+          <button data-delete="${row.id}" class="bi-delete" type="button">Delete</button>
+        </div>
+      </div>
+    `).join('');
+    list.querySelectorAll('button[data-edit]').forEach(btn => {
+      btn.addEventListener('click', () => startEditBoardEntry(btn.dataset.edit));
+    });
+    list.querySelectorAll('button[data-delete]').forEach(btn => {
+      btn.addEventListener('click', () => deleteBoardEntry(btn.dataset.delete));
+    });
+  }
+
+  function startEditBoardEntry(id){
+    const row = boardEntries.find(r => r.id === id);
+    if (!row) return;
+    currentBoardEditId = id;
+    document.getElementById('boardRank').value = row.rank;
+    document.getElementById('boardName').value = row.name;
+    document.getElementById('boardPosition').value = row.position || 'C';
+    document.getElementById('boardGrade').value = row.grade || '';
+    document.getElementById('boardTrend').value = row.trend || 'flat';
+    document.getElementById('boardDelta').value = row.trend_delta || 0;
+    document.getElementById('boardSaveBtn').textContent = 'Update Entry';
+    document.getElementById('boardCancelBtn').style.display = '';
+    document.getElementById('boardStatus').textContent = `Editing #${row.rank} ${row.name}`;
+  }
+
+  function resetBoardForm(){
+    currentBoardEditId = null;
+    document.getElementById('boardRank').value = '';
+    document.getElementById('boardName').value = '';
+    document.getElementById('boardPosition').value = 'C';
+    document.getElementById('boardGrade').value = '';
+    document.getElementById('boardTrend').value = 'flat';
+    document.getElementById('boardDelta').value = 0;
+    document.getElementById('boardSaveBtn').textContent = 'Add to Board';
+    document.getElementById('boardCancelBtn').style.display = 'none';
+    document.getElementById('boardStatus').textContent = '';
+  }
+
+  async function saveBoardEntry(){
+    const status = document.getElementById('boardStatus');
+    const rank = parseInt(document.getElementById('boardRank').value, 10);
+    const name = document.getElementById('boardName').value.trim();
+    if (!rank || !name) {
+      status.textContent = 'Rank and name are required.';
+      return;
+    }
+    const row = {
+      rank,
+      name,
+      position: document.getElementById('boardPosition').value,
+      grade: document.getElementById('boardGrade').value.trim(),
+      trend: document.getElementById('boardTrend').value,
+      trend_delta: parseInt(document.getElementById('boardDelta').value, 10) || 0,
+    };
+
+    status.textContent = 'Saving…';
+    let error;
+    if (currentBoardEditId) {
+      ({ error } = await sb.from('puckbunker_draft_board').update(row).eq('id', currentBoardEditId));
+    } else {
+      ({ error } = await sb.from('puckbunker_draft_board').insert(row));
+    }
+    if (error) {
+      status.textContent = 'Failed: ' + error.message;
+      return;
+    }
+    resetBoardForm();
+    loadBoard();
+  }
+
+  async function deleteBoardEntry(id){
+    const row = boardEntries.find(r => r.id === id);
+    if (!confirm(`Remove #${row ? row.rank : ''} ${row ? row.name : 'this entry'} from the board?`)) return;
+    const { error } = await sb.from('puckbunker_draft_board').delete().eq('id', id);
+    if (error) { alert('Failed to delete: ' + error.message); return; }
+    if (currentBoardEditId === id) resetBoardForm();
+    loadBoard();
+  }
+
+  // ============ INIT ============
+  async function initAdmin(){
+    buildGradeGrid();
+    await loadDrafts();
+    renderDraftsList();
+    loadExcludedEpisodes();
+    loadBoard();
+    if (drafts.length){
+      loadDraft([...drafts].sort((a,b) => b.updated - a.updated)[0].id);
+    } else {
+      startNewDraft();
+    }
+
+    // mark unsaved on any input change
+    ['fName','fPosition','fTeam','fFileNum','fTitle','fNotes'].forEach(id => {
+      document.getElementById(id).addEventListener('input', markUnsaved);
+    });
+    document.getElementById('fVideoUrl').addEventListener('input', () => {
+      updateVideoPreview();
+      markUnsaved();
+    });
+
+    document.getElementById('saveBtn').addEventListener('click', saveCurrentDraft);
+    document.getElementById('publishBtn').addEventListener('click', togglePublish);
+    document.getElementById('newDraftBtn').addEventListener('click', startNewDraft);
+    document.getElementById('deleteDraftBtn').addEventListener('click', deleteCurrentDraft);
+    document.getElementById('excludeAddBtn').addEventListener('click', addExclusion);
+    document.getElementById('boardSaveBtn').addEventListener('click', saveBoardEntry);
+    document.getElementById('boardCancelBtn').addEventListener('click', resetBoardForm);
+
+    document.getElementById('exportSnippetBtn').addEventListener('click', () => {
+      openModal('Dossier HTML — paste into index.html', buildDossierSnippet());
+    });
+    document.getElementById('exportJsonBtn').addEventListener('click', () => {
+      openModal('Report JSON', buildJsonExport());
+    });
+    document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
+    document.getElementById('modalCloseBtn2').addEventListener('click', closeModal);
+    document.getElementById('exportModal').addEventListener('click', (e) => {
+      if (e.target.id === 'exportModal') closeModal();
+    });
+    document.getElementById('copyOutputBtn').addEventListener('click', () => {
+      const ta = document.getElementById('exportOutput');
+      ta.select();
+      navigator.clipboard.writeText(ta.value).then(() => {
+        const btn = document.getElementById('copyOutputBtn');
+        const original = btn.textContent;
+        btn.textContent = 'Copied!';
+        setTimeout(() => { btn.textContent = original; }, 1400);
+      });
+    });
+  }
+</script>
+
+</body>
+</html>
