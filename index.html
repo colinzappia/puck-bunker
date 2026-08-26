@@ -656,6 +656,7 @@
     </div>
     <div class="board mono reveal">
       <div class="board-row head"><span>Rk</span><span>Prospect</span><span>Trend</span><span>Grade</span></div>
+      <div id="boardRows">
       <div class="board-row">
         <span class="rank">01</span>
         <span class="name" style="font-family:'Archivo',sans-serif;">J. Kowalski <span class="pos">D</span></span>
@@ -679,6 +680,7 @@
         <span class="name" style="font-family:'Archivo',sans-serif;">M. Boucher <span class="pos">RW</span></span>
         <span class="trend trend-down">▼ -1</span>
         <span class="grade-pill" style="color:var(--hazard);border-color:var(--hazard);">C+</span>
+      </div>
       </div>
     </div>
   </div>
@@ -844,6 +846,38 @@
 
 <script src="public-reports.js"></script>
 <script>pbLoadPublished('intelGrid', 3);</script>
+<script>
+  async function pbLoadBoard() {
+    const container = document.getElementById('boardRows');
+    if (!container || typeof puckBunkerDB === 'undefined') return;
+    try {
+      const { data, error } = await puckBunkerDB
+        .from('puckbunker_draft_board')
+        .select('*')
+        .order('rank', { ascending: true });
+      if (error || !data || !data.length) return; // keep static fallback rows
+
+      container.innerHTML = data.map(row => {
+        const rankDisplay = String(row.rank).padStart(2, '0');
+        const gradeStyle = (row.grade || '').startsWith('A') ? "color:var(--cyan);border-color:var(--cyan);"
+          : (row.grade || '').startsWith('B') ? "color:var(--ice);"
+          : "color:var(--hazard);border-color:var(--hazard);";
+        const trendHtml = row.trend === 'up' ? `<span class="trend trend-up">▲ +${row.trend_delta}</span>`
+          : row.trend === 'down' ? `<span class="trend trend-down">▼ -${row.trend_delta}</span>`
+          : `<span class="trend trend-flat">— 0</span>`;
+        return `<div class="board-row">
+          <span class="rank">${rankDisplay}</span>
+          <span class="name" style="font-family:'Archivo',sans-serif;">${pbEscape(row.name)}${row.position ? ` <span class="pos">${pbEscape(row.position)}</span>` : ''}</span>
+          ${trendHtml}
+          <span class="grade-pill" style="${gradeStyle}">${pbEscape(row.grade || '—')}</span>
+        </div>`;
+      }).join('');
+    } catch (e) {
+      console.error('Puck Bunker: failed to load draft board, showing placeholder', e);
+    }
+  }
+  pbLoadBoard();
+</script>
 
 </body>
 </html>
