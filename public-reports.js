@@ -43,6 +43,10 @@ function pbBuildCard(report) {
   const byline = report.reporter_name
     ? `<div style="font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--steel); margin-bottom:10px;">SCOUTED BY ${pbEscape(report.reporter_name.toUpperCase())}</div>`
     : '';
+  const metaBits = [report.position, report.team].filter(Boolean).map(pbEscape).join(' · ');
+  const metaLine = metaBits
+    ? `<div style="font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--ice-dim); margin-bottom:8px;">${metaBits}</div>`
+    : '';
 
   return `<a href="/api/report/${report.id}" style="text-decoration:none; color:inherit; display:block;">
   <article class="dossier hud" data-pos="${pbEscape(report.position || '')}">
@@ -54,6 +58,7 @@ function pbBuildCard(report) {
     </div>
     <div class="dossier-body">
       <h3>${pbEscape(title)}</h3>
+      ${metaLine}
       ${byline}
       <p>${pbEscape(firstLine)}</p>
       <div class="tool-tags">${topTags.map(t => `<span>${pbEscape(t)}</span>`).join('')}</div>
