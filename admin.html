@@ -453,6 +453,7 @@
     "darrenboyce8181@gmail.com": "Darren Boyce",
   };
   let currentReporterName = "";
+  let currentUserId = null;
 
   // ============ AUTH / GATE ============
   const gateForm = document.getElementById('gateForm');
@@ -465,6 +466,7 @@
 
     const { data } = await sb.auth.getUser();
     const email = data && data.user ? data.user.email : '';
+    currentUserId = data && data.user ? data.user.id : null;
     currentReporterName = REPORTER_NAMES[email] || email || 'Unknown';
     const badge = document.getElementById('reporterBadge');
     if (badge) badge.textContent = currentReporterName;
@@ -519,6 +521,7 @@
     const { data, error } = await sb
       .from('puckbunker_reports')
       .select('*')
+      .eq('created_by', currentUserId)
       .order('updated_at', { ascending: false });
     if (error) {
       console.error('Failed to load reports:', error);
