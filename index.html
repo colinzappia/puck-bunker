@@ -422,6 +422,8 @@
   .board-row .rank{ font-family:'JetBrains Mono',monospace; color:var(--hazard); font-weight:700; font-size:19px; text-shadow:0 0 12px rgba(203,174,126,0.4); }
   .board-row .name{ font-weight:700; font-size:16px; }
   .board-row .pos{ color:var(--ice-dim); font-size:13px; font-weight:400; margin-left:8px; }
+  .board-row .name a{ color:inherit; text-decoration:none; border-bottom:1px dotted var(--steel); transition:color .15s, border-color .15s; }
+  .board-row .name a:hover{ color:var(--hazard); border-color:var(--hazard); }
   .board-row .trend{ font-family:'JetBrains Mono',monospace; font-size:13px; }
   .trend-up{ color:var(--cyan); text-shadow:0 0 10px rgba(220,221,221,0.4); }
   .trend-flat{ color:var(--ice-dim); }
@@ -865,9 +867,12 @@
         const trendHtml = row.trend === 'up' ? `<span class="trend trend-up">▲ +${row.trend_delta}</span>`
           : row.trend === 'down' ? `<span class="trend trend-down">▼ -${row.trend_delta}</span>`
           : `<span class="trend trend-flat">— 0</span>`;
+        const nameHtml = row.report_id
+          ? `<a href="/api/report/${encodeURIComponent(row.report_id)}">${pbEscape(row.name)}</a>`
+          : pbEscape(row.name);
         return `<div class="board-row">
           <span class="rank">${rankDisplay}</span>
-          <span class="name" style="font-family:'Archivo',sans-serif;">${pbEscape(row.name)}${row.position ? ` <span class="pos">${pbEscape(row.position)}</span>` : ''}</span>
+          <span class="name" style="font-family:'Archivo',sans-serif;">${nameHtml}${row.position ? ` <span class="pos">${pbEscape(row.position)}</span>` : ''}</span>
           ${trendHtml}
           <span class="grade-pill" style="${gradeStyle}">${pbEscape(row.grade || '—')}</span>
         </div>`;
