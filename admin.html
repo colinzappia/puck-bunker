@@ -517,6 +517,15 @@
                 <input type="number" id="boardDelta" min="0" step="1" value="0">
               </div>
             </div>
+            <div class="field-row">
+              <div class="field" style="grid-column:1 / -1;">
+                <label>Link to Report (optional)</label>
+                <select id="boardReportLink">
+                  <option value="">— No linked report —</option>
+                </select>
+                <span class="hint">You can link a draft that hasn't been published yet — the name starts working as a link the moment that report goes live.</span>
+              </div>
+            </div>
 
             <div style="display:flex; gap:10px; margin-bottom:8px;">
               <button class="btn btn-primary" id="boardSaveBtn" type="button">Add to Board</button>
@@ -1070,6 +1079,30 @@
     return `— 0`;
   }
 
+  async function populateBoardReportOptions(){
+    const select = document.getElementById('boardReportLink');
+    // Own reports (draft + published, already loaded) plus everyone's
+    // published reports (public data), deduped by id.
+    const ownReports = drafts.map(d => ({ id: d.id, name: d.name, fileNum: d.fileNum, status: d.status }));
+    let allPublished = [];
+    try {
+      const { data } = await sb.from('puckbunker_reports').select('id, name, file_num, status').eq('status', 'published');
+      allPublished = (data || []).map(r => ({ id: r.id, name: r.name, fileNum: r.file_num, status: r.status }));
+    } catch(e) { /* fine to skip if this fails, own reports still show */ }
+
+    const merged = {};
+    [...ownReports, ...allPublished].forEach(r => { if (r.id) merged[r.id] = r; });
+    const options = Object.values(merged).sort((a,b) => (a.name || '').localeCompare(b.name || ''));
+
+    select.innerHTML = '<option value="">— No linked report —</option>' +
+      options.map(r => `<option value="${r.id}">FILE #${r.fileNum || '----'} — ${r.name} (${r.status})</option>`).join('');
+  }
+
+  function reportLabelFor(reportId){
+    const opt = document.querySelector(`#boardReportLink option[value="${reportId}"]`);
+    return opt ? opt.textContent : null;
+  }
+
   async function loadBoard(){
     const list = document.getElementById('boardList');
     const { data, error } = await sb
@@ -1089,7 +1122,7 @@
       <div class="board-item">
         <div style="overflow:hidden;">
           <span class="bi-rank">#${row.rank}</span><strong>${row.name}</strong> ${row.position ? `<span style="color:var(--ice-dim);">— ${row.position}</span>` : ''}
-          <div class="bi-meta">GRADE ${row.grade || '—'} · ${trendSymbol(row.trend, row.trend_delta)}</div>
+          <div class="bi-meta">GRADE ${row.grade || '—'} · ${trendSymbol(row.trend, row.trend_delta)}${row.report_id ? ` · LINKED${reportLabelFor(row.report_id) ? ': ' + reportLabelFor(row.report_id) : ''}` : ''}</div>
         </div>
         <div class="bi-actions">
           <button data-edit="${row.id}" type="button">Edit</button>
@@ -1115,6 +1148,7 @@
     document.getElementById('boardGrade').value = row.grade || '';
     document.getElementById('boardTrend').value = row.trend || 'flat';
     document.getElementById('boardDelta').value = row.trend_delta || 0;
+    document.getElementById('boardReportLink').value = row.report_id || '';
     document.getElementById('boardSaveBtn').textContent = 'Update Entry';
     document.getElementById('boardCancelBtn').style.display = '';
     document.getElementById('boardStatus').textContent = `Editing #${row.rank} ${row.name}`;
@@ -1128,6 +1162,7 @@
     document.getElementById('boardGrade').value = '';
     document.getElementById('boardTrend').value = 'flat';
     document.getElementById('boardDelta').value = 0;
+    document.getElementById('boardReportLink').value = '';
     document.getElementById('boardSaveBtn').textContent = 'Add to Board';
     document.getElementById('boardCancelBtn').style.display = 'none';
     document.getElementById('boardStatus').textContent = '';
@@ -1148,6 +1183,7 @@
       grade: document.getElementById('boardGrade').value.trim(),
       trend: document.getElementById('boardTrend').value,
       trend_delta: parseInt(document.getElementById('boardDelta').value, 10) || 0,
+      report_id: document.getElementById('boardReportLink').value || null,
     };
 
     status.textContent = 'Saving…';
@@ -1180,6 +1216,7 @@
     await loadDrafts();
     renderDraftsList();
     loadExcludedEpisodes();
+    await populateBoardReportOptions();
     loadBoard();
     if (drafts.length){
       loadDraft([...drafts].sort((a,b) => b.updated - a.updated)[0].id);
