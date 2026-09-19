@@ -597,9 +597,9 @@
 <section>
   <div class="wrap">
     <div class="stat-row reveal">
-      <div class="stat"><div class="num mono" id="statTotalReports" data-count="0">0</div><div class="label">Total reports</div></div>
-      <div class="stat"><div class="num mono" id="statBPlusPercent" data-count="0" data-suffix="%">0</div><div class="label">Graded B+ or higher</div></div>
-      <div class="stat"><div class="num mono" id="statLeaguesScouted" data-count="0">0</div><div class="label">Leagues scouted</div></div>
+      <div class="stat"><div class="num mono" id="statTotalReports">0</div><div class="label">Total reports</div></div>
+      <div class="stat"><div class="num mono" id="statBPlusPercent">0</div><div class="label">Graded B+ or higher</div></div>
+      <div class="stat"><div class="num mono" id="statLeaguesScouted">0</div><div class="label">Leagues scouted</div></div>
     </div>
 
     <div class="analytics-grid" id="avgCardsContainer">
@@ -607,10 +607,10 @@
     </div>
 
     <div class="stat-row stat-row-4 reveal" id="positionStatRow" style="margin-top:28px;">
-      <div class="stat"><div class="num mono" id="statCenters" data-count="0">0</div><div class="label">Centers scouted</div></div>
-      <div class="stat"><div class="num mono" id="statWingers" data-count="0">0</div><div class="label">Wingers scouted</div></div>
-      <div class="stat"><div class="num mono" id="statDefensemen" data-count="0">0</div><div class="label">Defensemen scouted</div></div>
-      <div class="stat"><div class="num mono" id="statGoaltenders" data-count="0">0</div><div class="label">Goaltenders scouted</div></div>
+      <div class="stat"><div class="num mono" id="statCenters">0</div><div class="label">Centers scouted</div></div>
+      <div class="stat"><div class="num mono" id="statWingers">0</div><div class="label">Wingers scouted</div></div>
+      <div class="stat"><div class="num mono" id="statDefensemen">0</div><div class="label">Defensemen scouted</div></div>
+      <div class="stat"><div class="num mono" id="statGoaltenders">0</div><div class="label">Goaltenders scouted</div></div>
     </div>
 
     <div class="analytics-note" id="analyticsNote">
@@ -755,7 +755,7 @@
   function buildAvgCards(label, averages){
     if (!averages.length) return '';
     return chunk(averages, 5).map(group => `
-      <div class="gauge-card hud reveal">
+      <div class="gauge-card hud">
         <span class="hud-bl"></span><span class="hud-br"></span>
         <div class="file-line"><span>LEAGUE-WIDE AVERAGE</span><span>${label}</span></div>
         ${group.map(g => `
