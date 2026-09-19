@@ -20,11 +20,6 @@ const SUPABASE_KEY = "sb_publishable_AqjW7wYPhZ6OTpM1W-jVew_1L18nkZE";
 const SITE_URL = "https://www.puckbunker.com";
 const LOGO_URL = `${SITE_URL}/puck-bunker-logo.png`;
 
-const CATEGORIES = [
-  "Skating", "Shot", "Puck Skills", "Playmaking",
-  "OZ Hockey Sense", "DZ Hockey Sense", "Compete", "Physicality"
-];
-
 function escapeHtml(str) {
   return String(str || "")
     .replace(/&/g, "&amp;")
@@ -38,14 +33,6 @@ function gradeClass(letter) {
   if (letter && letter.startsWith("A")) return "grade-A";
   if (letter && letter.startsWith("B")) return "grade-B";
   return "grade-C";
-}
-
-function youtubeId(url) {
-  if (!url) return null;
-  const m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([A-Za-z0-9_-]{11})/);
-  if (m) return m[1];
-  if (/^[A-Za-z0-9_-]{11}$/.test(url.trim())) return url.trim();
-  return null;
 }
 
 async function fetchReport(id) {
@@ -92,14 +79,14 @@ function renderNotFoundPage() {
 function renderReportPage(report, reqHost) {
   const letter = report.overall_grade || "B";
   const gClass = gradeClass(letter);
-  const ytId = youtubeId(report.video_url);
   const pageTitle = `${report.name} — Grade ${letter} | Puck Bunker`;
-  const firstLine = (report.notes || "").split("\n").filter(Boolean)[0] || `Full scouting breakdown of ${report.name}, graded across all eight tools.`;
-  const ogImage = ytId ? `https://img.youtube.com/vi/${ytId}/hqdefault.jpg` : LOGO_URL;
+  const firstLine = (report.notes || "").split("\n").filter(Boolean)[0] || `Full scouting breakdown of ${report.name}.`;
+  const ogImage = LOGO_URL;
   const canonicalUrl = `${SITE_URL}/api/report/${report.id}`;
   const scores = report.scores || {};
+  const categories = Object.keys(scores); // dynamic — skater and goalie reports use different category sets
 
-  const gaugesHtml = CATEGORIES.map(cat => {
+  const gaugesHtml = categories.map(cat => {
     const val = typeof scores[cat] === "number" ? scores[cat] : 0;
     const pct = Math.round((val / 10) * 100);
     return `
@@ -109,13 +96,18 @@ function renderReportPage(report, reqHost) {
         </div>`;
   }).join("");
 
-  const videoHtml = ytId
-    ? `<div class="video-embed"><iframe src="https://www.youtube.com/embed/${ytId}" allowfullscreen loading="lazy"></iframe></div>`
+  const videoHtml = report.video_url
+    ? `<a href="${escapeHtml(report.video_url)}" target="_blank" rel="noopener" class="patreon-link">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        Watch on Patreon
+      </a>`
     : "";
 
   const bylineHtml = report.reporter_name
     ? `<div class="byline">SCOUTED BY ${escapeHtml(report.reporter_name.toUpperCase())}</div>`
     : "";
+
+  const metaLine = [report.position, report.team, report.league, report.nation].filter(Boolean).map(escapeHtml).join(" · ");
 
   const notesHtml = escapeHtml(report.notes || "No notes filed for this report yet.")
     .split("\n").filter(Boolean).map(p => `<p>${p}</p>`).join("");
@@ -151,11 +143,11 @@ function renderReportPage(report, reqHost) {
     --cyan:#DCDDDD; --cyan-dim:#8B8D90; --red:#C1684A;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
-  body{ background:var(--black); color:var(--ice); font-family:'Archivo',sans-serif; line-height:1.6; }
+  body{ background:var(--black); color:var(--ice); font-family:'Archivo',sans-serif; line-height:1.6; overflow-x:hidden; }
   .stencil{ font-family:'Big Shoulders Stencil Display',sans-serif; text-transform:uppercase; }
   .mono{ font-family:'JetBrains Mono',monospace; }
   a{ color:var(--hazard); text-decoration:none; }
-  .wrap{ max-width:820px; margin:0 auto; padding:48px 24px 80px; }
+  .wrap{ max-width:820px; margin:0 auto; padding:48px 24px 80px; overflow-wrap:break-word; word-break:break-word; }
   .back-link{ font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:0.06em; color:var(--ice-dim); }
   .back-link:hover{ color:var(--hazard); }
   .report-head{ margin:28px 0 8px; display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
@@ -164,25 +156,32 @@ function renderReportPage(report, reqHost) {
     padding:6px 14px; border:1px solid currentColor;
   }
   .grade-A{ color:var(--cyan); } .grade-B{ color:var(--ice); } .grade-C{ color:var(--hazard); }
-  h1{ font-size:clamp(32px,6vw,52px); line-height:0.95; }
+  h1{ font-size:clamp(32px,6vw,52px); line-height:0.95; overflow-wrap:break-word; word-break:break-word; }
   .subline{ color:var(--ice-dim); font-size:14px; margin-top:6px; }
   .prospect-meta{
     font-family:'JetBrains Mono',monospace; font-size:14px; font-weight:700;
     letter-spacing:0.05em; text-transform:uppercase; color:var(--hazard);
-    margin-top:10px;
+    margin-top:10px; overflow-wrap:break-word; word-break:break-word;
   }
   .byline{ font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--steel); margin:18px 0; letter-spacing:0.06em; }
-  .video-embed{ aspect-ratio:16/9; margin:28px 0; border:1px solid var(--steel); background:var(--panel); }
-  .video-embed iframe{ width:100%; height:100%; border:none; }
-  .panel{ background:var(--panel); border:1px solid var(--steel); padding:26px 24px; margin:28px 0; }
+  .patreon-link{
+    display:inline-flex; align-items:center; gap:10px;
+    background:var(--panel); border:1px solid var(--hazard-2); color:var(--hazard);
+    padding:14px 22px; margin:28px 0; font-family:'JetBrains Mono',monospace;
+    font-size:13px; font-weight:700; letter-spacing:0.05em; text-transform:uppercase;
+    transition:background .15s, border-color .15s;
+  }
+  .patreon-link:hover{ background:var(--panel-2); border-color:var(--hazard); }
+  .panel{ background:var(--panel); border:1px solid var(--steel); padding:26px 24px; margin:28px 0; overflow-wrap:break-word; word-break:break-word; }
   .panel h2{ font-size:12px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ice-dim); margin-bottom:20px; }
   .gauge{ margin-bottom:18px; }
   .gauge:last-child{ margin-bottom:0; }
-  .gauge-label{ display:flex; justify-content:space-between; font-size:12px; text-transform:uppercase; letter-spacing:0.06em; color:var(--ice-dim); margin-bottom:7px; }
-  .gauge-label b{ color:var(--ice); font-family:'JetBrains Mono',monospace; }
+  .gauge-label{ display:flex; justify-content:space-between; gap:12px; font-size:12px; text-transform:uppercase; letter-spacing:0.06em; color:var(--ice-dim); margin-bottom:7px; }
+  .gauge-label span{ overflow-wrap:break-word; word-break:break-word; }
+  .gauge-label b{ color:var(--ice); font-family:'JetBrains Mono',monospace; flex-shrink:0; }
   .gauge-track{ height:9px; background:var(--steel-soft); }
   .gauge-fill{ height:100%; background:linear-gradient(90deg,var(--hazard),var(--cyan)); }
-  .notes p{ margin-bottom:14px; color:var(--ice-dim); }
+  .notes p{ margin-bottom:14px; color:var(--ice-dim); overflow-wrap:break-word; word-break:break-word; white-space:pre-wrap; }
   .notes p:last-child{ margin-bottom:0; }
   @media (max-width:600px){ .wrap{ padding:32px 18px 60px; } }
 </style>
@@ -196,7 +195,7 @@ function renderReportPage(report, reqHost) {
       <span class="mono" style="font-size:12px; color:var(--steel);">FILE #${escapeHtml(report.file_num || "----")}</span>
     </div>
     <h1 class="stencil">${escapeHtml(report.name || "Unnamed Prospect")}</h1>
-    ${(report.position || report.team) ? `<div class="prospect-meta">${[report.position, report.team].filter(Boolean).map(escapeHtml).join(" · ")}</div>` : ""}
+    ${metaLine ? `<div class="prospect-meta">${metaLine}</div>` : ""}
     ${report.title && report.title.trim() ? `<div class="subline" style="font-style:italic;">${escapeHtml(report.title)}</div>` : ""}
     ${bylineHtml}
 
