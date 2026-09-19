@@ -450,6 +450,26 @@
         </div>
 
         <div class="panel">
+          <div class="panel-head"><h2>Schedule Release</h2></div>
+          <div class="panel-body">
+            <p style="font-size:13px; color:var(--ice-dim); margin-bottom:16px;">
+              Set a future date/time and this report publishes itself automatically — no need to come back and click Publish. Uses your local timezone below; stored and checked in UTC behind the scenes.
+            </p>
+            <div class="field-row">
+              <div class="field" style="grid-column:1 / -1;">
+                <label>Release Date &amp; Time</label>
+                <input type="datetime-local" id="scheduleDateTime">
+              </div>
+            </div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+              <button class="btn btn-ghost" id="scheduleBtn" type="button">Schedule Release</button>
+              <button class="btn btn-ghost" id="cancelScheduleBtn" type="button" style="display:none;">Cancel Schedule</button>
+            </div>
+            <div id="scheduleStatus" class="mono" style="font-size:11px; color:var(--ice-dim); margin-top:10px;"></div>
+          </div>
+        </div>
+
+        <div class="panel">
           <div class="action-bar">
             <button class="btn btn-primary" id="saveBtn">Save Draft</button>
             <button class="btn btn-ghost" id="publishBtn">Publish to Site</button>
@@ -682,6 +702,7 @@
       notes: row.notes || '',
       videoUrl: row.video_url || '',
       reporterName: row.reporter_name || '',
+      scheduledAt: row.scheduled_at || null,
       status: row.status || 'draft',
       updated: new Date(row.updated_at || row.created_at).getTime()
     }));
@@ -694,6 +715,7 @@
       scores: Object.fromEntries(SKATER_CATEGORIES.map(c => [c, 5])),
       notes: '', videoUrl: '',
       status: 'draft',
+      scheduledAt: null,
       updated: Date.now()
     };
   }
@@ -786,6 +808,32 @@
     buildGradeGrid(draft.position || 'C', draft.scores);
     updateOverall();
     updateVideoPreview();
+    updateScheduleUI(draft);
+  }
+
+  function updateScheduleUI(draft){
+    const dtInput = document.getElementById('scheduleDateTime');
+    const scheduleBtn = document.getElementById('scheduleBtn');
+    const cancelBtn = document.getElementById('cancelScheduleBtn');
+    const status = document.getElementById('scheduleStatus');
+
+    if (draft.status === 'scheduled' && draft.scheduledAt) {
+      const d = new Date(draft.scheduledAt);
+      dtInput.value = toLocalDatetimeInputValue(d);
+      scheduleBtn.textContent = 'Update Schedule';
+      cancelBtn.style.display = '';
+      status.textContent = `Scheduled to publish ${d.toLocaleString()}`;
+    } else {
+      dtInput.value = '';
+      scheduleBtn.textContent = 'Schedule Release';
+      cancelBtn.style.display = 'none';
+      status.textContent = '';
+    }
+  }
+
+  function toLocalDatetimeInputValue(date){
+    const pad = n => String(n).padStart(2,'0');
+    return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
   }
 
   function readForm(){
@@ -817,9 +865,15 @@
       const el = document.createElement('div');
       el.className = 'draft-item' + (d.id === currentId ? ' active' : '');
       const dateStr = new Date(d.updated).toLocaleDateString(undefined, {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'});
-      const statusTag = d.status === 'published'
-        ? '<span style="color:var(--hazard);">LIVE</span>'
-        : '<span style="color:var(--ice-dim);">DRAFT</span>';
+      let statusTag;
+      if (d.status === 'published') {
+        statusTag = '<span style="color:var(--hazard);">LIVE</span>';
+      } else if (d.status === 'scheduled') {
+        const releaseStr = d.scheduledAt ? new Date(d.scheduledAt).toLocaleDateString(undefined, {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'}) : '';
+        statusTag = `<span style="color:var(--cyan);">SCHEDULED${releaseStr ? ' · ' + releaseStr : ''}</span>`;
+      } else {
+        statusTag = '<span style="color:var(--ice-dim);">DRAFT</span>';
+      }
       el.innerHTML = `
         <div class="name">${d.name || 'Untitled prospect'}</div>
         <div class="meta">FILE #${d.fileNum || '----'} · ${d.position || ''}${d.team ? ' · ' + d.team : ''} · ${d.reporterName || ''} · ${dateStr} · ${statusTag}</div>
@@ -852,6 +906,8 @@
     const btn = document.getElementById('publishBtn');
     if (d && d.status === 'published') {
       btn.textContent = 'Unpublish (Move to Draft)';
+    } else if (d && d.status === 'scheduled') {
+      btn.textContent = 'Publish Now (Skip Schedule)';
     } else {
       btn.textContent = 'Publish to Site';
     }
@@ -922,19 +978,78 @@
     const newStatus = (d && d.status === 'published') ? 'draft' : 'published';
     setSaveStatus(newStatus === 'published' ? 'Publishing…' : 'Unpublishing…');
 
-    // Save current form contents at the same time, so Publish also captures edits
+    // Save current form contents at the same time, so Publish also captures edits.
+    // Manually publishing/unpublishing also clears any pending schedule, since
+    // it's no longer "waiting" — it's being decided right now.
     const data = readForm();
     const row = formToDbRow(data);
     const { error } = await sb
       .from('puckbunker_reports')
-      .update({ ...row, status: newStatus })
+      .update({ ...row, status: newStatus, scheduled_at: null })
       .eq('id', currentId);
     if (error) { setSaveStatus('Failed: ' + error.message); return; }
 
     await loadDrafts();
     renderDraftsList();
     updatePublishBtn();
+    updateScheduleUI(drafts.find(x => x.id === currentId) || {});
     setSaveStatus(newStatus === 'published' ? 'Live on the site' : 'Moved back to draft', true);
+  }
+
+  async function scheduleReport(){
+    const status = document.getElementById('scheduleStatus');
+    const dtValue = document.getElementById('scheduleDateTime').value;
+    if (!dtValue) {
+      status.textContent = 'Pick a release date and time first.';
+      return;
+    }
+    const releaseDate = new Date(dtValue); // interpreted in the browser's local timezone
+    if (releaseDate.getTime() <= Date.now()) {
+      status.textContent = 'Pick a time in the future.';
+      return;
+    }
+
+    status.textContent = 'Scheduling…';
+    const data = readForm();
+    const row = formToDbRow(data);
+    const payload = { ...row, status: 'scheduled', scheduled_at: releaseDate.toISOString() };
+
+    let error;
+    if (!currentId) {
+      const { data: inserted, error: insErr } = await sb
+        .from('puckbunker_reports')
+        .insert(payload)
+        .select()
+        .single();
+      error = insErr;
+      if (!error) currentId = inserted.id;
+    } else {
+      ({ error } = await sb.from('puckbunker_reports').update(payload).eq('id', currentId));
+    }
+    if (error) { status.textContent = 'Failed: ' + error.message; return; }
+
+    await loadDrafts();
+    renderDraftsList();
+    updatePublishBtn();
+    updateScheduleUI(drafts.find(x => x.id === currentId) || {});
+    status.textContent = `Scheduled for ${releaseDate.toLocaleString()}`;
+  }
+
+  async function cancelSchedule(){
+    if (!currentId) return;
+    const status = document.getElementById('scheduleStatus');
+    status.textContent = 'Cancelling…';
+    const { error } = await sb
+      .from('puckbunker_reports')
+      .update({ status: 'draft', scheduled_at: null })
+      .eq('id', currentId);
+    if (error) { status.textContent = 'Failed: ' + error.message; return; }
+
+    await loadDrafts();
+    renderDraftsList();
+    updatePublishBtn();
+    updateScheduleUI(drafts.find(x => x.id === currentId) || {});
+    setSaveStatus('Schedule cancelled — back to draft', true);
   }
 
   async function deleteCurrentDraft(){
@@ -1269,6 +1384,8 @@
 
     document.getElementById('saveBtn').addEventListener('click', saveCurrentDraft);
     document.getElementById('publishBtn').addEventListener('click', togglePublish);
+    document.getElementById('scheduleBtn').addEventListener('click', scheduleReport);
+    document.getElementById('cancelScheduleBtn').addEventListener('click', cancelSchedule);
     document.getElementById('newDraftBtn').addEventListener('click', startNewDraft);
     document.getElementById('deleteDraftBtn').addEventListener('click', deleteCurrentDraft);
     document.getElementById('excludeAddBtn').addEventListener('click', addExclusion);
