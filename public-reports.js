@@ -18,21 +18,9 @@ function pbEscape(str) {
     .replace(/"/g, '&quot;');
 }
 
-function pbYoutubeId(url) {
-  if (!url) return null;
-  const m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([A-Za-z0-9_-]{11})/);
-  if (m) return m[1];
-  if (/^[A-Za-z0-9_-]{11}$/.test(url.trim())) return url.trim();
-  return null;
-}
-
 function pbBuildCard(report) {
   const letter = report.overall_grade || 'B';
   const gClass = pbGradeClass(letter);
-  const ytId = pbYoutubeId(report.video_url);
-  const thumbInner = ytId
-    ? `<img src="https://img.youtube.com/vi/${ytId}/hqdefault.jpg" alt="" style="width:100%;height:100%;object-fit:cover;">`
-    : '';
   const scores = report.scores || {};
   const topTags = Object.entries(scores)
     .sort((a, b) => b[1] - a[1])
@@ -42,26 +30,26 @@ function pbBuildCard(report) {
   const byline = report.reporter_name
     ? `<div style="font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--steel); margin-bottom:10px;">SCOUTED BY ${pbEscape(report.reporter_name.toUpperCase())}</div>`
     : '';
-  const metaBits = [report.position, report.team].filter(Boolean).map(pbEscape).join(' · ');
+  const metaBits = [report.position, report.team, report.league].filter(Boolean).map(pbEscape).join(' · ');
   const hasCustomTitle = report.title && report.title.trim();
   const subtitleHtml = hasCustomTitle
-    ? `<div style="font-size:13px; color:var(--ice-dim); font-style:italic; margin-bottom:10px;">${pbEscape(report.title)}</div>`
+    ? `<div style="font-size:13px; color:var(--ice-dim); font-style:italic; margin-bottom:10px; overflow-wrap:break-word; word-break:break-word;">${pbEscape(report.title)}</div>`
     : '';
 
   return `<a href="/api/report/${report.id}" style="text-decoration:none; color:inherit; display:block;">
   <article class="dossier hud" data-pos="${pbEscape(report.position || '')}">
     <span class="hud-bl"></span><span class="hud-br"></span>
-    <div class="dossier-thumb">${thumbInner}
+    <div class="dossier-thumb">
       <span class="file-tag">FILE #${pbEscape(report.file_num || '----')}</span>
       <span class="grade-stamp ${gClass}">GRADE ${pbEscape(letter)}</span>
       <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
     </div>
-    <div class="dossier-body">
-      <h3>${pbEscape(report.name || 'Unnamed Prospect')}</h3>
-      ${metaBits ? `<div class="prospect-meta">${metaBits}</div>` : ''}
+    <div class="dossier-body" style="overflow-wrap:break-word; word-break:break-word;">
+      <h3 style="overflow-wrap:break-word; word-break:break-word;">${pbEscape(report.name || 'Unnamed Prospect')}</h3>
+      ${metaBits ? `<div class="prospect-meta" style="overflow-wrap:break-word; word-break:break-word;">${metaBits}</div>` : ''}
       ${subtitleHtml}
       ${byline}
-      <p>${pbEscape(firstLine)}</p>
+      <p style="overflow-wrap:break-word; word-break:break-word;">${pbEscape(firstLine)}</p>
       <div class="tool-tags">${topTags.map(t => `<span>${pbEscape(t)}</span>`).join('')}</div>
     </div>
   </article>
