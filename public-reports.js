@@ -1,3 +1,4 @@
+
 // Fetches PUBLISHED scouting reports from Supabase and renders them into a
 // dossier-grid on the public site. If the fetch fails or returns nothing
 // (e.g. before any reports have been published yet), the existing static
