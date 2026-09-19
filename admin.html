@@ -391,6 +391,16 @@
               </div>
             </div>
             <div class="field-row">
+              <div class="field">
+                <label>League</label>
+                <input type="text" id="fLeague" placeholder="e.g. OHL, SHL, Liiga">
+              </div>
+              <div class="field">
+                <label>Nation</label>
+                <input type="text" id="fNation" placeholder="e.g. Canada, Sweden">
+              </div>
+            </div>
+            <div class="field-row">
               <div class="field" style="grid-column:1 / -1;">
                 <label>Report Title</label>
                 <input type="text" id="fTitle" placeholder="e.g. Edge Work Under Pressure">
@@ -426,9 +436,9 @@
           <div class="panel-head"><h2>Video</h2></div>
           <div class="panel-body">
             <div class="field">
-              <label>YouTube URL (or video ID)</label>
-              <input type="text" id="fVideoUrl" placeholder="https://youtube.com/watch?v=... or leave blank">
-              <span class="hint">Paste a link once the breakdown video is live. Leave blank to keep a placeholder on export.</span>
+              <label>Patreon Video Link</label>
+              <input type="text" id="fVideoUrl" placeholder="https://www.patreon.com/posts/... or leave blank">
+              <span class="hint">Paste the Patreon post link once the breakdown video is live. Leave blank to keep a placeholder on export.</span>
             </div>
             <div class="video-preview" id="videoPreview">
               <div class="video-placeholder">
@@ -565,10 +575,17 @@
   const SUPABASE_KEY = "sb_publishable_AqjW7wYPhZ6OTpM1W-jVew_1L18nkZE";
   const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  const CATEGORIES = [
-    "Skating", "Shot", "Puck Skills", "Playmaking",
+  const SKATER_CATEGORIES = [
+    "Skating - Speed/Power", "Skating - Quickness/Agility", "Shot", "Puck Skills", "Playmaking",
     "OZ Hockey Sense", "DZ Hockey Sense", "Compete", "Physicality"
   ];
+  const GOALIE_CATEGORIES = [
+    "Hands", "Size", "Puck Tracking", "Movement/Skating",
+    "Composure", "Puck Playing", "Technique", "Rebound Control", "Athleticism/Reactions"
+  ];
+  function categoriesFor(position){
+    return position === 'G' ? GOALIE_CATEGORIES : SKATER_CATEGORIES;
+  }
 
   // Maps each admin's login email to how their name should display on reports.
   const REPORTER_NAMES = {
@@ -657,9 +674,11 @@
       name: row.name || '',
       position: row.position || 'C',
       team: row.team || '',
+      league: row.league || '',
+      nation: row.nation || '',
       fileNum: row.file_num || '',
       title: row.title || '',
-      scores: row.scores || Object.fromEntries(CATEGORIES.map(c => [c, 5])),
+      scores: row.scores || Object.fromEntries(categoriesFor(row.position).map(c => [c, 5])),
       notes: row.notes || '',
       videoUrl: row.video_url || '',
       reporterName: row.reporter_name || '',
@@ -671,8 +690,8 @@
   function newDraftObj(){
     return {
       id: null, // null until first saved — Supabase assigns the real id
-      name: '', position: 'C', team: '', fileNum: '', title: '',
-      scores: Object.fromEntries(CATEGORIES.map(c => [c, 5])),
+      name: '', position: 'C', team: '', league: '', nation: '', fileNum: '', title: '',
+      scores: Object.fromEntries(SKATER_CATEGORIES.map(c => [c, 5])),
       notes: '', videoUrl: '',
       status: 'draft',
       updated: Date.now()
@@ -681,14 +700,17 @@
 
   // ============ BUILD GRADE GRID ============
   const gradeGrid = document.getElementById('gradeGrid');
-  function buildGradeGrid(){
+  function buildGradeGrid(position, preserveScores){
+    const cats = categoriesFor(position);
+    const existing = preserveScores || {};
     gradeGrid.innerHTML = '';
-    CATEGORIES.forEach(cat => {
+    cats.forEach(cat => {
+      const startVal = (typeof existing[cat] === 'number') ? existing[cat] : 5;
       const item = document.createElement('div');
       item.className = 'grade-item';
       item.innerHTML = `
-        <div class="g-label"><span>${cat}</span><b class="mono" data-val="${cat}">5.0</b></div>
-        <input type="range" min="0" max="10" step="0.1" value="5" data-cat="${cat}">
+        <div class="g-label"><span>${cat}</span><b class="mono" data-val="${cat}">${startVal.toFixed(1)}</b></div>
+        <input type="range" min="0" max="10" step="0.1" value="${startVal}" data-cat="${cat}">
       `;
       gradeGrid.appendChild(item);
       item.querySelector('input').addEventListener('input', (e) => {
@@ -700,16 +722,18 @@
   }
 
   function letterGrade(avg){
-    if (avg >= 9.3) return 'A+';
-    if (avg >= 8.7) return 'A';
-    if (avg >= 8.3) return 'A-';
+    if (avg >= 9.0) return 'A+';
+    if (avg >= 8.5) return 'A';
+    if (avg >= 8.0) return 'A-';
     if (avg >= 7.7) return 'B+';
     if (avg >= 7.3) return 'B';
-    if (avg >= 6.7) return 'B-';
-    if (avg >= 6.3) return 'C+';
-    if (avg >= 5.7) return 'C';
-    if (avg >= 5.0) return 'C-';
-    return 'D+';
+    if (avg >= 7.0) return 'B-';
+    if (avg >= 6.7) return 'C+';
+    if (avg >= 6.3) return 'C';
+    if (avg >= 6.0) return 'C-';
+    if (avg >= 5.7) return 'D+';
+    if (avg >= 5.3) return 'D';
+    return 'D-';
   }
 
   function getScores(){
@@ -729,24 +753,16 @@
   }
 
   // ============ VIDEO PREVIEW ============
-  function extractYoutubeId(url){
-    if (!url) return null;
-    const patterns = [
-      /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([A-Za-z0-9_-]{11})/,
-    ];
-    for (const p of patterns){
-      const m = url.match(p);
-      if (m) return m[1];
-    }
-    if (/^[A-Za-z0-9_-]{11}$/.test(url.trim())) return url.trim();
-    return null;
-  }
   function updateVideoPreview(){
-    const url = document.getElementById('fVideoUrl').value;
-    const id = extractYoutubeId(url);
+    const url = document.getElementById('fVideoUrl').value.trim();
     const preview = document.getElementById('videoPreview');
-    if (id){
-      preview.innerHTML = `<iframe src="https://www.youtube.com/embed/${id}" allowfullscreen></iframe>`;
+    if (url){
+      preview.innerHTML = `
+        <div class="video-placeholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M10 9l5 3-5 3z" fill="currentColor" stroke="none"/></svg>
+          <p>OPENS ON PATREON</p>
+          <a href="${url}" target="_blank" rel="noopener" style="color:var(--hazard); font-size:11px; word-break:break-all;">${url}</a>
+        </div>`;
     } else {
       preview.innerHTML = `
         <div class="video-placeholder">
@@ -765,11 +781,9 @@
     document.getElementById('fTitle').value = draft.title || '';
     document.getElementById('fNotes').value = draft.notes || '';
     document.getElementById('fVideoUrl').value = draft.videoUrl || '';
-    document.querySelectorAll('#gradeGrid input[type="range"]').forEach(inp => {
-      const v = (draft.scores && draft.scores[inp.dataset.cat] != null) ? draft.scores[inp.dataset.cat] : 5;
-      inp.value = v;
-      inp.closest('.grade-item').querySelector('b').textContent = parseFloat(v).toFixed(1);
-    });
+    document.getElementById('fLeague').value = draft.league || '';
+    document.getElementById('fNation').value = draft.nation || '';
+    buildGradeGrid(draft.position || 'C', draft.scores);
     updateOverall();
     updateVideoPreview();
   }
@@ -779,6 +793,8 @@
       name: document.getElementById('fName').value.trim(),
       position: document.getElementById('fPosition').value,
       team: document.getElementById('fTeam').value.trim(),
+      league: document.getElementById('fLeague').value.trim(),
+      nation: document.getElementById('fNation').value.trim(),
       fileNum: document.getElementById('fFileNum').value.trim(),
       title: document.getElementById('fTitle').value.trim(),
       notes: document.getElementById('fNotes').value,
@@ -856,6 +872,8 @@
       name: data.name,
       position: data.position,
       team: data.team,
+      league: data.league,
+      nation: data.nation,
       file_num: data.fileNum,
       title: data.title,
       scores: data.scores,
@@ -947,6 +965,21 @@
     return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
+  // Still used by the Hidden Episodes feature (YouTube exclude list) — NOT
+  // for report videos anymore, since those are Patreon links now.
+  function extractYoutubeId(url){
+    if (!url) return null;
+    const patterns = [
+      /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([A-Za-z0-9_-]{11})/,
+    ];
+    for (const p of patterns){
+      const m = url.match(p);
+      if (m) return m[1];
+    }
+    if (/^[A-Za-z0-9_-]{11}$/.test(url.trim())) return url.trim();
+    return null;
+  }
+
   function buildDossierSnippet(){
     const data = readForm();
     const scores = data.scores;
@@ -954,7 +987,6 @@
     const avg = vals.reduce((a,b)=>a+b,0) / vals.length;
     const letter = letterGrade(avg);
     const gClass = gradeClass(letter);
-    const id = extractYoutubeId(data.videoUrl);
     const fileNum = data.fileNum || '----';
     const title = data.title || `${data.name || 'Prospect'}: Scouting Report`;
     const notesShort = escapeHtml((data.notes || '').split('\n').filter(Boolean)[0] || 'Full breakdown inside.');
@@ -962,13 +994,9 @@
     // pick top 3 scored categories as tool tags
     const topTags = Object.entries(scores).sort((a,b) => b[1]-a[1]).slice(0,3).map(([k]) => k);
 
-    const thumbInner = id
-      ? `<img src="https://img.youtube.com/vi/${id}/hqdefault.jpg" alt="" style="width:100%;height:100%;object-fit:cover;">`
-      : '';
-
     return `<article class="dossier hud reveal">
   <span class="hud-bl"></span><span class="hud-br"></span>
-  <div class="dossier-thumb">${thumbInner}
+  <div class="dossier-thumb">
     <span class="file-tag">FILE #${escapeHtml(fileNum)}</span>
     <span class="grade-stamp ${gClass}">GRADE ${letter}</span>
     <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
@@ -1212,7 +1240,6 @@
 
   // ============ INIT ============
   async function initAdmin(){
-    buildGradeGrid();
     await loadDrafts();
     renderDraftsList();
     loadExcludedEpisodes();
@@ -1225,8 +1252,15 @@
     }
 
     // mark unsaved on any input change
-    ['fName','fPosition','fTeam','fFileNum','fTitle','fNotes'].forEach(id => {
+    ['fName','fTeam','fLeague','fNation','fFileNum','fTitle','fNotes'].forEach(id => {
       document.getElementById(id).addEventListener('input', markUnsaved);
+    });
+    // Position change rebuilds the score grid (goalie vs. skater categories),
+    // preserving any values already entered for categories that exist in both.
+    document.getElementById('fPosition').addEventListener('change', (e) => {
+      buildGradeGrid(e.target.value, getScores());
+      updateOverall();
+      markUnsaved();
     });
     document.getElementById('fVideoUrl').addEventListener('input', () => {
       updateVideoPreview();
