@@ -147,10 +147,27 @@
     display:flex; align-items:center; justify-content:space-between; gap:12px;
     padding:12px 14px; background:var(--black); border:1px solid var(--steel-soft);
     margin-bottom:8px; font-size:13px;
+    transition:border-color .15s, opacity .15s, transform .15s;
   }
+  .board-item.dragging{ opacity:0.4; border-color:var(--hazard); }
+  .board-item.drag-over{ border-color:var(--cyan); }
+  .board-item .bi-drag-handle{
+    cursor:grab; color:var(--steel); font-size:16px; flex-shrink:0;
+    padding:0 4px; user-select:none; touch-action:none;
+  }
+  .board-item .bi-drag-handle:hover{ color:var(--ice-dim); }
+  .board-item .bi-drag-handle:active{ cursor:grabbing; }
+  .board-item .bi-main{ display:flex; align-items:center; gap:10px; overflow:hidden; flex:1; }
   .board-item .bi-rank{ font-family:'JetBrains Mono',monospace; color:var(--hazard); font-weight:700; margin-right:10px; }
   .board-item .bi-meta{ font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--ice-dim); margin-top:2px; }
-  .board-item .bi-actions{ display:flex; gap:8px; flex-shrink:0; }
+  .board-item .bi-actions{ display:flex; gap:6px; flex-shrink:0; align-items:center; }
+  .board-item .bi-move{
+    background:none; border:1px solid var(--steel); color:var(--ice-dim);
+    font-size:11px; padding:5px 8px; cursor:pointer; line-height:1;
+  }
+  .board-item .bi-move:hover{ border-color:var(--cyan-dim); color:var(--ice); }
+  .board-item .bi-move:disabled{ opacity:0.3; cursor:default; }
+  .board-item .bi-move:disabled:hover{ border-color:var(--steel); color:var(--ice-dim); }
   .board-item .bi-actions button{
     background:none; border:1px solid var(--steel); color:var(--ice-dim);
     font-family:'JetBrains Mono',monospace; font-size:11px; padding:5px 10px; cursor:pointer;
@@ -1261,13 +1278,18 @@
       list.innerHTML = `<div style="font-size:12px; color:var(--ice-dim);">No entries yet — add the first prospect above.</div>`;
       return;
     }
-    list.innerHTML = boardEntries.map(row => `
-      <div class="board-item">
-        <div style="overflow:hidden;">
-          <span class="bi-rank">#${row.rank}</span><strong>${row.name}</strong> ${row.position ? `<span style="color:var(--ice-dim);">— ${row.position}</span>` : ''}
-          <div class="bi-meta">GRADE ${row.grade || '—'} · ${trendSymbol(row.trend, row.trend_delta)}${row.report_id ? ` · LINKED${reportLabelFor(row.report_id) ? ': ' + reportLabelFor(row.report_id) : ''}` : ''}</div>
+    list.innerHTML = boardEntries.map((row, i) => `
+      <div class="board-item" draggable="true" data-id="${row.id}">
+        <span class="bi-drag-handle" title="Drag to reorder">⠿</span>
+        <div class="bi-main">
+          <div style="overflow:hidden;">
+            <span class="bi-rank">#${row.rank}</span><strong>${row.name}</strong> ${row.position ? `<span style="color:var(--ice-dim);">— ${row.position}</span>` : ''}
+            <div class="bi-meta">GRADE ${row.grade || '—'} · ${trendSymbol(row.trend, row.trend_delta)}${row.report_id ? ` · LINKED${reportLabelFor(row.report_id) ? ': ' + reportLabelFor(row.report_id) : ''}` : ''}</div>
+          </div>
         </div>
         <div class="bi-actions">
+          <button class="bi-move" data-move-up="${row.id}" type="button" title="Move up" ${i === 0 ? 'disabled' : ''}>▲</button>
+          <button class="bi-move" data-move-down="${row.id}" type="button" title="Move down" ${i === boardEntries.length - 1 ? 'disabled' : ''}>▼</button>
           <button data-edit="${row.id}" type="button">Edit</button>
           <button data-delete="${row.id}" class="bi-delete" type="button">Delete</button>
         </div>
@@ -1279,6 +1301,80 @@
     list.querySelectorAll('button[data-delete]').forEach(btn => {
       btn.addEventListener('click', () => deleteBoardEntry(btn.dataset.delete));
     });
+    list.querySelectorAll('button[data-move-up]').forEach(btn => {
+      btn.addEventListener('click', () => moveBoardEntry(btn.dataset.moveUp, -1));
+    });
+    list.querySelectorAll('button[data-move-down]').forEach(btn => {
+      btn.addEventListener('click', () => moveBoardEntry(btn.dataset.moveDown, 1));
+    });
+    wireBoardDragAndDrop(list);
+  }
+
+  // ============ DRAG-AND-DROP REORDERING ============
+  function wireBoardDragAndDrop(list){
+    let draggedEl = null;
+
+    list.querySelectorAll('.board-item').forEach(item => {
+      item.addEventListener('dragstart', (e) => {
+        draggedEl = item;
+        item.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+      });
+      item.addEventListener('dragend', () => {
+        item.classList.remove('dragging');
+        list.querySelectorAll('.board-item').forEach(el => el.classList.remove('drag-over'));
+        persistBoardOrder();
+      });
+      item.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        if (!draggedEl || draggedEl === item) return;
+        const rect = item.getBoundingClientRect();
+        const isAfter = (e.clientY - rect.top) > rect.height / 2;
+        list.insertBefore(draggedEl, isAfter ? item.nextSibling : item);
+      });
+      item.addEventListener('dragenter', (e) => {
+        e.preventDefault();
+        if (draggedEl && draggedEl !== item) item.classList.add('drag-over');
+      });
+      item.addEventListener('dragleave', () => {
+        item.classList.remove('drag-over');
+      });
+    });
+  }
+
+  async function moveBoardEntry(id, direction){
+    const list = document.getElementById('boardList');
+    const items = Array.from(list.querySelectorAll('.board-item'));
+    const idx = items.findIndex(el => el.dataset.id === id);
+    if (idx === -1) return;
+    const swapIdx = idx + direction;
+    if (swapIdx < 0 || swapIdx >= items.length) return;
+
+    if (direction === -1) {
+      list.insertBefore(items[idx], items[swapIdx]);
+    } else {
+      list.insertBefore(items[swapIdx], items[idx]);
+    }
+    await persistBoardOrder();
+  }
+
+  async function persistBoardOrder(){
+    const list = document.getElementById('boardList');
+    const orderedIds = Array.from(list.querySelectorAll('.board-item')).map(el => el.dataset.id);
+
+    // Only write rows whose rank actually changed, to keep this cheap.
+    const updates = [];
+    orderedIds.forEach((id, i) => {
+      const newRank = i + 1;
+      const entry = boardEntries.find(r => r.id === id);
+      if (entry && entry.rank !== newRank) {
+        updates.push(sb.from('puckbunker_draft_board').update({ rank: newRank }).eq('id', id));
+      }
+    });
+    if (!updates.length) return;
+
+    await Promise.all(updates);
+    await loadBoard();
   }
 
   function startEditBoardEntry(id){
