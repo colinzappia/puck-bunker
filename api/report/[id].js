@@ -81,7 +81,7 @@ function renderReportPage(report, reqHost) {
   const gClass = gradeClass(letter);
   const pageTitle = `${report.name} — Grade ${letter} | Puck Bunker`;
   const firstLine = (report.notes || "").split("\n").filter(Boolean)[0] || `Full scouting breakdown of ${report.name}.`;
-  const ogImage = LOGO_URL;
+  const ogImage = report.thumbnail_url || LOGO_URL;
   const canonicalUrl = `${SITE_URL}/api/report/${report.id}`;
   const scores = report.scores || {};
   const categories = Object.keys(scores); // dynamic — skater and goalie reports use different category sets
@@ -150,6 +150,8 @@ function renderReportPage(report, reqHost) {
   .wrap{ max-width:820px; margin:0 auto; padding:48px 24px 80px; overflow-wrap:break-word; word-break:break-word; }
   .back-link{ font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:0.06em; color:var(--ice-dim); }
   .back-link:hover{ color:var(--hazard); }
+  .hero-thumb{ aspect-ratio:16/9; overflow:hidden; margin-top:20px; border:1px solid var(--steel); }
+  .hero-thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
   .report-head{ margin:28px 0 8px; display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
   .grade-pill{
     font-family:'JetBrains Mono',monospace; font-weight:700; font-size:15px;
@@ -189,6 +191,8 @@ function renderReportPage(report, reqHost) {
 <body>
   <div class="wrap">
     <a href="/scouting-reports.html" class="back-link">← BACK TO SCOUTING REPORTS</a>
+
+    ${report.thumbnail_url ? `<div class="hero-thumb"><img src="${escapeHtml(report.thumbnail_url)}" alt=""></div>` : ""}
 
     <div class="report-head">
       <span class="grade-pill mono ${gClass}">GRADE ${escapeHtml(letter)}</span>
