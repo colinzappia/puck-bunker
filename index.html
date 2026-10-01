@@ -426,6 +426,12 @@
 
   /* ---------- Draft board ---------- */
   .board{ margin-top:48px; border:1px solid var(--steel); }
+  .board-month{ display:inline-flex; align-items:center; gap:10px; margin-top:40px; padding:8px 14px; border:1px solid var(--hazard-2); font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:0.18em; text-transform:uppercase; color:var(--hazard); }
+  .board-month .dot{ width:7px; height:7px; border-radius:50%; background:var(--hazard); animation:board-blink 1.6s ease-in-out infinite; }
+  .board-month[hidden]{ display:none; }
+  .board-month + .board{ margin-top:14px; }
+  @keyframes board-blink{ 0%,100%{ opacity:1; } 50%{ opacity:0.25; } }
+  @media (prefers-reduced-motion:reduce){ .board-month .dot{ animation:none; } }
   .board-row{
     display:grid; grid-template-columns:64px 1fr 130px 140px; align-items:center;
     padding:16px 20px; border-bottom:1px solid var(--steel); gap:14px;
@@ -703,6 +709,7 @@
       <h2 class="stencil">2027 rankings,<br><em>updated monthly.</em></h2>
       <p>Our live draft board. Repositioned every time a prospect earns it or loses it on tape.</p>
     </div>
+    <div class="board-month reveal" id="boardMonth" hidden><span class="dot" aria-hidden="true"></span><span id="boardMonthText"></span></div>
     <div class="board mono reveal">
       <div class="board-row head"><span>Rk</span><span>Prospect</span><span>Trend</span><span>Grade</span></div>
       <div id="boardRows">
@@ -1027,5 +1034,21 @@ pbLoadTicker();
   pbLoadBoard();
 </script>
 
+<script>
+// Shows the current month above the rankings board (Ottawa time) and
+// switches over on its own when a new month starts.
+(function () {
+  const box = document.getElementById('boardMonth');
+  const text = document.getElementById('boardMonthText');
+  if (!box || !text) return;
+  function update() {
+    const label = new Date().toLocaleDateString('en-CA', { month: 'long', year: 'numeric', timeZone: 'America/Toronto' });
+    text.textContent = label + ' board';
+    box.hidden = false;
+  }
+  update();
+  setInterval(update, 60 * 60 * 1000); // re-check hourly in case the page is left open over a month change
+})();
+</script>
 </body>
 </html>
