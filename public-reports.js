@@ -1,4 +1,3 @@
-
 // Fetches PUBLISHED scouting reports from Supabase and renders them into a
 // dossier-grid on the public site. If the fetch fails or returns nothing
 // (e.g. before any reports have been published yet), the existing static
@@ -37,10 +36,15 @@ function pbBuildCard(report) {
     ? `<div style="font-size:13px; color:var(--ice-dim); font-style:italic; margin-bottom:10px; overflow-wrap:break-word; word-break:break-word;">${pbEscape(report.title)}</div>`
     : '';
 
+  const thumbImg = report.thumbnail_url
+    ? `<img src="${pbEscape(report.thumbnail_url)}" alt="" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover;">`
+    : '';
+
   return `<a href="/api/report/${report.id}" style="text-decoration:none; color:inherit; display:block;">
   <article class="dossier hud" data-pos="${pbEscape(report.position || '')}">
     <span class="hud-bl"></span><span class="hud-br"></span>
     <div class="dossier-thumb">
+      ${thumbImg}
       <span class="file-tag">FILE #${pbEscape(report.file_num || '----')}</span>
       <span class="grade-stamp ${gClass}">GRADE ${pbEscape(letter)}</span>
       <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
