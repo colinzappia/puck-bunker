@@ -531,7 +531,11 @@
   .predict-card .p-eyebrow{ font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--hazard); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:14px; }
   .predict-card h2{ font-size:28px; margin-bottom:6px; }
   .predict-card .p-meta{ color:var(--ice-dim); font-size:13px; margin-bottom:22px; }
+  .predict-card{ min-width:0; overflow:hidden; }
+  .predict-card h2, .predict-card .p-notes{ overflow-wrap:anywhere; word-break:break-word; }
   .predict-card .p-notes{ color:var(--ice-dim); font-size:14px; line-height:1.7; margin-bottom:28px; padding-bottom:24px; border-bottom:1px dashed var(--steel); }
+  .predict-card .p-notes a{ color:var(--hazard); text-decoration:underline; text-underline-offset:3px; }
+  .predict-card .p-notes a:hover{ color:var(--ice); }
   .grade-btn-grid{ display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-bottom:20px; }
   @media (max-width:500px){ .grade-btn-grid{ grid-template-columns:repeat(3,1fr); } }
   .grade-btn{
@@ -767,11 +771,18 @@
     }
 
     const r = pbPredictCurrent;
-    const notes = (r.notes || 'No notes on file for this one — pure gut call.').split('\n').filter(Boolean).slice(0, 3).join(' ');
+    const pbEsc = (str) => String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    const rawNotes = (r.notes || 'No notes on file for this one — pure gut call.').split('\n').filter(Boolean).slice(0, 3).join(' ');
+    // Escape the text, then turn long pasted links into a short clickable label so they can't run outside the box
+    const notes = pbEsc(rawNotes).replace(/https?:\/\/[^\s<]+/g, (url) => {
+      let host = 'link';
+      try { host = new URL(url.replace(/&amp;/g, '&')).hostname.replace(/^www\./, ''); } catch (e) {}
+      return `<a href="${url}" target="_blank" rel="noopener">${host} ↗</a>`;
+    });
 
     card.innerHTML = `
       <div class="p-eyebrow">FILE #${(r.file_num || '----')}</div>
-      <h2 class="stencil">${r.name || 'Unnamed Prospect'}${r.position ? ' — ' + r.position : ''}</h2>
+      <h2 class="stencil">${pbEsc(r.name || 'Unnamed Prospect')}${r.position ? ' — ' + pbEsc(r.position) : ''}</h2>
       <div class="p-meta">No grade shown. Read the tape, make the call.</div>
       <div class="p-notes">${notes}</div>
       <div class="grade-btn-grid" id="gradeBtnGrid">
