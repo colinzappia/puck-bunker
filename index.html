@@ -311,6 +311,11 @@
     z-index:2; opacity:0.7;
   }
   .crosshair svg{ width:100%; height:100%; }
+  .crosshair-sm{ width:64px; height:64px; top:32px; right:32px; opacity:0.6; pointer-events:none; }
+  .crosshair-mini{ position:absolute; z-index:1; opacity:0.35; pointer-events:none; }
+  .crosshair-mini svg{ width:100%; height:100%; }
+  .crosshair-mini circle{ animation:crosshair-pulse 2.4s ease-in-out infinite; }
+  @media (max-width:900px){ .crosshair-mini{ display:none; } }
   .crosshair circle{ animation:crosshair-pulse 2.4s ease-in-out infinite; transform-origin:center; }
   @keyframes crosshair-pulse{ 0%,100%{ opacity:0.4; } 50%{ opacity:0.95; } }
   @media (max-width:900px){ .crosshair{ display:none; } }
@@ -595,6 +600,17 @@
 
 
 <section id="intel">
+  <div class="crosshair-mini" aria-hidden="true" style="top:56px; right:48px; width:56px; height:56px;">
+    <svg viewBox="0 0 120 120" fill="none" stroke="var(--cyan)" stroke-width="2">
+      <circle cx="60" cy="60" r="50" opacity="0.5"/>
+      <circle cx="60" cy="60" r="30" opacity="0.7"/>
+      <line x1="60" y1="0" x2="60" y2="24" opacity="0.8"/>
+      <line x1="60" y1="96" x2="60" y2="120" opacity="0.8"/>
+      <line x1="0" y1="60" x2="24" y2="60" opacity="0.8"/>
+      <line x1="96" y1="60" x2="120" y2="60" opacity="0.8"/>
+    </svg>
+  </div>
+
   <div class="wrap">
     <div class="sec-head reveal">
       <div class="eyebrow">Latest intel</div>
@@ -640,6 +656,17 @@
 </section>
 
 <section id="board">
+  <div class="crosshair-mini" aria-hidden="true" style="bottom:48px; left:32px; width:44px; height:44px; opacity:0.28;">
+    <svg viewBox="0 0 120 120" fill="none" stroke="var(--cyan)" stroke-width="2">
+      <circle cx="60" cy="60" r="50" opacity="0.5"/>
+      <circle cx="60" cy="60" r="30" opacity="0.7"/>
+      <line x1="60" y1="0" x2="60" y2="24" opacity="0.8"/>
+      <line x1="60" y1="96" x2="60" y2="120" opacity="0.8"/>
+      <line x1="0" y1="60" x2="24" y2="60" opacity="0.8"/>
+      <line x1="96" y1="60" x2="120" y2="60" opacity="0.8"/>
+    </svg>
+  </div>
+
   <div class="wrap">
     <div class="sec-head reveal">
       <div class="eyebrow">The board</div>
@@ -679,6 +706,17 @@
 </section>
 
 <section id="method">
+  <div class="crosshair-mini" aria-hidden="true" style="top:64px; right:40px; width:68px; height:68px;">
+    <svg viewBox="0 0 120 120" fill="none" stroke="var(--cyan)" stroke-width="2">
+      <circle cx="60" cy="60" r="50" opacity="0.5"/>
+      <circle cx="60" cy="60" r="30" opacity="0.7"/>
+      <line x1="60" y1="0" x2="60" y2="24" opacity="0.8"/>
+      <line x1="60" y1="96" x2="60" y2="120" opacity="0.8"/>
+      <line x1="0" y1="60" x2="24" y2="60" opacity="0.8"/>
+      <line x1="96" y1="60" x2="120" y2="60" opacity="0.8"/>
+    </svg>
+  </div>
+
   <div class="wrap">
     <div class="sec-head reveal">
       <div class="eyebrow">The M.O.</div>
@@ -747,6 +785,27 @@
 </section>
 
 <section id="join" class="recruit">
+  <div class="crosshair-mini" aria-hidden="true" style="top:48px; left:48px; width:48px; height:48px;">
+    <svg viewBox="0 0 120 120" fill="none" stroke="var(--cyan)" stroke-width="2">
+      <circle cx="60" cy="60" r="50" opacity="0.5"/>
+      <circle cx="60" cy="60" r="30" opacity="0.7"/>
+      <line x1="60" y1="0" x2="60" y2="24" opacity="0.8"/>
+      <line x1="60" y1="96" x2="60" y2="120" opacity="0.8"/>
+      <line x1="0" y1="60" x2="24" y2="60" opacity="0.8"/>
+      <line x1="96" y1="60" x2="120" y2="60" opacity="0.8"/>
+    </svg>
+  </div>
+  <div class="crosshair-mini" aria-hidden="true" style="bottom:56px; right:64px; width:40px; height:40px; opacity:0.28;">
+    <svg viewBox="0 0 120 120" fill="none" stroke="var(--cyan)" stroke-width="2">
+      <circle cx="60" cy="60" r="50" opacity="0.5"/>
+      <circle cx="60" cy="60" r="30" opacity="0.7"/>
+      <line x1="60" y1="0" x2="60" y2="24" opacity="0.8"/>
+      <line x1="60" y1="96" x2="60" y2="120" opacity="0.8"/>
+      <line x1="0" y1="60" x2="24" y2="60" opacity="0.8"/>
+      <line x1="96" y1="60" x2="120" y2="60" opacity="0.8"/>
+    </svg>
+  </div>
+
   <div class="grid-bg" style="opacity:0.6;"></div>
   <div class="wrap reveal">
     <div class="eyebrow">Enlist</div>
