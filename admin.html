@@ -430,6 +430,14 @@
                 <input type="text" id="fTitle" placeholder="e.g. Edge Work Under Pressure">
               </div>
             </div>
+            <div class="field-row">
+              <div class="field" style="grid-column:1 / -1;">
+                <label for="fSeenLive" style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+                  <input type="checkbox" id="fSeenLive" style="width:18px; height:18px; accent-color:var(--hazard);">
+                  Seen live — adds a "Seen Live" stamp to this report
+                </label>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -653,6 +661,7 @@
     "chad.whitelock@gmail.com": "Chad Whitelock",
   };
   let currentReporterName = "";
+  let pbSeenLiveColumn = false; // becomes true once any loaded report has the seen_live column
   let currentUserId = null;
 
   // ============ AUTH / GATE ============
@@ -729,7 +738,7 @@
       return;
     }
     // Map DB rows (snake_case) to the shape the rest of the UI expects
-    drafts = (data || []).map(row => ({
+    drafts = (data || []).map(row => (pbSeenLiveColumn = pbSeenLiveColumn || ('seen_live' in row), row)).map(row => ({
       id: row.id,
       name: row.name || '',
       position: row.position || 'C',
@@ -743,6 +752,7 @@
       videoUrl: row.video_url || '',
       thumbnailUrl: row.thumbnail_url || '',
       reporterName: row.reporter_name || '',
+      seenLive: !!row.seen_live,
       scheduledAt: row.scheduled_at || null,
       status: row.status || 'draft',
       updated: new Date(row.updated_at || row.created_at).getTime()
@@ -754,7 +764,7 @@
       id: null, // null until first saved — Supabase assigns the real id
       name: '', position: 'C', team: '', league: '', nation: '', fileNum: '', title: '',
       scores: Object.fromEntries(SKATER_CATEGORIES.map(c => [c, 5])),
-      notes: '', videoUrl: '', thumbnailUrl: '',
+      notes: '', videoUrl: '', thumbnailUrl: '', seenLive: false,
       status: 'draft',
       scheduledAt: null,
       updated: Date.now()
@@ -902,6 +912,7 @@
     document.getElementById('fTeam').value = draft.team || '';
     document.getElementById('fFileNum').value = draft.fileNum || '';
     document.getElementById('fTitle').value = draft.title || '';
+    document.getElementById('fSeenLive').checked = !!draft.seenLive;
     document.getElementById('fNotes').value = draft.notes || '';
     document.getElementById('fVideoUrl').value = draft.videoUrl || '';
     document.getElementById('fLeague').value = draft.league || '';
@@ -949,6 +960,7 @@
       nation: document.getElementById('fNation').value.trim(),
       fileNum: document.getElementById('fFileNum').value.trim(),
       title: document.getElementById('fTitle').value.trim(),
+      seenLive: document.getElementById('fSeenLive').checked,
       notes: document.getElementById('fNotes').value,
       videoUrl: document.getElementById('fVideoUrl').value.trim(),
       thumbnailUrl: currentThumbnailUrl,
@@ -1043,6 +1055,9 @@
       notes: data.notes,
       video_url: data.videoUrl,
       thumbnail_url: data.thumbnailUrl || null,
+      // Only sent once the seen_live column exists in Supabase (or when ticked),
+      // so saving never breaks before that column is added.
+      ...((data.seenLive || pbSeenLiveColumn) ? { seen_live: !!data.seenLive } : {}),
     };
   }
 
@@ -1555,6 +1570,7 @@
     ['fName','fTeam','fLeague','fNation','fFileNum','fTitle','fNotes'].forEach(id => {
       document.getElementById(id).addEventListener('input', markUnsaved);
     });
+    document.getElementById('fSeenLive').addEventListener('change', markUnsaved);
     // Position change rebuilds the score grid (goalie vs. skater categories),
     // preserving any values already entered for categories that exist in both.
     document.getElementById('fPosition').addEventListener('change', (e) => {
