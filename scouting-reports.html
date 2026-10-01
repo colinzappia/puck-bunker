@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Puck Bunker — Scouting Reports</title>
-<meta name="description" content="Every prospect we've filed a report on, graded across all eight tools.">
+<meta name="description" content="Every prospect we've filed a report on — skaters graded across 10 tools, goalies across nine position-specific criteria.">
 <meta property="og:title" content="Puck Bunker — Scouting Reports">
-<meta property="og:description" content="Every prospect we've filed a report on, graded across all eight tools.">
+<meta property="og:description" content="Every prospect we've filed a report on — skaters graded across 10 tools, goalies across nine position-specific criteria.">
 <meta property="og:image" content="https://www.puckbunker.com/puck-bunker-logo.png">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
@@ -349,7 +349,10 @@
   @media (max-width:720px){ .stat-row{grid-template-columns:1fr;} }
 
   /* ---------- Dossier cards ---------- */
-  .dossier-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:22px; margin-top:48px; }
+  .dossier-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:22px; margin-top:48px; align-items:start; }
+  .dossier-grid > a, .dossier-grid > .dossier{ display:block; min-width:0; }
+  .dossier-grid > .pb-hidden{ display:none !important; }
+  .filter-empty{ display:none; margin-top:48px; padding:40px 24px; border:1px dashed var(--steel); text-align:center; font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--ice-dim); letter-spacing:0.05em; text-transform:uppercase; }
   .dossier{
     background:var(--panel); border:1px solid var(--steel);
     transition:border-color .2s, transform .25s, box-shadow .25s;
@@ -589,7 +592,7 @@
   <div class="wrap">
     <div class="eyebrow">The archive</div>
     <h1 class="stencil">Scouting reports.</h1>
-    <p>Every prospect we've filed a report on, graded across all eight tools. Filter by position.</p>
+    <p>Every prospect we've filed a report on — skaters graded across 10 tools, goalies across nine position-specific criteria. Filter by position.</p>
   </div>
 </section>
 
@@ -604,6 +607,8 @@
       <button class="filter-chip" data-filter="RD">Right Defense</button>
       <button class="filter-chip" data-filter="G">Goaltenders</button>
     </div>
+
+    <div class="filter-empty" id="filterEmpty">No reports filed at this position yet.</div>
 
     <div class="dossier-grid" id="reportsGrid">
 
@@ -832,10 +837,19 @@
       if (!btn) return;
       filterRow.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      const filter = btn.dataset.filter;
-      document.querySelectorAll('#reportsGrid .dossier').forEach(card => {
-        card.style.display = (filter === 'all' || card.dataset.pos === filter) ? '' : 'none';
+      const filter = btn.dataset.filter.toUpperCase();
+      const grid = document.getElementById('reportsGrid');
+      let shown = 0;
+      grid.querySelectorAll('.dossier').forEach(card => {
+        // Hide the whole grid item (the link wrapper if there is one) so no empty gaps are left behind
+        const item = card.parentElement === grid ? card : card.closest('#reportsGrid > *');
+        const pos = (card.dataset.pos || '').trim().toUpperCase();
+        const match = filter === 'ALL' || pos === filter;
+        item.classList.toggle('pb-hidden', !match);
+        if (match) shown++;
       });
+      const empty = document.getElementById('filterEmpty');
+      if (empty) empty.style.display = shown ? 'none' : 'block';
     });
   }
 
