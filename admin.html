@@ -243,6 +243,12 @@
   .video-placeholder{ text-align:center; color:var(--ice-dim); }
   .video-placeholder svg{ width:40px; height:40px; margin:0 auto 10px; opacity:0.5; }
   .video-placeholder p{ font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.06em; }
+  .thumbnail-preview{
+    aspect-ratio:16/9; background:var(--black); border:1px solid var(--steel-soft);
+    display:flex; align-items:center; justify-content:center; margin-top:12px;
+    position:relative; overflow:hidden;
+  }
+  .thumbnail-preview img{ width:100%; height:100%; object-fit:cover; }
 
   /* Action bar */
   .action-bar{
@@ -463,6 +469,20 @@
                 <p>NO VIDEO LINKED YET</p>
               </div>
             </div>
+
+            <div class="field" style="margin-top:20px;">
+              <label>Report Thumbnail</label>
+              <input type="file" id="fThumbnailFile" accept="image/*">
+              <span class="hint">Upload the branded thumbnail graphic (like your "Game Highlights" cards). Shows where the play button sits on report cards.</span>
+            </div>
+            <div class="thumbnail-preview" id="thumbnailPreview">
+              <div class="video-placeholder">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" stroke="none"/><path d="M21 15l-5-5L5 21"/></svg>
+                <p>NO THUMBNAIL YET</p>
+              </div>
+            </div>
+            <div id="thumbnailStatus" class="mono" style="font-size:11px; color:var(--ice-dim); margin-top:8px;"></div>
+            <button class="btn btn-ghost" id="removeThumbnailBtn" type="button" style="display:none; margin-top:10px;">Remove Thumbnail</button>
           </div>
         </div>
 
@@ -719,6 +739,7 @@
       scores: row.scores || Object.fromEntries(categoriesFor(row.position).map(c => [c, 5])),
       notes: row.notes || '',
       videoUrl: row.video_url || '',
+      thumbnailUrl: row.thumbnail_url || '',
       reporterName: row.reporter_name || '',
       scheduledAt: row.scheduled_at || null,
       status: row.status || 'draft',
@@ -731,7 +752,7 @@
       id: null, // null until first saved — Supabase assigns the real id
       name: '', position: 'C', team: '', league: '', nation: '', fileNum: '', title: '',
       scores: Object.fromEntries(SKATER_CATEGORIES.map(c => [c, 5])),
-      notes: '', videoUrl: '',
+      notes: '', videoUrl: '', thumbnailUrl: '',
       status: 'draft',
       scheduledAt: null,
       updated: Date.now()
@@ -812,6 +833,66 @@
     }
   }
 
+  let currentThumbnailUrl = '';
+
+  function updateThumbnailPreview(){
+    const preview = document.getElementById('thumbnailPreview');
+    const removeBtn = document.getElementById('removeThumbnailBtn');
+    if (currentThumbnailUrl){
+      preview.innerHTML = `<img src="${currentThumbnailUrl}" alt="">`;
+      removeBtn.style.display = '';
+    } else {
+      preview.innerHTML = `
+        <div class="video-placeholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" stroke="none"/><path d="M21 15l-5-5L5 21"/></svg>
+          <p>NO THUMBNAIL YET</p>
+        </div>`;
+      removeBtn.style.display = 'none';
+    }
+  }
+
+  async function handleThumbnailUpload(e){
+    const file = e.target.files[0];
+    const status = document.getElementById('thumbnailStatus');
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')){
+      status.textContent = 'Please choose an image file.';
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024){
+      status.textContent = 'Image is too large — please keep it under 5MB.';
+      return;
+    }
+
+    status.textContent = 'Uploading…';
+    const ext = file.name.split('.').pop();
+    const path = `${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;
+
+    const { error: uploadError } = await sb.storage
+      .from('report-thumbnails')
+      .upload(path, file, { cacheControl: '3600', upsert: false });
+
+    if (uploadError){
+      status.textContent = 'Upload failed: ' + uploadError.message;
+      return;
+    }
+
+    const { data } = sb.storage.from('report-thumbnails').getPublicUrl(path);
+    currentThumbnailUrl = data.publicUrl;
+    updateThumbnailPreview();
+    status.textContent = 'Uploaded — click Save Draft to attach it to this report.';
+    markUnsaved();
+    e.target.value = '';
+  }
+
+  function removeThumbnail(){
+    currentThumbnailUrl = '';
+    updateThumbnailPreview();
+    document.getElementById('thumbnailStatus').textContent = 'Removed — click Save Draft to confirm.';
+    markUnsaved();
+  }
+
   // ============ FORM <-> DRAFT ============
   function fillForm(draft){
     document.getElementById('fName').value = draft.name || '';
@@ -826,6 +907,9 @@
     buildGradeGrid(draft.position || 'C', draft.scores);
     updateOverall();
     updateVideoPreview();
+    currentThumbnailUrl = draft.thumbnailUrl || '';
+    updateThumbnailPreview();
+    document.getElementById('thumbnailStatus').textContent = '';
     updateScheduleUI(draft);
   }
 
@@ -865,6 +949,7 @@
       title: document.getElementById('fTitle').value.trim(),
       notes: document.getElementById('fNotes').value,
       videoUrl: document.getElementById('fVideoUrl').value.trim(),
+      thumbnailUrl: currentThumbnailUrl,
       scores: getScores(),
     };
   }
@@ -955,6 +1040,7 @@
       overall_grade: letterGrade(avg),
       notes: data.notes,
       video_url: data.videoUrl,
+      thumbnail_url: data.thumbnailUrl || null,
     };
   }
 
@@ -1478,6 +1564,8 @@
       updateVideoPreview();
       markUnsaved();
     });
+    document.getElementById('fThumbnailFile').addEventListener('change', handleThumbnailUpload);
+    document.getElementById('removeThumbnailBtn').addEventListener('click', removeThumbnail);
 
     document.getElementById('saveBtn').addEventListener('click', saveCurrentDraft);
     document.getElementById('publishBtn').addEventListener('click', togglePublish);
