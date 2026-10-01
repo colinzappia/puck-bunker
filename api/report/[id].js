@@ -200,6 +200,7 @@ function renderReportPage(report, reqHost) {
   @media (max-width:900px){ .crosshair{ display:none; } }
   @media (prefers-reduced-motion:reduce){ .crosshair circle{ animation:none; } }
 </style>
+<script src="/traffic.js"></script>
 <script src="/badges.js" defer></script>
 </head>
 <body>
