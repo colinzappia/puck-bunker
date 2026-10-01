@@ -147,7 +147,7 @@ function renderReportPage(report, reqHost) {
   .stencil{ font-family:'Big Shoulders Stencil Display',sans-serif; text-transform:uppercase; }
   .mono{ font-family:'JetBrains Mono',monospace; }
   a{ color:var(--hazard); text-decoration:none; }
-  .wrap{ max-width:820px; margin:0 auto; padding:48px 24px 80px; overflow-wrap:break-word; word-break:break-word; }
+  .wrap{ position:relative; z-index:1; max-width:820px; margin:0 auto; padding:48px 24px 80px; overflow-wrap:break-word; word-break:break-word; }
   .back-link{ font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:0.06em; color:var(--ice-dim); }
   .back-link:hover{ color:var(--hazard); }
   .hero-thumb{ aspect-ratio:16/9; overflow:hidden; margin-top:20px; border:1px solid var(--steel); }
@@ -189,6 +189,12 @@ function renderReportPage(report, reqHost) {
   .crosshair{ position:absolute; top:40px; right:40px; width:100px; height:100px; opacity:0.7; z-index:2; pointer-events:none; }
   .crosshair circle{ transform-origin:center; }
   .crosshair svg{ width:100%; height:100%; }
+  /* Rotating radar sweep behind the top-right target (matches the home page) */
+  .radar-sweep{ position:absolute; top:-220px; right:-220px; width:640px; height:640px; border-radius:50%; pointer-events:none; opacity:0.55; z-index:0; }
+  .radar-sweep::before{ content:""; position:absolute; inset:0; border-radius:50%; background:conic-gradient(from 0deg, rgba(220,221,221,0.35), transparent 28%, transparent 100%); animation:radar-sweep-spin 6s linear infinite; }
+  .radar-sweep::after{ content:""; position:absolute; inset:0; border-radius:50%; background-image:repeating-radial-gradient(circle, transparent 0, transparent 79px, rgba(220,221,221,0.14) 80px); border:1px solid rgba(220,221,221,0.18); }
+  @keyframes radar-sweep-spin{ to{ transform:rotate(360deg); } }
+  @media (prefers-reduced-motion:reduce){ .radar-sweep::before{ animation:none; } }
   .crosshair circle{ animation:crosshair-pulse 2.4s ease-in-out infinite; }
   @keyframes crosshair-pulse{ 0%,100%{ opacity:0.4; } 50%{ opacity:0.95; } }
   @media (max-width:900px){ .crosshair{ display:none; } }
@@ -196,6 +202,7 @@ function renderReportPage(report, reqHost) {
 </style>
 </head>
 <body>
+  <div class="radar-sweep" aria-hidden="true"></div>
   <div class="crosshair" aria-hidden="true">
     <svg viewBox="0 0 120 120" fill="none" stroke="var(--cyan)" stroke-width="1.5">
       <circle cx="60" cy="60" r="50" opacity="0.5"/>
