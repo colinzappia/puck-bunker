@@ -323,6 +323,9 @@
   .ticker-track{ display:flex; gap:60px; white-space:nowrap; padding:11px 0; animation:ticker 32s linear infinite; width:max-content; }
   .ticker span{ font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--ice-dim); letter-spacing:0.04em; }
   .ticker span b{ color:var(--hazard); font-weight:700; }
+  .ticker a{ color:inherit; text-decoration:none; display:inline-block; transition:color .15s, text-shadow .15s; }
+  .ticker a:hover, .ticker a:focus-visible{ color:var(--ice); text-shadow:0 0 10px rgba(220,221,221,0.4); }
+  .ticker:hover .ticker-track, .ticker:focus-within .ticker-track{ animation-play-state:paused; }
   @keyframes ticker{ from{transform:translateX(0);} to{transform:translateX(-50%);} }
   @media (prefers-reduced-motion:reduce){ .ticker-track{animation:none;} }
 
@@ -584,17 +587,8 @@
       <a href="https://www.youtube.com/@PuckBunker" target="_blank" rel="noopener" class="btn btn-ghost">Subscribe on YouTube</a>
     </div>
   </div>
-  <div class="ticker">
-    <div class="ticker-track">
-      <span><b>Kowalski</b> — edge work under pressure</span>
-      <span><b>2027 Board Update</b> — risers &amp; fallers</span>
-      <span><b>Andersson</b> — shot mechanics deep dive</span>
-      <span><b>Bunker Mailbag</b> — reading gap control</span>
-      <span><b>Kowalski</b> — edge work under pressure</span>
-      <span><b>2027 Board Update</b> — risers &amp; fallers</span>
-      <span><b>Andersson</b> — shot mechanics deep dive</span>
-      <span><b>Bunker Mailbag</b> — reading gap control</span>
-    </div>
+  <div class="ticker" id="reportTicker" style="display:none;" aria-label="Latest scouting reports">
+    <div class="ticker-track" id="reportTickerTrack"></div>
   </div>
 </section>
 
@@ -855,6 +849,41 @@
 
 <script src="public-reports.js"></script>
 <script>pbLoadPublished('intelGrid', 3);</script>
+<script>
+// Scrolling ticker: the latest published scouting reports, each linking to its full report.
+// If nothing is published (or the fetch fails), the ticker stays hidden.
+async function pbLoadTicker() {
+  const ticker = document.getElementById('reportTicker');
+  const track = document.getElementById('reportTickerTrack');
+  if (!ticker || !track || typeof puckBunkerDB === 'undefined') return;
+  try {
+    const { data, error } = await puckBunkerDB
+      .from('puckbunker_reports')
+      .select('id, name, position, team, overall_grade, title')
+      .eq('status', 'published')
+      .order('created_at', { ascending: false })
+      .limit(10);
+    if (error || !data || !data.length) return;
+
+    const item = (r, hidden) => {
+      const line = (r.title && r.title.trim())
+        ? r.title.trim()
+        : [r.position, r.team, r.overall_grade ? 'Grade ' + r.overall_grade : ''].filter(Boolean).join(' · ');
+      const attrs = hidden ? ' aria-hidden="true" tabindex="-1"' : '';
+      return `<span><a href="/api/report/${encodeURIComponent(r.id)}"${attrs}><b>${pbEscape(r.name || 'New report')}</b>${line ? ' — ' + pbEscape(line) : ''}</a></span>`;
+    };
+    // Repeat the list so the loop is seamless even with only a few reports
+    let set = data;
+    while (set.length < 6) set = set.concat(data);
+    track.innerHTML = set.map(r => item(r, false)).join('') + set.map(r => item(r, true)).join('');
+    track.style.animationDuration = Math.max(32, set.length * 6) + 's';
+    ticker.style.display = '';
+  } catch (e) {
+    console.error('Puck Bunker: failed to load ticker', e);
+  }
+}
+pbLoadTicker();
+</script>
 <script>
   async function pbLoadBoard() {
     const container = document.getElementById('boardRows');
