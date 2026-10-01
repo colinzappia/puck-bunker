@@ -20,6 +20,9 @@ const PB_BADGES_ON = true;
   const css = `
   .pb-chev{ display:inline-block; line-height:0; }
   .pb-chev svg{ display:block; }
+  .pb-name-row{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+  .pb-name-row h3{ flex:1; min-width:0; }
+  .pb-name-row .pb-chev{ flex-shrink:0; margin-top:-4px; transform:rotate(4deg); }
   .grade-stamp.pb-done{ border:0 !important; padding:0 !important; background:none !important; top:8px; right:8px; }
   .grade-pill.pb-done{ border:0 !important; padding:0 !important; background:none !important; }
   .pb-tag-sm{ display:inline-flex; align-items:center; gap:8px; background:#28292C; border:1px solid #8B8D90; border-radius:10px; padding:4px 10px 4px 6px; margin-bottom:10px; }
@@ -48,14 +51,14 @@ const PB_BADGES_ON = true;
     const stripes = g[0] === "A" ? 3 : g[0] === "B" ? 2 : 1;
     let paths = "";
     for (let i = 0; i < stripes; i++) {
-      const y = 14 + i * 11;
+      const y = 9 + i * 11;
       paths += `<path d="M10 ${y + 8} L30 ${y} L50 ${y + 8} L50 ${y + 14} L30 ${y + 6} L10 ${y + 14} Z" fill="${GOLD}"/>`;
     }
     const w = size, h = Math.round(size * 68 / 60);
     return `<span class="pb-chev" role="img" aria-label="Grade ${esc(g)}"><svg viewBox="0 0 60 68" width="${w}" height="${h}">
       <rect x="2" y="2" width="56" height="64" rx="6" fill="#111213" stroke="#96805F" stroke-width="1.5"/>
       ${paths}
-      <text x="30" y="61" text-anchor="middle" font-family="'Big Shoulders Stencil Display',sans-serif" font-weight="800" font-size="12" fill="#F2F2EF">${esc(g)}</text>
+      <text x="30" y="63" text-anchor="middle" font-family="'Big Shoulders Stencil Display',sans-serif" font-weight="800" font-size="16" fill="#F2F2EF">${esc(g)}</text>
     </svg></span>`;
   }
 
@@ -136,12 +139,23 @@ const PB_BADGES_ON = true;
 
   // ---------- Apply badges ----------
   function apply(root) {
-    // Chevrons on report cards
+    // Chevrons on report cards: shown to the right of the player's name
     root.querySelectorAll(".grade-stamp:not(.pb-done)").forEach(el => {
       const g = gradeFrom(el);
       if (!g) return;
       el.classList.add("pb-done");
-      el.innerHTML = chevron(g, 44);
+      const card = el.closest(".dossier");
+      const title = card && card.querySelector(".dossier-body h3");
+      if (title) {
+        el.style.display = "none";
+        const row = document.createElement("div");
+        row.className = "pb-name-row";
+        title.parentNode.insertBefore(row, title);
+        row.appendChild(title);
+        row.insertAdjacentHTML("beforeend", chevron(g, 56));
+      } else {
+        el.innerHTML = chevron(g, 56);
+      }
     });
 
     // Chevrons on the rankings board and the individual report page
