@@ -45,9 +45,7 @@ function pbBuildCard(report) {
     <span class="hud-bl"></span><span class="hud-br"></span>
     <div class="dossier-thumb">
       ${thumbImg}
-      <span class="file-tag">FILE #${pbEscape(report.file_num || '----')}</span>
       <span class="grade-stamp ${gClass}">GRADE ${pbEscape(letter)}</span>
-      <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
     </div>
     <div class="dossier-body" style="overflow-wrap:break-word; word-break:break-word;">
       <h3 style="overflow-wrap:break-word; word-break:break-word;">${pbEscape(report.name || 'Unnamed Prospect')}</h3>
