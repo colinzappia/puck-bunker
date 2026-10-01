@@ -186,7 +186,8 @@ function renderReportPage(report, reqHost) {
   .notes p{ margin-bottom:14px; color:var(--ice-dim); overflow-wrap:break-word; word-break:break-word; white-space:pre-wrap; }
   .notes p:last-child{ margin-bottom:0; }
   @media (max-width:600px){ .wrap{ padding:32px 18px 60px; } }
-  .crosshair{ position:absolute; top:32px; right:32px; width:64px; height:64px; opacity:0.6; z-index:2; pointer-events:none; }
+  .crosshair{ position:absolute; top:40px; right:40px; width:100px; height:100px; opacity:0.7; z-index:2; pointer-events:none; }
+  .crosshair circle{ transform-origin:center; }
   .crosshair svg{ width:100%; height:100%; }
   .crosshair circle{ animation:crosshair-pulse 2.4s ease-in-out infinite; }
   @keyframes crosshair-pulse{ 0%,100%{ opacity:0.4; } 50%{ opacity:0.95; } }
@@ -196,7 +197,7 @@ function renderReportPage(report, reqHost) {
 </head>
 <body>
   <div class="crosshair" aria-hidden="true">
-    <svg viewBox="0 0 120 120" fill="none" stroke="var(--cyan)" stroke-width="2">
+    <svg viewBox="0 0 120 120" fill="none" stroke="var(--cyan)" stroke-width="1.5">
       <circle cx="60" cy="60" r="50" opacity="0.5"/>
       <circle cx="60" cy="60" r="30" opacity="0.7"/>
       <line x1="60" y1="0" x2="60" y2="24" opacity="0.8"/>
