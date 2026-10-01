@@ -28,7 +28,7 @@ function pbBuildCard(report) {
     .map(([k]) => k);
   const firstLine = (report.notes || '').split('\n').filter(Boolean)[0] || 'Full breakdown inside.';
   const byline = report.reporter_name
-    ? `<div style="font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--steel); margin-bottom:10px;">SCOUTED BY ${pbEscape(report.reporter_name.toUpperCase())}</div>`
+    ? `<div data-scout="${pbEscape(report.reporter_name)}" style="font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--steel); margin-bottom:10px;">SCOUTED BY ${pbEscape(report.reporter_name.toUpperCase())}</div>`
     : '';
   const metaBits = [report.position, report.team, report.league].filter(Boolean).map(pbEscape).join(' · ');
   const hasCustomTitle = report.title && report.title.trim();
@@ -41,7 +41,7 @@ function pbBuildCard(report) {
     : '';
 
   return `<a href="/api/report/${report.id}" style="text-decoration:none; color:inherit; display:block;">
-  <article class="dossier hud" data-pos="${pbEscape(report.position || '')}">
+  <article class="dossier hud" data-pos="${pbEscape(report.position || '')}" data-seen-live="${report.seen_live ? 'true' : 'false'}">
     <span class="hud-bl"></span><span class="hud-br"></span>
     <div class="dossier-thumb">
       ${thumbImg}
