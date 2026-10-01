@@ -104,7 +104,7 @@ function renderReportPage(report, reqHost) {
     : "";
 
   const bylineHtml = report.reporter_name
-    ? `<div class="byline">SCOUTED BY ${escapeHtml(report.reporter_name.toUpperCase())}</div>`
+    ? `<div class="byline" data-scout="${escapeHtml(report.reporter_name)}">SCOUTED BY ${escapeHtml(report.reporter_name.toUpperCase())}</div>`
     : "";
 
   const metaLine = [report.position, report.team, report.league, report.nation].filter(Boolean).map(escapeHtml).join(" · ");
@@ -200,6 +200,7 @@ function renderReportPage(report, reqHost) {
   @media (max-width:900px){ .crosshair{ display:none; } }
   @media (prefers-reduced-motion:reduce){ .crosshair circle{ animation:none; } }
 </style>
+<script src="/badges.js" defer></script>
 </head>
 <body>
   <div class="radar-sweep" aria-hidden="true"></div>
@@ -218,7 +219,7 @@ function renderReportPage(report, reqHost) {
 
     ${report.thumbnail_url ? `<div class="hero-thumb"><img src="${escapeHtml(report.thumbnail_url)}" alt=""></div>` : ""}
 
-    <div class="report-head">
+    <div class="report-head" data-seen-live="${report.seen_live ? 'true' : 'false'}">
       <span class="grade-pill mono ${gClass}">GRADE ${escapeHtml(letter)}</span>
       <span class="mono" style="font-size:12px; color:var(--steel);">FILE #${escapeHtml(report.file_num || "----")}</span>
     </div>
