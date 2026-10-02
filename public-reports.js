@@ -28,7 +28,7 @@ function pbBuildCard(report) {
     .map(([k]) => k);
   const firstLine = (report.notes || '').split('\n').filter(Boolean)[0] || 'Full breakdown inside.';
   const byline = report.reporter_name
-    ? `<div data-scout="${pbEscape(report.reporter_name)}" style="font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--steel); margin-bottom:10px;">SCOUTED BY ${pbEscape(report.reporter_name.toUpperCase())}</div>`
+    ? `<div style="font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--steel); margin-bottom:10px;">SCOUTED BY ${pbEscape(report.reporter_name.toUpperCase())}</div>`
     : '';
   const metaBits = [report.position, report.team, report.league].filter(Boolean).map(pbEscape).join(' · ');
   const hasCustomTitle = report.title && report.title.trim();
@@ -36,12 +36,14 @@ function pbBuildCard(report) {
     ? `<div style="font-size:13px; color:var(--ice-dim); font-style:italic; margin-bottom:10px; overflow-wrap:break-word; word-break:break-word;">${pbEscape(report.title)}</div>`
     : '';
 
+  const altText = `${report.name || 'Prospect'}${report.position ? ' — ' + report.position : ''}${report.team ? ', ' + report.team : ''} scouting report thumbnail`;
   const thumbImg = report.thumbnail_url
-    ? `<img src="${pbEscape(report.thumbnail_url)}" alt="" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover;">`
+    ? `<img src="${pbEscape(report.thumbnail_url)}" alt="${pbEscape(altText)}" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover;">`
     : '';
 
-  return `<a href="/api/report/${report.id}" style="text-decoration:none; color:inherit; display:block;">
-  <article class="dossier hud" data-pos="${pbEscape(report.position || '')}" data-seen-live="${report.seen_live ? 'true' : 'false'}">
+  const reportUrl = report.slug ? `/report/${report.slug}` : `/api/report/${report.id}`;
+  return `<a href="${reportUrl}" style="text-decoration:none; color:inherit; display:block;">
+  <article class="dossier hud" data-pos="${pbEscape(report.position || '')}">
     <span class="hud-bl"></span><span class="hud-br"></span>
     <div class="dossier-thumb">
       ${thumbImg}
