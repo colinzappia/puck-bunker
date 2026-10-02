@@ -311,21 +311,6 @@
     z-index:2; opacity:0.7;
   }
   .crosshair svg{ width:100%; height:100%; }
-  .crosshair-sm{ width:64px; height:64px; top:32px; right:32px; opacity:0.6; pointer-events:none; }
-  /* Smaller targets with their own radar sweep, scattered down the home page */
-  .mini-layer{ position:absolute; inset:0; overflow:hidden; pointer-events:none; }
-  .mini-target{ position:absolute; width:var(--s); height:var(--s); opacity:var(--o, 0.55); }
-  .mini-target svg{ position:relative; width:100%; height:100%; }
-  .mini-target circle{ animation:crosshair-pulse 2.4s ease-in-out infinite; animation-delay:var(--d, 0s); }
-  .mini-sweep{ position:absolute; inset:calc(var(--s) * -1.6); border-radius:50%; opacity:0.55; }
-  .mini-sweep::before{ content:""; position:absolute; inset:0; border-radius:50%;
-    background:conic-gradient(from 0deg, rgba(220,221,221,0.35), transparent 28%, transparent 100%);
-    animation:spin var(--spd, 6s) linear infinite; animation-direction:var(--dir, normal); animation-delay:var(--d, 0s); }
-  .mini-sweep::after{ content:""; position:absolute; inset:0; border-radius:50%;
-    background-image:repeating-radial-gradient(circle, transparent 0, transparent calc(var(--s) * 0.7 - 1px), rgba(220,221,221,0.14) calc(var(--s) * 0.7));
-    border:1px solid rgba(220,221,221,0.18); }
-  @media (prefers-reduced-motion:reduce){ .mini-sweep::before{ animation:none; } }
-  @media (max-width:900px){ .mini-layer{ display:none; } }
   .crosshair circle{ animation:crosshair-pulse 2.4s ease-in-out infinite; transform-origin:center; }
   @keyframes crosshair-pulse{ 0%,100%{ opacity:0.4; } 50%{ opacity:0.95; } }
   @media (max-width:900px){ .crosshair{ display:none; } }
@@ -338,9 +323,6 @@
   .ticker-track{ display:flex; gap:60px; white-space:nowrap; padding:11px 0; animation:ticker 32s linear infinite; width:max-content; }
   .ticker span{ font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--ice-dim); letter-spacing:0.04em; }
   .ticker span b{ color:var(--hazard); font-weight:700; }
-  .ticker a{ color:inherit; text-decoration:none; display:inline-block; transition:color .15s, text-shadow .15s; }
-  .ticker a:hover, .ticker a:focus-visible{ color:var(--ice); text-shadow:0 0 10px rgba(220,221,221,0.4); }
-  .ticker:hover .ticker-track, .ticker:focus-within .ticker-track{ animation-play-state:paused; }
   @keyframes ticker{ from{transform:translateX(0);} to{transform:translateX(-50%);} }
   @media (prefers-reduced-motion:reduce){ .ticker-track{animation:none;} }
 
@@ -426,12 +408,6 @@
 
   /* ---------- Draft board ---------- */
   .board{ margin-top:48px; border:1px solid var(--steel); }
-  .board-month{ display:inline-flex; align-items:center; gap:10px; margin-top:40px; padding:8px 14px; border:1px solid var(--hazard-2); font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:0.18em; text-transform:uppercase; color:var(--hazard); }
-  .board-month .dot{ width:7px; height:7px; border-radius:50%; background:var(--hazard); animation:board-blink 1.6s ease-in-out infinite; }
-  .board-month[hidden]{ display:none; }
-  .board-month + .board{ margin-top:14px; }
-  @keyframes board-blink{ 0%,100%{ opacity:1; } 50%{ opacity:0.25; } }
-  @media (prefers-reduced-motion:reduce){ .board-month .dot{ animation:none; } }
   .board-row{
     display:grid; grid-template-columns:64px 1fr 130px 140px; align-items:center;
     padding:16px 20px; border-bottom:1px solid var(--steel); gap:14px;
@@ -517,8 +493,6 @@
     nav .btn-primary{ padding:8px 12px !important; font-size:11px; }
   }
 </style>
-<script src="/traffic.js"></script>
-<script src="/badges.js" defer></script>
 </head>
 <body>
 
@@ -582,19 +556,6 @@
 
 <section class="hero">
   <div class="grid-bg"></div>
-  <div class="mini-layer" aria-hidden="true">
-    <div class="mini-target" style="--s:46px; left:5%; bottom:70px; --spd:8s; --dir:reverse; --d:-2s;">
-      <div class="mini-sweep"></div>
-      <svg viewBox="0 0 120 120" fill="none" stroke="var(--cyan)" stroke-width="1.5">
-        <circle cx="60" cy="60" r="50" opacity="0.5"/>
-        <circle cx="60" cy="60" r="30" opacity="0.7"/>
-        <line x1="60" y1="0" x2="60" y2="24" opacity="0.8"/>
-        <line x1="60" y1="96" x2="60" y2="120" opacity="0.8"/>
-        <line x1="0" y1="60" x2="24" y2="60" opacity="0.8"/>
-        <line x1="96" y1="60" x2="120" y2="60" opacity="0.8"/>
-      </svg>
-    </div>
-  </div>
   <div class="radar"></div>
   <div class="crosshair">
     <svg viewBox="0 0 120 120" fill="none" stroke="var(--cyan)" stroke-width="1.5">
@@ -614,42 +575,37 @@
       <span class="line">dug in.</span>
     </h1>
     <p class="tagline stencil">The tape doesn't lie. <span class="glow">Neither do we.</span></p>
-    <p class="lede">Two scouts, one screening room, no agenda. We break down prospects the way NHL scouts do; frame by frame, tool by tool, full games not highlight clips, and grade what actually translates to the next level. No hot takes. Just the tape, published every week on YouTube.</p>
+    <p class="lede">Two scouts, one screening room, no agenda. We break down prospects the way NHL scouts do — frame by frame, tool by tool, full games not highlight clips — and grade what actually translates to the next level. No hot takes. Just the tape, published every week on YouTube.</p>
     <div class="cta-row">
       <a href="#intel" class="btn btn-primary">
         <svg viewBox="0 0 24 24"><path fill="currentColor" d="M8 5v14l11-7z"/></svg>
-        Read Latest Report
+        Watch Latest Report
       </a>
       <a href="https://www.youtube.com/@PuckBunker" target="_blank" rel="noopener" class="btn btn-ghost">Subscribe on YouTube</a>
     </div>
   </div>
-  <div class="ticker" id="reportTicker" style="display:none;" aria-label="Latest scouting reports">
-    <div class="ticker-track" id="reportTickerTrack"></div>
+  <div class="ticker">
+    <div class="ticker-track">
+      <span><b>Kowalski</b> — edge work under pressure</span>
+      <span><b>2027 Board Update</b> — risers &amp; fallers</span>
+      <span><b>Andersson</b> — shot mechanics deep dive</span>
+      <span><b>Bunker Mailbag</b> — reading gap control</span>
+      <span><b>Kowalski</b> — edge work under pressure</span>
+      <span><b>2027 Board Update</b> — risers &amp; fallers</span>
+      <span><b>Andersson</b> — shot mechanics deep dive</span>
+      <span><b>Bunker Mailbag</b> — reading gap control</span>
+    </div>
   </div>
 </section>
 
 
 
 <section id="intel">
-  <div class="mini-layer" aria-hidden="true">
-    <div class="mini-target" style="--s:58px; left:4%; top:84px; --spd:6s; --d:-1s;">
-      <div class="mini-sweep"></div>
-      <svg viewBox="0 0 120 120" fill="none" stroke="var(--cyan)" stroke-width="1.5">
-        <circle cx="60" cy="60" r="50" opacity="0.5"/>
-        <circle cx="60" cy="60" r="30" opacity="0.7"/>
-        <line x1="60" y1="0" x2="60" y2="24" opacity="0.8"/>
-        <line x1="60" y1="96" x2="60" y2="120" opacity="0.8"/>
-        <line x1="0" y1="60" x2="24" y2="60" opacity="0.8"/>
-        <line x1="96" y1="60" x2="120" y2="60" opacity="0.8"/>
-      </svg>
-    </div>
-  </div>
-
   <div class="wrap">
     <div class="sec-head reveal">
       <div class="eyebrow">Latest intel</div>
       <h2 class="stencil">Fresh off the desk.</h2>
-      <p>New dossiers every week. Full breakdowns, graded and filed.</p>
+      <p>New dossiers every week — full breakdowns, graded and filed.</p>
     </div>
     <div class="dossier-grid" id="intelGrid">
       <article class="dossier hud reveal">
@@ -690,27 +646,12 @@
 </section>
 
 <section id="board">
-  <div class="mini-layer" aria-hidden="true">
-    <div class="mini-target" style="--s:44px; right:4%; top:48%; --spd:9s; --dir:reverse; --d:-4s; --o:0.45;">
-      <div class="mini-sweep"></div>
-      <svg viewBox="0 0 120 120" fill="none" stroke="var(--cyan)" stroke-width="1.5">
-        <circle cx="60" cy="60" r="50" opacity="0.5"/>
-        <circle cx="60" cy="60" r="30" opacity="0.7"/>
-        <line x1="60" y1="0" x2="60" y2="24" opacity="0.8"/>
-        <line x1="60" y1="96" x2="60" y2="120" opacity="0.8"/>
-        <line x1="0" y1="60" x2="24" y2="60" opacity="0.8"/>
-        <line x1="96" y1="60" x2="120" y2="60" opacity="0.8"/>
-      </svg>
-    </div>
-  </div>
-
   <div class="wrap">
     <div class="sec-head reveal">
       <div class="eyebrow">The board</div>
       <h2 class="stencil">2027 rankings,<br><em>updated monthly.</em></h2>
-      <p>Our live draft board. Repositioned every time a prospect earns it or loses it on tape.</p>
+      <p>Our live draft board — repositioned every time a prospect earns it or loses it on tape.</p>
     </div>
-    <div class="board-month reveal" id="boardMonth" hidden><span class="dot" aria-hidden="true"></span><span id="boardMonthText"></span></div>
     <div class="board mono reveal">
       <div class="board-row head"><span>Rk</span><span>Prospect</span><span>Trend</span><span>Grade</span></div>
       <div id="boardRows">
@@ -744,31 +685,6 @@
 </section>
 
 <section id="method">
-  <div class="mini-layer" aria-hidden="true">
-    <div class="mini-target" style="--s:66px; left:6%; bottom:96px; --spd:7s; --d:-3s;">
-      <div class="mini-sweep"></div>
-      <svg viewBox="0 0 120 120" fill="none" stroke="var(--cyan)" stroke-width="1.5">
-        <circle cx="60" cy="60" r="50" opacity="0.5"/>
-        <circle cx="60" cy="60" r="30" opacity="0.7"/>
-        <line x1="60" y1="0" x2="60" y2="24" opacity="0.8"/>
-        <line x1="60" y1="96" x2="60" y2="120" opacity="0.8"/>
-        <line x1="0" y1="60" x2="24" y2="60" opacity="0.8"/>
-        <line x1="96" y1="60" x2="120" y2="60" opacity="0.8"/>
-      </svg>
-    </div>
-    <div class="mini-target" style="--s:34px; right:9%; top:110px; --spd:5s; --dir:reverse; --d:-1.5s; --o:0.45;">
-      <div class="mini-sweep"></div>
-      <svg viewBox="0 0 120 120" fill="none" stroke="var(--cyan)" stroke-width="1.5">
-        <circle cx="60" cy="60" r="50" opacity="0.5"/>
-        <circle cx="60" cy="60" r="30" opacity="0.7"/>
-        <line x1="60" y1="0" x2="60" y2="24" opacity="0.8"/>
-        <line x1="60" y1="96" x2="60" y2="120" opacity="0.8"/>
-        <line x1="0" y1="60" x2="24" y2="60" opacity="0.8"/>
-        <line x1="96" y1="60" x2="120" y2="60" opacity="0.8"/>
-      </svg>
-    </div>
-  </div>
-
   <div class="wrap">
     <div class="sec-head reveal">
       <div class="eyebrow">The M.O.</div>
@@ -837,31 +753,6 @@
 </section>
 
 <section id="join" class="recruit">
-  <div class="mini-layer" aria-hidden="true">
-    <div class="mini-target" style="--s:50px; right:12%; top:56px; --spd:6.5s; --d:-2.5s;">
-      <div class="mini-sweep"></div>
-      <svg viewBox="0 0 120 120" fill="none" stroke="var(--cyan)" stroke-width="1.5">
-        <circle cx="60" cy="60" r="50" opacity="0.5"/>
-        <circle cx="60" cy="60" r="30" opacity="0.7"/>
-        <line x1="60" y1="0" x2="60" y2="24" opacity="0.8"/>
-        <line x1="60" y1="96" x2="60" y2="120" opacity="0.8"/>
-        <line x1="0" y1="60" x2="24" y2="60" opacity="0.8"/>
-        <line x1="96" y1="60" x2="120" y2="60" opacity="0.8"/>
-      </svg>
-    </div>
-    <div class="mini-target" style="--s:40px; left:10%; bottom:64px; --spd:8.5s; --dir:reverse; --o:0.45;">
-      <div class="mini-sweep"></div>
-      <svg viewBox="0 0 120 120" fill="none" stroke="var(--cyan)" stroke-width="1.5">
-        <circle cx="60" cy="60" r="50" opacity="0.5"/>
-        <circle cx="60" cy="60" r="30" opacity="0.7"/>
-        <line x1="60" y1="0" x2="60" y2="24" opacity="0.8"/>
-        <line x1="60" y1="96" x2="60" y2="120" opacity="0.8"/>
-        <line x1="0" y1="60" x2="24" y2="60" opacity="0.8"/>
-        <line x1="96" y1="60" x2="120" y2="60" opacity="0.8"/>
-      </svg>
-    </div>
-  </div>
-
   <div class="grid-bg" style="opacity:0.6;"></div>
   <div class="wrap reveal">
     <div class="eyebrow">Enlist</div>
@@ -965,41 +856,6 @@
 <script src="public-reports.js"></script>
 <script>pbLoadPublished('intelGrid', 3);</script>
 <script>
-// Scrolling ticker: the latest published scouting reports, each linking to its full report.
-// If nothing is published (or the fetch fails), the ticker stays hidden.
-async function pbLoadTicker() {
-  const ticker = document.getElementById('reportTicker');
-  const track = document.getElementById('reportTickerTrack');
-  if (!ticker || !track || typeof puckBunkerDB === 'undefined') return;
-  try {
-    const { data, error } = await puckBunkerDB
-      .from('puckbunker_reports')
-      .select('id, name, position, team, overall_grade, title')
-      .eq('status', 'published')
-      .order('created_at', { ascending: false })
-      .limit(10);
-    if (error || !data || !data.length) return;
-
-    const item = (r, hidden) => {
-      const line = (r.title && r.title.trim())
-        ? r.title.trim()
-        : [r.position, r.team, r.overall_grade ? 'Grade ' + r.overall_grade : ''].filter(Boolean).join(' · ');
-      const attrs = hidden ? ' aria-hidden="true" tabindex="-1"' : '';
-      return `<span><a href="/api/report/${encodeURIComponent(r.id)}"${attrs}><b>${pbEscape(r.name || 'New report')}</b>${line ? ' — ' + pbEscape(line) : ''}</a></span>`;
-    };
-    // Repeat the list so the loop is seamless even with only a few reports
-    let set = data;
-    while (set.length < 6) set = set.concat(data);
-    track.innerHTML = set.map(r => item(r, false)).join('') + set.map(r => item(r, true)).join('');
-    track.style.animationDuration = Math.max(32, set.length * 6) + 's';
-    ticker.style.display = '';
-  } catch (e) {
-    console.error('Puck Bunker: failed to load ticker', e);
-  }
-}
-pbLoadTicker();
-</script>
-<script>
   async function pbLoadBoard() {
     const container = document.getElementById('boardRows');
     if (!container || typeof puckBunkerDB === 'undefined') return;
@@ -1010,6 +866,19 @@ pbLoadTicker();
         .order('rank', { ascending: true });
       if (error || !data || !data.length) return; // keep static fallback rows
 
+      // Resolve slugs for any linked reports, so board links use the clean
+      // /report/<slug> URL instead of the raw ID. One extra query covering
+      // every linked report at once, rather than one per row.
+      const linkedIds = [...new Set(data.map(r => r.report_id).filter(Boolean))];
+      let slugMap = {};
+      if (linkedIds.length) {
+        const { data: reportRows } = await puckBunkerDB
+          .from('puckbunker_reports')
+          .select('id, slug')
+          .in('id', linkedIds);
+        (reportRows || []).forEach(r => { slugMap[r.id] = r.slug; });
+      }
+
       container.innerHTML = data.map(row => {
         const rankDisplay = String(row.rank).padStart(2, '0');
         const gradeStyle = (row.grade || '').startsWith('A') ? "color:var(--cyan);border-color:var(--cyan);"
@@ -1018,8 +887,10 @@ pbLoadTicker();
         const trendHtml = row.trend === 'up' ? `<span class="trend trend-up">▲ +${row.trend_delta}</span>`
           : row.trend === 'down' ? `<span class="trend trend-down">▼ -${row.trend_delta}</span>`
           : `<span class="trend trend-flat">— 0</span>`;
-        const nameHtml = row.report_id
-          ? `<a href="/api/report/${encodeURIComponent(row.report_id)}">${pbEscape(row.name)}</a>`
+        const linkedSlug = row.report_id ? slugMap[row.report_id] : null;
+        const reportUrl = linkedSlug ? `/report/${linkedSlug}` : (row.report_id ? `/api/report/${encodeURIComponent(row.report_id)}` : null);
+        const nameHtml = reportUrl
+          ? `<a href="${reportUrl}">${pbEscape(row.name)}</a>`
           : pbEscape(row.name);
         return `<div class="board-row">
           <span class="rank">${rankDisplay}</span>
@@ -1035,21 +906,5 @@ pbLoadTicker();
   pbLoadBoard();
 </script>
 
-<script>
-// Shows the current month above the rankings board (Ottawa time) and
-// switches over on its own when a new month starts.
-(function () {
-  const box = document.getElementById('boardMonth');
-  const text = document.getElementById('boardMonthText');
-  if (!box || !text) return;
-  function update() {
-    const label = new Date().toLocaleDateString('en-CA', { month: 'long', year: 'numeric', timeZone: 'America/Toronto' });
-    text.textContent = label + ' board';
-    box.hidden = false;
-  }
-  update();
-  setInterval(update, 60 * 60 * 1000); // re-check hourly in case the page is left open over a month change
-})();
-</script>
 </body>
 </html>
