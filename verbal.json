@@ -1,0 +1,12 @@
+{
+  "crons": [
+    {
+      "path": "/api/publish-scheduled",
+      "schedule": "0 12 * * *"
+    }
+  ],
+  "rewrites": [
+    { "source": "/sitemap.xml", "destination": "/api/sitemap" },
+    { "source": "/report/:slug", "destination": "/api/r/:slug" }
+  ]
+}
