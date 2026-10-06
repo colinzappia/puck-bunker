@@ -313,17 +313,6 @@
     z-index:2; opacity:0.7;
   }
   .crosshair svg{ width:100%; height:100%; }
-  /* Rotating radar sweep behind the top-right target (matches the home page) */
-  .radar-sweep{ position:absolute; top:-220px; right:-220px; width:640px; height:640px; border-radius:50%; pointer-events:none; opacity:0.55; z-index:0; }
-  .radar-sweep::before{ content:""; position:absolute; inset:0; border-radius:50%; background:conic-gradient(from 0deg, rgba(220,221,221,0.35), transparent 28%, transparent 100%); animation:radar-sweep-spin 6s linear infinite; }
-  .radar-sweep::after{ content:""; position:absolute; inset:0; border-radius:50%; background-image:repeating-radial-gradient(circle, transparent 0, transparent 79px, rgba(220,221,221,0.14) 80px); border:1px solid rgba(220,221,221,0.18); }
-  @keyframes radar-sweep-spin{ to{ transform:rotate(360deg); } }
-  @media (prefers-reduced-motion:reduce){ .radar-sweep::before{ animation:none; } }
-  .crosshair-sm{ width:64px; height:64px; top:32px; right:32px; opacity:0.6; pointer-events:none; }
-  .crosshair-mini{ position:absolute; z-index:1; opacity:0.35; pointer-events:none; }
-  .crosshair-mini svg{ width:100%; height:100%; }
-  .crosshair-mini circle{ animation:crosshair-pulse 2.4s ease-in-out infinite; }
-  @media (max-width:900px){ .crosshair-mini{ display:none; } }
   .crosshair circle{ animation:crosshair-pulse 2.4s ease-in-out infinite; transform-origin:center; }
   @keyframes crosshair-pulse{ 0%,100%{ opacity:0.4; } 50%{ opacity:0.95; } }
   @media (max-width:900px){ .crosshair{ display:none; } }
@@ -530,6 +519,7 @@
     position:relative;
   }
   .radar-wrap svg{ width:100%; max-width:560px; height:auto; }
+  @media (max-width:600px){ .radar-wrap{ padding:12px; } }
   .radar-point{ cursor:pointer; }
   .radar-point-hit{ fill:transparent; }
   .radar-tooltip{
@@ -603,8 +593,6 @@
   .predict-loading{ text-align:center; padding:60px 20px; color:var(--ice-dim); font-family:'JetBrains Mono',monospace; font-size:13px; }
 </style>
 
-<script src="/traffic.js"></script>
-<script src="/badges.js" defer></script>
 </head>
 <body>
 
@@ -665,18 +653,6 @@
 
 
 <section class="page-header">
-  <div class="radar-sweep" aria-hidden="true"></div>
-  <div class="crosshair" aria-hidden="true">
-    <svg viewBox="0 0 120 120" fill="none" stroke="var(--cyan)" stroke-width="1.5">
-      <circle cx="60" cy="60" r="50" opacity="0.5"/>
-      <circle cx="60" cy="60" r="30" opacity="0.7"/>
-      <line x1="60" y1="0" x2="60" y2="24" opacity="0.8"/>
-      <line x1="60" y1="96" x2="60" y2="120" opacity="0.8"/>
-      <line x1="0" y1="60" x2="24" y2="60" opacity="0.8"/>
-      <line x1="96" y1="60" x2="120" y2="60" opacity="0.8"/>
-    </svg>
-  </div>
-
   <div class="grid-bg"></div>
   <div class="wrap">
     <div class="eyebrow">Head to head</div>
@@ -850,8 +826,37 @@
     return String(str || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
   }
 
+  // Short names used for axis labels on phones only (full names stay in the
+  // tap tooltip and the List View).
+  const PB_SHORT = {
+    'Skating - Speed/Power': 'Speed/Power',
+    'Skating - Quickness/Agility': 'Quickness/Agility',
+    'OZ Hockey Sense': 'OZ Sense',
+    'DZ Hockey Sense': 'DZ Sense',
+    'Movement/Skating': 'Movement',
+    'Rebound Control': 'Rebound',
+    'Puck Tracking': 'Tracking',
+    'Puck Playing': 'Puck Play'
+  };
+
+  function pbWrapLabel(text, maxChars) {
+    const tokens = text.replace(/\//g, '/ ').split(/\s+/).filter(Boolean);
+    const lines = [];
+    let cur = '';
+    tokens.forEach(tok => {
+      const sep = cur.endsWith('/') ? '' : ' ';
+      const cand = cur ? cur + sep + tok : tok;
+      if (!cur || cand.length <= maxChars) cur = cand;
+      else { lines.push(cur); cur = tok; }
+    });
+    if (cur) lines.push(cur);
+    return lines;
+  }
+
   function pbBuildRadarSVG(datasets, categories) {
-    const cx = 250, cy = 250, maxR = 175;
+    const isPhone = typeof window !== 'undefined' && window.innerWidth < 600;
+    const baseFs = isPhone ? 15 : 11;
+    const cx = 250, cy = 250, maxR = 150;
     const total = categories.length;
     const rings = [0.2, 0.4, 0.6, 0.8, 1.0];
     let svg = `<svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">`;
@@ -870,13 +875,28 @@
     categories.forEach((cat, i) => {
       const [x, y] = pbAxisPoint(i, 1, cx, cy, maxR, total);
       svg += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#33363A" stroke-width="1"/>`;
-      const [lx, ly] = pbAxisPoint(i, 1.16, cx, cy, maxR, total);
+      const [lx, ly] = pbAxisPoint(i, 1.17, cx, cy, maxR, total);
       const angle = (Math.PI * 2 * i / total) - Math.PI / 2;
       const cos = Math.cos(angle);
       let anchor = "middle";
       if (cos > 0.3) anchor = "start";
       else if (cos < -0.3) anchor = "end";
-      svg += `<text x="${lx}" y="${ly}" fill="#9A9C9F" font-family="JetBrains Mono, monospace" font-size="10.5" text-anchor="${anchor}" dominant-baseline="middle">${cat}</text>`;
+
+      // Fit the label inside the chart: wrap long names onto extra lines,
+      // and shrink the font only if a single word still wouldn't fit.
+      const text = isPhone ? (PB_SHORT[cat] || cat) : cat;
+      const margin = 4;
+      const allowed = anchor === "start" ? 500 - lx - margin
+                    : anchor === "end" ? lx - margin
+                    : 2 * Math.min(lx, 500 - lx) - margin * 2;
+      let fs = baseFs;
+      const lines = pbWrapLabel(text, Math.max(4, Math.floor(allowed / (fs * 0.6))));
+      const longest = Math.max(...lines.map(l => l.length));
+      if (longest * fs * 0.6 > allowed) fs = Math.max(8, allowed / (longest * 0.6));
+      const lineH = fs * 1.15;
+      const startY = ly - ((lines.length - 1) * lineH) / 2;
+      const tspans = lines.map((ln, k) => `<tspan x="${lx}" y="${startY + k * lineH}">${pbEscapeAttr(ln)}</tspan>`).join("");
+      svg += `<text fill="#9A9C9F" font-family="JetBrains Mono, monospace" font-size="${fs.toFixed(1)}" text-anchor="${anchor}" dominant-baseline="middle">${tspans}</text>`;
     });
 
     // data polygons
@@ -1034,6 +1054,11 @@
   }
 
   async function pbInitCompare() {
+    let pbWasPhone = window.innerWidth < 600;
+    window.addEventListener('resize', () => {
+      const nowPhone = window.innerWidth < 600;
+      if (nowPhone !== pbWasPhone) { pbWasPhone = nowPhone; pbRenderCompare(); }
+    });
     pbSetupViewToggle();
     pbSetupRadarTooltip();
     const wrap = document.getElementById('radarWrap');
