@@ -313,6 +313,17 @@
     z-index:2; opacity:0.7;
   }
   .crosshair svg{ width:100%; height:100%; }
+  /* Rotating radar sweep behind the top-right target (matches the home page) */
+  .radar-sweep{ position:absolute; top:-220px; right:-220px; width:640px; height:640px; border-radius:50%; pointer-events:none; opacity:0.55; z-index:0; }
+  .radar-sweep::before{ content:""; position:absolute; inset:0; border-radius:50%; background:conic-gradient(from 0deg, rgba(220,221,221,0.35), transparent 28%, transparent 100%); animation:radar-sweep-spin 6s linear infinite; }
+  .radar-sweep::after{ content:""; position:absolute; inset:0; border-radius:50%; background-image:repeating-radial-gradient(circle, transparent 0, transparent 79px, rgba(220,221,221,0.14) 80px); border:1px solid rgba(220,221,221,0.18); }
+  @keyframes radar-sweep-spin{ to{ transform:rotate(360deg); } }
+  @media (prefers-reduced-motion:reduce){ .radar-sweep::before{ animation:none; } }
+  .crosshair-sm{ width:64px; height:64px; top:32px; right:32px; opacity:0.6; pointer-events:none; }
+  .crosshair-mini{ position:absolute; z-index:1; opacity:0.35; pointer-events:none; }
+  .crosshair-mini svg{ width:100%; height:100%; }
+  .crosshair-mini circle{ animation:crosshair-pulse 2.4s ease-in-out infinite; }
+  @media (max-width:900px){ .crosshair-mini{ display:none; } }
   .crosshair circle{ animation:crosshair-pulse 2.4s ease-in-out infinite; transform-origin:center; }
   @keyframes crosshair-pulse{ 0%,100%{ opacity:0.4; } 50%{ opacity:0.95; } }
   @media (max-width:900px){ .crosshair{ display:none; } }
@@ -593,6 +604,8 @@
   .predict-loading{ text-align:center; padding:60px 20px; color:var(--ice-dim); font-family:'JetBrains Mono',monospace; font-size:13px; }
 </style>
 
+<script src="/traffic.js"></script>
+<script src="/badges.js" defer></script>
 </head>
 <body>
 
@@ -653,6 +666,18 @@
 
 
 <section class="page-header">
+  <div class="radar-sweep" aria-hidden="true"></div>
+  <div class="crosshair" aria-hidden="true">
+    <svg viewBox="0 0 120 120" fill="none" stroke="var(--cyan)" stroke-width="1.5">
+      <circle cx="60" cy="60" r="50" opacity="0.5"/>
+      <circle cx="60" cy="60" r="30" opacity="0.7"/>
+      <line x1="60" y1="0" x2="60" y2="24" opacity="0.8"/>
+      <line x1="60" y1="96" x2="60" y2="120" opacity="0.8"/>
+      <line x1="0" y1="60" x2="24" y2="60" opacity="0.8"/>
+      <line x1="96" y1="60" x2="120" y2="60" opacity="0.8"/>
+    </svg>
+  </div>
+
   <div class="grid-bg"></div>
   <div class="wrap">
     <div class="eyebrow">Head to head</div>
