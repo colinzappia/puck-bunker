@@ -320,6 +320,20 @@
     .modal-body textarea{ min-height:200px; font-size:11px; }
     .modal-foot{ flex-direction:column-reverse; }
     .modal-foot .btn{ width:100%; justify-content:center; }
+
+    /* Draft Board rows: stack the buttons under the name instead of
+       squeezing everything onto one line. */
+    .board-item{ flex-wrap:wrap; }
+    .board-item .bi-main{ flex:1 1 calc(100% - 40px); min-width:0; overflow:visible; }
+    .board-item .bi-actions{ width:100%; justify-content:flex-end; }
+    .exclude-item{ flex-wrap:wrap; }
+  }
+
+  /* Touch screens can't drag-and-drop, so hide the drag handle there.
+     The up/down arrows handle reordering instead. */
+  @media (pointer:coarse){
+    .board-item .bi-drag-handle{ display:none; }
+    .board-item .bi-main{ flex-basis:100%; }
   }
 
   @media (max-width:420px){
