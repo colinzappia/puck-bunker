@@ -23,6 +23,7 @@ const PB_BADGES_ON = true;
   .pb-name-row{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
   .pb-name-row h3{ flex:1; min-width:0; }
   .pb-name-row .pb-chev{ flex-shrink:0; margin-top:-4px; transform:rotate(4deg); }
+  .board-row .pb-chev{ transform:rotate(4deg); }
   .grade-stamp.pb-done{ border:0 !important; padding:0 !important; background:none !important; top:8px; right:8px; }
   .grade-pill.pb-done{ border:0 !important; padding:0 !important; background:none !important; }
   .pb-tag-sm{ display:inline-flex; align-items:center; gap:8px; background:#28292C; border:1px solid #8B8D90; border-radius:10px; padding:4px 10px 4px 6px; margin-bottom:10px; }
@@ -164,7 +165,7 @@ const PB_BADGES_ON = true;
       if (!g) return;
       el.classList.add("pb-done");
       const onReportPage = !!el.closest(".report-head");
-      el.innerHTML = chevron(g, onReportPage ? 62 : 38);
+      el.innerHTML = chevron(g, onReportPage ? 62 : 44);
     });
 
     // Dog tags
