@@ -905,6 +905,42 @@
   }
   pbLoadBoard();
 </script>
+<script>
+  // Ticker: scrolls the latest published reports. Falls back to the static
+  // items already in the page if the lookup fails or nothing is published.
+  async function pbLoadTicker() {
+    const track = document.querySelector('.ticker-track');
+    if (!track || typeof puckBunkerDB === 'undefined') return;
+    try {
+      const { data, error } = await puckBunkerDB
+        .from('puckbunker_reports')
+        .select('id, slug, name, position, team, league, overall_grade')
+        .eq('status', 'published')
+        .order('created_at', { ascending: false })
+        .limit(8);
+      if (error || !data || !data.length) return;
+
+      const items = data.map(r => {
+        const where = [r.position, r.team, r.league].filter(Boolean).map(pbEscape).join(' · ');
+        const grade = r.overall_grade ? ' · Grade ' + pbEscape(r.overall_grade) : '';
+        const url = r.slug ? '/report/' + encodeURIComponent(r.slug) : '/api/report/' + encodeURIComponent(r.id);
+        return '<span><a href="' + url + '" style="color:inherit;text-decoration:none;"><b>' +
+          pbEscape(r.name) + '</b>' + (where ? ' — ' + where : '') + grade + '</a></span>';
+      });
+
+      // The scroll animation moves the track by exactly half its width, so its
+      // content must be an exact duplicate. Build a base list long enough to
+      // fill a wide screen, then double it.
+      let base = items.slice();
+      while (base.length < 8) base = base.concat(items);
+      track.innerHTML = base.concat(base).join('');
+      track.style.animationDuration = Math.max(24, base.length * 4) + 's';
+    } catch (e) {
+      console.error('Puck Bunker: failed to load ticker, keeping static items', e);
+    }
+  }
+  pbLoadTicker();
+</script>
 
 </body>
 </html>
