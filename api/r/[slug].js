@@ -104,7 +104,7 @@ function renderReportPage(report, reqHost) {
     : "";
 
   const bylineHtml = report.reporter_name
-    ? `<div class="byline">SCOUTED BY ${escapeHtml(report.reporter_name.toUpperCase())}</div>`
+    ? `<div class="byline" data-scout="${escapeHtml(report.reporter_name)}">SCOUTED BY ${escapeHtml(report.reporter_name.toUpperCase())}</div>`
     : "";
 
   const metaLine = [report.position, report.team, report.league, report.nation].filter(Boolean).map(escapeHtml).join(" · ");
@@ -143,10 +143,7 @@ ${JSON.stringify({
   "url": canonicalUrl,
   "datePublished": report.created_at || undefined,
   "dateModified": report.updated_at || report.created_at || undefined,
-  "author": {
-    "@type": "Organization",
-    "name": "Puck Bunker"
-  },
+  "author": { "@type": "Organization", "name": "Puck Bunker" },
   "publisher": {
     "@type": "Organization",
     "name": "Puck Bunker",
@@ -158,7 +155,7 @@ ${JSON.stringify({
     ...(report.position ? { "jobTitle": report.position } : {}),
     ...(report.nation ? { "nationality": report.nation } : {})
   }
-})}
+}).replace(/</g, "\\u003c")}
 </script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -175,7 +172,7 @@ ${JSON.stringify({
   .stencil{ font-family:'Big Shoulders Stencil Display',sans-serif; text-transform:uppercase; }
   .mono{ font-family:'JetBrains Mono',monospace; }
   a{ color:var(--hazard); text-decoration:none; }
-  .wrap{ max-width:820px; margin:0 auto; padding:48px 24px 80px; overflow-wrap:break-word; word-break:break-word; }
+  .wrap{ position:relative; z-index:1; max-width:820px; margin:0 auto; padding:48px 24px 80px; overflow-wrap:break-word; word-break:break-word; }
   .back-link{ font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:0.06em; color:var(--ice-dim); }
   .back-link:hover{ color:var(--hazard); }
   .hero-thumb{ aspect-ratio:16/9; overflow:hidden; margin-top:20px; border:1px solid var(--steel); }
@@ -214,15 +211,41 @@ ${JSON.stringify({
   .notes p{ margin-bottom:14px; color:var(--ice-dim); overflow-wrap:break-word; word-break:break-word; white-space:pre-wrap; }
   .notes p:last-child{ margin-bottom:0; }
   @media (max-width:600px){ .wrap{ padding:32px 18px 60px; } }
+  .crosshair{ position:absolute; top:40px; right:40px; width:100px; height:100px; opacity:0.7; z-index:2; pointer-events:none; }
+  .crosshair circle{ transform-origin:center; }
+  .crosshair svg{ width:100%; height:100%; }
+  /* Rotating radar sweep behind the top-right target (matches the home page) */
+  .radar-sweep{ position:absolute; top:-220px; right:-220px; width:640px; height:640px; border-radius:50%; pointer-events:none; opacity:0.55; z-index:0; }
+  .radar-sweep::before{ content:""; position:absolute; inset:0; border-radius:50%; background:conic-gradient(from 0deg, rgba(220,221,221,0.35), transparent 28%, transparent 100%); animation:radar-sweep-spin 6s linear infinite; }
+  .radar-sweep::after{ content:""; position:absolute; inset:0; border-radius:50%; background-image:repeating-radial-gradient(circle, transparent 0, transparent 79px, rgba(220,221,221,0.14) 80px); border:1px solid rgba(220,221,221,0.18); }
+  @keyframes radar-sweep-spin{ to{ transform:rotate(360deg); } }
+  @media (prefers-reduced-motion:reduce){ .radar-sweep::before{ animation:none; } }
+  .crosshair circle{ animation:crosshair-pulse 2.4s ease-in-out infinite; }
+  @keyframes crosshair-pulse{ 0%,100%{ opacity:0.4; } 50%{ opacity:0.95; } }
+  @media (max-width:900px){ .crosshair{ display:none; } }
+  @media (prefers-reduced-motion:reduce){ .crosshair circle{ animation:none; } }
 </style>
+<script src="/traffic.js"></script>
+<script src="/badges.js" defer></script>
 </head>
 <body>
+  <div class="radar-sweep" aria-hidden="true"></div>
+  <div class="crosshair" aria-hidden="true">
+    <svg viewBox="0 0 120 120" fill="none" stroke="var(--cyan)" stroke-width="1.5">
+      <circle cx="60" cy="60" r="50" opacity="0.5"/>
+      <circle cx="60" cy="60" r="30" opacity="0.7"/>
+      <line x1="60" y1="0" x2="60" y2="24" opacity="0.8"/>
+      <line x1="60" y1="96" x2="60" y2="120" opacity="0.8"/>
+      <line x1="0" y1="60" x2="24" y2="60" opacity="0.8"/>
+      <line x1="96" y1="60" x2="120" y2="60" opacity="0.8"/>
+    </svg>
+  </div>
   <div class="wrap">
     <a href="/scouting-reports.html" class="back-link">← BACK TO SCOUTING REPORTS</a>
 
     ${report.thumbnail_url ? `<div class="hero-thumb"><img src="${escapeHtml(report.thumbnail_url)}" alt=""></div>` : ""}
 
-    <div class="report-head">
+    <div class="report-head" data-seen-live="${report.seen_live ? 'true' : 'false'}">
       <span class="grade-pill mono ${gClass}">GRADE ${escapeHtml(letter)}</span>
       <span class="mono" style="font-size:12px; color:var(--steel);">FILE #${escapeHtml(report.file_num || "----")}</span>
     </div>
