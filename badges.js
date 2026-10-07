@@ -72,6 +72,7 @@ const PB_BADGES_ON = true;
   // One embossed dog tag, used on the report page (bigger) and on the cards (smaller).
   // Two overlapping tags, a raised rim, a chain hole, and stamped lettering that
   // catches light on one edge and shadow on the other. Same colours as the site.
+  const CARD_TAG_W = 120;   // width of the tag on the cards (px)
   let tagUid = 0;
   function dogTag(name, filed, width) {
     const id = "pbt" + (++tagUid);   // unique gradient ids, so tags never share (or lose) a gradient
@@ -83,8 +84,8 @@ const PB_BADGES_ON = true;
     const T = (x, y, size, txt, face, hi) => {
       if (!txt) return "";
       const a = `font-family="'JetBrains Mono',monospace" font-weight="800" font-size="${size.toFixed(1)}" letter-spacing="0.4"`;
-      return `<text x="${x + 0.8}" y="${y + 0.9}" ${a} fill="rgba(0,0,0,0.72)">${txt}</text>` +
-             `<text x="${x - 0.5}" y="${y - 0.6}" ${a} fill="${hi}">${txt}</text>` +
+      return `<text x="${x + 0.7}" y="${y + 0.85}" ${a} fill="rgba(0,0,0,0.82)">${txt}</text>` +
+             `<text x="${x - 0.45}" y="${y - 0.55}" ${a} fill="${hi}">${txt}</text>` +
              `<text x="${x}" y="${y}" ${a} fill="${face}">${txt}</text>`;
     };
     const fs1 = fit(F, 13, 104), fs2 = fit(L, 13, 104);
@@ -96,6 +97,9 @@ const PB_BADGES_ON = true;
         <linearGradient id="${id}b" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#46484C"/><stop offset="1" stop-color="#222426"/></linearGradient>
         <linearGradient id="${id}r" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F2F2EF"/><stop offset=".5" stop-color="#8B8D90"/><stop offset="1" stop-color="#DCDDDD"/></linearGradient>
         <linearGradient id="${id}s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".20"/><stop offset=".55" stop-color="#fff" stop-opacity="0"/></linearGradient>
+        <linearGradient id="${id}t" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F7F8F9"/><stop offset=".5" stop-color="#CED1D4"/><stop offset="1" stop-color="#9DA1A6"/></linearGradient>
+        <linearGradient id="${id}g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EBD9B0"/><stop offset=".55" stop-color="#CBAE7E"/><stop offset="1" stop-color="#96805F"/></linearGradient>
+        <linearGradient id="${id}d" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D2D4D7"/><stop offset=".5" stop-color="#A3A6AA"/><stop offset="1" stop-color="#7E8185"/></linearGradient>
       </defs>
       <path d="M17 70 Q-1 48 12 22" fill="none" stroke="#8B8D90" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="0.1 3.6"/>
       <g transform="rotate(-8 96 42)">
@@ -103,8 +107,8 @@ const PB_BADGES_ON = true;
         <rect x="25.4" y="5.4" width="140" height="72" rx="${R}" fill="none" stroke="rgba(255,255,255,.30)"/>
         <rect x="26.8" y="6.9" width="140" height="72" rx="${R}" fill="none" stroke="rgba(0,0,0,.55)"/>
         <rect x="26" y="6" width="140" height="72" rx="${R}" fill="none" stroke="#8B8D90" stroke-width="1.1"/>
-        ${T(40, 30, fsb1, L || F, "#B9BBBE", "rgba(255,255,255,.30)")}
-        ${T(40, 45, fsb2, L ? F : "", "#A9ABAE", "rgba(255,255,255,.26)")}
+        ${T(40, 30, fsb1, L || F, `url(#${id}d)`, "rgba(255,255,255,.55)")}
+        ${T(40, 45, fsb2, L ? F : "", `url(#${id}d)`, "rgba(255,255,255,.5)")}
       </g>
       <rect x="6" y="36" width="150" height="76" rx="${FR}" fill="url(#${id}f)"/>
       <rect x="6" y="36" width="150" height="76" rx="${FR}" fill="url(#${id}s)"/>
@@ -116,10 +120,10 @@ const PB_BADGES_ON = true;
       <circle cx="22" cy="74" r="6.6" fill="#0F1011" stroke="url(#${id}r)" stroke-width="1.4"/>
       <circle cx="22" cy="74" r="3.2" fill="none" stroke="rgba(255,255,255,.28)" stroke-width=".8"/>
       <path d="M17.5 70.8 A6 6 0 0 1 24 68.2" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1" stroke-linecap="round"/>
-      ${T(38, 60, 8.5, "SCOUT", GOLD, "#EBD9B0")}
-      ${T(38, 76, fs1, F, "#F2F2EF", "rgba(255,255,255,.48)")}
-      ${T(38, 91, fs2, L, "#F2F2EF", "rgba(255,255,255,.48)")}
-      ${T(38, 103, 7.8, bottom, "#CFD1D4", "rgba(255,255,255,.35)")}
+      ${T(38, 60, 8.5, "SCOUT", `url(#${id}g)`, "rgba(255,244,214,.8)")}
+      ${T(38, 76, fs1, F, `url(#${id}t)`, "rgba(255,255,255,.85)")}
+      ${T(38, 91, fs2, L, `url(#${id}t)`, "rgba(255,255,255,.85)")}
+      ${T(38, 103, 7.8, bottom, `url(#${id}t)`, "rgba(255,255,255,.7)")}
     </svg>`;
   }
 
@@ -133,7 +137,7 @@ const PB_BADGES_ON = true;
 
   // Cards on the reports pages: the same tag, a little smaller
   function tagCard(name, filed) {
-    return `<div class="pb-tag-card">${dogTag(name, filed, 156)}</div>`;
+    return `<div class="pb-tag-card">${dogTag(name, filed, CARD_TAG_W)}</div>`;
   }
 
   function stamp(text) {
@@ -227,7 +231,7 @@ const PB_BADGES_ON = true;
         holder.innerHTML = tagCard(name, "");
         const tag = holder.firstElementChild;
         el.replaceWith(tag);
-        getFiledCounts().then(c => { if (c[name]) tag.innerHTML = dogTag(name, c[name], 156); });
+        getFiledCounts().then(c => { if (c[name]) tag.innerHTML = dogTag(name, c[name], CARD_TAG_W); });
       } else {
         el.innerHTML = tagLarge(name, "");
         el.style.cssText += ";font-size:inherit;color:inherit;";
