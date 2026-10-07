@@ -35,6 +35,7 @@ function pbInjectCardStyles() {
       display:-webkit-box; -webkit-box-orient:vertical;
       -webkit-line-clamp:5; line-clamp:5; overflow:hidden;
     }
+    .dossier-grid .pb-excerpt{ margin-bottom:10px; }
     .dossier-grid .pb-card-foot{ margin-top:auto; }
     .pb-readmore{
       display:none; margin:0 0 14px;
@@ -58,15 +59,55 @@ function pbRefreshReadMore(root) {
   });
 }
 
+// Cards in the same row can have headers of different heights (long team names
+// wrap, some have a subtitle). Nudge the text down on shorter ones so every
+// card's text, and therefore its Read more button, lines up across the row.
+function pbAlignCards(root) {
+  const cards = [...(root || document).querySelectorAll('.pb-card-link .dossier')];
+  cards.forEach(c => { const p = c.querySelector('.pb-excerpt'); if (p) p.style.marginTop = ''; });
+  const rows = new Map();
+  cards.forEach(c => {
+    if (!c.offsetParent) return;                       // hidden by a filter
+    const key = Math.round(c.getBoundingClientRect().top + window.scrollY);
+    if (!rows.has(key)) rows.set(key, []);
+    rows.get(key).push(c);
+  });
+  rows.forEach(group => {
+    if (group.length < 2) return;
+    const tops = group.map(c => {
+      const p = c.querySelector('.pb-excerpt');
+      return p ? p.getBoundingClientRect().top - c.getBoundingClientRect().top : 0;
+    });
+    const max = Math.max(...tops);
+    group.forEach((c, i) => {
+      const p = c.querySelector('.pb-excerpt');
+      if (p && tops[i] < max) p.style.marginTop = (max - tops[i]) + 'px';
+    });
+  });
+}
+
+function pbLayoutCards(root) {
+  pbAlignCards(root);
+  pbRefreshReadMore(root);
+}
+
 let pbReadMoreWired = false;
 function pbWireReadMore(grid) {
-  pbRefreshReadMore(grid);
-  setTimeout(() => pbRefreshReadMore(grid), 600);               // after badges/fonts settle
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => pbRefreshReadMore(grid));
+  pbLayoutCards(grid);
+  setTimeout(() => pbLayoutCards(grid), 600);                   // after badges/fonts settle
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => pbLayoutCards(grid));
+  // The badge script rearranges card headers right after cards appear; re-align when it does.
+  let mt;
+  new MutationObserver(() => { clearTimeout(mt); mt = setTimeout(() => pbLayoutCards(grid), 80); })
+    .observe(grid, { childList: true, subtree: true });
   if (!pbReadMoreWired) {
     pbReadMoreWired = true;
     let t;
-    window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(() => pbRefreshReadMore(document), 150); });
+    window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(() => pbLayoutCards(document), 150); });
+    // Filter buttons hide/show cards, which changes the rows.
+    document.addEventListener('click', e => {
+      if (e.target.closest && e.target.closest('.filter-chip')) setTimeout(() => pbLayoutCards(document), 80);
+    });
   }
 }
 
@@ -107,8 +148,8 @@ function pbBuildCard(report) {
       ${subtitleHtml}
       ${byline}
       <p class="pb-excerpt" style="overflow-wrap:break-word; word-break:break-word;">${pbEscape(excerpt)}</p>
+      <div class="pb-more-row"><span class="pb-readmore">Read more →</span></div>
       <div class="pb-card-foot">
-        <span class="pb-readmore">Read more →</span>
         <div class="tool-tags">${topTags.map(t => `<span>${pbEscape(t)}</span>`).join('')}</div>
       </div>
     </div>
