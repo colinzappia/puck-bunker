@@ -806,7 +806,6 @@
     });
 
     card.innerHTML = `
-      <div class="p-eyebrow">FILE #${(r.file_num || '----')}</div>
       <h2 class="stencil">${pbEsc(r.name || 'Unnamed Prospect')}${r.position ? ' — ' + pbEsc(r.position) : ''}</h2>
       <div class="p-meta">No grade shown. Read the tape, make the call.</div>
       <div class="p-notes">${notes}</div>
@@ -834,7 +833,6 @@
 
     const card = document.getElementById('predictCard');
     card.innerHTML = `
-      <div class="p-eyebrow">FILE #${(pbPredictCurrent.file_num || '----')}</div>
       <h2 class="stencil">${pbPredictCurrent.name || 'Unnamed Prospect'}${pbPredictCurrent.position ? ' — ' + pbPredictCurrent.position : ''}</h2>
       <div class="predict-result">
         <div class="verdict ${verdictClass}">${verdictText}</div>
