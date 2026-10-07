@@ -255,14 +255,14 @@ ${JSON.stringify({
 
     ${videoHtml}
 
-    <div class="panel">
-      <h2>The M.O. — Category Scores</h2>
-      ${gaugesHtml}
-    </div>
-
     <div class="panel notes">
       <h2>Scouting Notes</h2>
       ${notesHtml}
+    </div>
+
+    <div class="panel">
+      <h2>The M.O. — Category Scores</h2>
+      ${gaugesHtml}
     </div>
   </div>
 </body>
