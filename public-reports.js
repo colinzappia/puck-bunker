@@ -59,12 +59,24 @@ function pbRefreshReadMore(root) {
   });
 }
 
-// Cards in the same row can have headers of different heights (long team names
-// wrap, some have a subtitle). Nudge the text down on shorter ones so every
-// card's text, and therefore its Read more button, lines up across the row.
+// Cards in the same row can have headers of different heights (a long team name
+// wraps onto a second line, some cards have no game line). Walk down the card
+// section by section (game line, dog tag, text) and nudge shorter cards down so
+// each section starts at the same height across the whole row. That keeps the
+// game lines, dog tags, text and Read more buttons symmetrical.
+function pbCardSections(card) {
+  const body = card.querySelector('.dossier-body');
+  if (!body) return [];
+  return [
+    body.querySelector('.pb-subtitle'),
+    body.querySelector('.pb-tag-card') || body.querySelector('[data-scout]'),
+    body.querySelector('.pb-excerpt'),
+  ];
+}
+
 function pbAlignCards(root) {
   const cards = [...(root || document).querySelectorAll('.pb-card-link .dossier')];
-  cards.forEach(c => { const p = c.querySelector('.pb-excerpt'); if (p) p.style.marginTop = ''; });
+  cards.forEach(c => pbCardSections(c).forEach(el => { if (el) el.style.marginTop = ''; }));
   const rows = new Map();
   cards.forEach(c => {
     if (!c.offsetParent) return;                       // hidden by a filter
@@ -74,15 +86,21 @@ function pbAlignCards(root) {
   });
   rows.forEach(group => {
     if (group.length < 2) return;
-    const tops = group.map(c => {
-      const p = c.querySelector('.pb-excerpt');
-      return p ? p.getBoundingClientRect().top - c.getBoundingClientRect().top : 0;
-    });
-    const max = Math.max(...tops);
-    group.forEach((c, i) => {
-      const p = c.querySelector('.pb-excerpt');
-      if (p && tops[i] < max) p.style.marginTop = (max - tops[i]) + 'px';
-    });
+    const sections = group.map(pbCardSections);
+    for (let s = 0; s < 3; s++) {
+      // measure after the previous section was nudged, since that moves everything below it
+      const tops = group.map((c, i) => {
+        const el = sections[i][s];
+        return el ? el.getBoundingClientRect().top - c.getBoundingClientRect().top : null;
+      });
+      const present = tops.filter(t => t !== null);
+      if (present.length < 2) continue;
+      const max = Math.max(...present);
+      group.forEach((c, i) => {
+        const el = sections[i][s];
+        if (el && tops[i] < max) el.style.marginTop = (max - tops[i]) + 'px';
+      });
+    }
   });
 }
 
@@ -126,7 +144,7 @@ function pbBuildCard(report) {
   const metaBits = [report.position, report.team, report.league].filter(Boolean).map(pbEscape).join(' · ');
   const hasCustomTitle = report.title && report.title.trim();
   const subtitleHtml = hasCustomTitle
-    ? `<div style="font-size:13px; color:var(--ice-dim); font-style:italic; margin-bottom:10px; overflow-wrap:break-word; word-break:break-word;">${pbEscape(report.title)}</div>`
+    ? `<div class="pb-subtitle" style="font-size:13px; color:var(--ice-dim); font-style:italic; margin-bottom:10px; overflow-wrap:break-word; word-break:break-word;">${pbEscape(report.title)}</div>`
     : '';
 
   const altText = `${report.name || 'Prospect'}${report.position ? ' — ' + report.position : ''}${report.team ? ', ' + report.team : ''} scouting report thumbnail`;
