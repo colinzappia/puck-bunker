@@ -30,7 +30,7 @@ const PB_BADGES_ON = true;
   .pb-tag-sm .pb-t1{ font-family:'JetBrains Mono',monospace; font-size:10px; color:${GOLD}; letter-spacing:0.08em; }
   .pb-tag-sm .pb-t2{ font-family:'Big Shoulders Stencil Display',sans-serif; font-weight:800; font-size:14px; color:#F2F2EF; letter-spacing:0.03em; }
   .pb-tag-lg{ display:flex; align-items:center; gap:14px; margin:14px 0 6px; }
-  .pb-tag-lg .pb-tl{ font-family:'JetBrains Mono',monospace; font-size:10px; color:#9A9C9F; letter-spacing:0.15em; }
+  .pb-tag-lg .pb-tl{ font-family:'JetBrains Mono',monospace; font-size:10px; color:#CFD1D4; letter-spacing:0.15em; }
   .pb-stamp{ display:inline-block; line-height:0; pointer-events:none; }
   .dossier-thumb .pb-stamp{ position:absolute; left:6px; bottom:8px; z-index:2; }
   .report-head .pb-stamp{ margin-left:6px; }
@@ -79,7 +79,7 @@ const PB_BADGES_ON = true;
 
   function tagLarge(name, filed) {
     const [first, last] = splitName(name);
-    const filedLine = filed ? `<text x="36" y="84" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="6.5" fill="#9A9C9F">${filed} FILED</text>` : "";
+    const filedLine = filed ? `<text x="36" y="84" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7.5" fill="#CFD1D4">${filed} FILED</text>` : "";
     return `<div class="pb-tag-lg">
       <svg viewBox="0 0 90 110" width="90" height="110" role="img" aria-label="Filed by ${esc(name)}">
         <path d="M18 2 Q40 14 34 26" fill="none" stroke="#8B8D90" stroke-dasharray="2 2"/>
