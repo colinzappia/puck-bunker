@@ -27,9 +27,8 @@ const PB_BADGES_ON = true;
   .board-row .pb-chev{ transform:rotate(4deg); }
   .grade-stamp.pb-done{ border:0 !important; padding:0 !important; background:none !important; top:8px; right:8px; }
   .grade-pill.pb-done{ border:0 !important; padding:0 !important; background:none !important; }
-  .pb-tag-sm{ display:inline-flex; align-items:center; gap:8px; background:#28292C; border:1px solid #8B8D90; border-radius:10px; padding:4px 10px 4px 6px; margin-bottom:10px; }
-  .pb-tag-sm .pb-t1{ font-family:'JetBrains Mono',monospace; font-size:10px; color:${GOLD}; letter-spacing:0.08em; }
-  .pb-tag-sm .pb-t2{ font-family:'Big Shoulders Stencil Display',sans-serif; font-weight:800; font-size:14px; color:#F2F2EF; letter-spacing:0.03em; }
+  .pb-tag-card{ display:block; line-height:0; margin:0 0 10px; }
+  .pb-tag-card svg, .pb-tag-lg svg{ display:block; overflow:visible; }
   .pb-tag-lg{ display:flex; align-items:center; gap:14px; margin:14px 0 6px; }
   .pb-tag-lg .pb-tl{ font-family:'JetBrains Mono',monospace; font-size:10px; color:#CFD1D4; letter-spacing:0.15em; }
   .pb-stamp{ display:inline-block; line-height:0; pointer-events:none; }
@@ -70,30 +69,71 @@ const PB_BADGES_ON = true;
     return [parts[0], parts.slice(1).join(" ")];
   }
 
-  function tagSmall(name) {
-    const [, last] = splitName(name);
-    return `<div class="pb-tag-sm" role="img" aria-label="Scouted by ${esc(name)}">
-      <svg width="14" height="18" viewBox="0 0 14 18" aria-hidden="true"><rect x="1" y="1" width="12" height="16" rx="4" fill="none" stroke="#DCDDDD"/><circle cx="7" cy="4.5" r="1.3" fill="none" stroke="#DCDDDD"/></svg>
-      <span class="pb-t1">SCOUT</span><span class="pb-t2">${esc((last || name).toUpperCase())}</span>
+  // One embossed dog tag, used on the report page (bigger) and on the cards (smaller).
+  // Two overlapping tags, a raised rim, a chain hole, and stamped lettering that
+  // catches light on one edge and shadow on the other. Same colours as the site.
+  let tagUid = 0;
+  function dogTag(name, filed, width) {
+    const id = "pbt" + (++tagUid);   // unique gradient ids, so tags never share (or lose) a gradient
+    const [first, last] = splitName(name);
+    const F = esc((first || name).toUpperCase()), L = esc((last || "").toUpperCase());
+    const fit = (txt, max, room) => Math.min(max, room / (Math.max(txt.length, 1) * 0.62));
+    const bottom = filed ? `${filed} FILED` : "PUCK BUNKER";
+    const h = Math.round(width * 122 / 176);
+    const T = (x, y, size, txt, face, hi) => {
+      if (!txt) return "";
+      const a = `font-family="'JetBrains Mono',monospace" font-weight="800" font-size="${size.toFixed(1)}" letter-spacing="0.4"`;
+      return `<text x="${x + 0.8}" y="${y + 0.9}" ${a} fill="rgba(0,0,0,0.72)">${txt}</text>` +
+             `<text x="${x - 0.5}" y="${y - 0.6}" ${a} fill="${hi}">${txt}</text>` +
+             `<text x="${x}" y="${y}" ${a} fill="${face}">${txt}</text>`;
+    };
+    const fs1 = fit(F, 13, 104), fs2 = fit(L, 13, 104);
+    const fsb1 = fit(L || F, 12, 72), fsb2 = fit(F, 12, 72);
+    const R = 19, FR = 15;
+    return `<svg viewBox="0 -6 176 122" width="${width}" height="${h}" role="img" aria-label="Scouted by ${esc(name)}">
+      <defs>
+        <linearGradient id="${id}f" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5E6166"/><stop offset=".5" stop-color="#3D3F43"/><stop offset="1" stop-color="#27292C"/></linearGradient>
+        <linearGradient id="${id}b" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#46484C"/><stop offset="1" stop-color="#222426"/></linearGradient>
+        <linearGradient id="${id}r" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F2F2EF"/><stop offset=".5" stop-color="#8B8D90"/><stop offset="1" stop-color="#DCDDDD"/></linearGradient>
+        <linearGradient id="${id}s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".20"/><stop offset=".55" stop-color="#fff" stop-opacity="0"/></linearGradient>
+      </defs>
+      <path d="M17 70 Q-1 48 12 22" fill="none" stroke="#8B8D90" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="0.1 3.6"/>
+      <g transform="rotate(-8 96 42)">
+        <rect x="26" y="6" width="140" height="72" rx="${R}" fill="url(#${id}b)"/>
+        <rect x="25.4" y="5.4" width="140" height="72" rx="${R}" fill="none" stroke="rgba(255,255,255,.30)"/>
+        <rect x="26.8" y="6.9" width="140" height="72" rx="${R}" fill="none" stroke="rgba(0,0,0,.55)"/>
+        <rect x="26" y="6" width="140" height="72" rx="${R}" fill="none" stroke="#8B8D90" stroke-width="1.1"/>
+        ${T(40, 30, fsb1, L || F, "#B9BBBE", "rgba(255,255,255,.30)")}
+        ${T(40, 45, fsb2, L ? F : "", "#A9ABAE", "rgba(255,255,255,.26)")}
+      </g>
+      <rect x="6" y="36" width="150" height="76" rx="${FR}" fill="url(#${id}f)"/>
+      <rect x="6" y="36" width="150" height="76" rx="${FR}" fill="url(#${id}s)"/>
+      <rect x="5.4" y="35.4" width="150" height="76" rx="${FR}" fill="none" stroke="rgba(255,255,255,.38)" stroke-width="1.2"/>
+      <rect x="6.9" y="36.9" width="150" height="76" rx="${FR}" fill="none" stroke="rgba(0,0,0,.6)" stroke-width="1.2"/>
+      <rect x="6" y="36" width="150" height="76" rx="${FR}" fill="none" stroke="url(#${id}r)" stroke-width="1.6"/>
+      <rect x="11" y="41" width="140" height="66" rx="${FR - 4}" fill="none" stroke="rgba(0,0,0,.55)" stroke-width="1.3"/>
+      <rect x="11" y="41" width="140" height="66" rx="${FR - 4}" fill="none" stroke="rgba(255,255,255,.22)" stroke-width=".7" transform="translate(.5 .5)"/>
+      <circle cx="22" cy="74" r="6.6" fill="#0F1011" stroke="url(#${id}r)" stroke-width="1.4"/>
+      <circle cx="22" cy="74" r="3.2" fill="none" stroke="rgba(255,255,255,.28)" stroke-width=".8"/>
+      <path d="M17.5 70.8 A6 6 0 0 1 24 68.2" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1" stroke-linecap="round"/>
+      ${T(38, 60, 8.5, "SCOUT", GOLD, "#EBD9B0")}
+      ${T(38, 76, fs1, F, "#F2F2EF", "rgba(255,255,255,.48)")}
+      ${T(38, 91, fs2, L, "#F2F2EF", "rgba(255,255,255,.48)")}
+      ${T(38, 103, 7.8, bottom, "#CFD1D4", "rgba(255,255,255,.35)")}
+    </svg>`;
+  }
+
+  // Report page: the tag with a "filed by" label beside it
+  function tagLarge(name, filed) {
+    return `<div class="pb-tag-lg">
+      ${dogTag(name, filed, 170)}
+      <div class="pb-tl">FILED BY<br><span style="color:#F2F2EF;">${esc(name.toUpperCase())}</span></div>
     </div>`;
   }
 
-  function tagLarge(name, filed) {
-    const [first, last] = splitName(name);
-    const filedLine = filed ? `<text x="36" y="84" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7.5" fill="#CFD1D4">${filed} FILED</text>` : "";
-    return `<div class="pb-tag-lg">
-      <svg viewBox="0 0 90 110" width="90" height="110" role="img" aria-label="Filed by ${esc(name)}">
-        <path d="M18 2 Q40 14 34 26" fill="none" stroke="#8B8D90" stroke-dasharray="2 2"/>
-        <g transform="rotate(9 58 64)"><rect x="34" y="22" width="48" height="74" rx="14" fill="#28292C" stroke="#8B8D90"/></g>
-        <rect x="12" y="22" width="48" height="74" rx="14" fill="#1D1F21" stroke="#DCDDDD" stroke-width="1.5"/>
-        <circle cx="36" cy="31" r="3" fill="none" stroke="#DCDDDD"/>
-        <text x="36" y="48" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" fill="${GOLD}">SCOUT</text>
-        <text x="36" y="60" text-anchor="middle" font-family="'Big Shoulders Stencil Display',sans-serif" font-weight="800" font-size="10" fill="#F2F2EF">${esc(first.toUpperCase())}</text>
-        <text x="36" y="71" text-anchor="middle" font-family="'Big Shoulders Stencil Display',sans-serif" font-weight="800" font-size="10" fill="#F2F2EF">${esc(last.toUpperCase())}</text>
-        ${filedLine}
-      </svg>
-      <div class="pb-tl">FILED BY<br><span style="color:#F2F2EF;">${esc(name.toUpperCase())}</span></div>
-    </div>`;
+  // Cards on the reports pages: the same tag, a little smaller
+  function tagCard(name, filed) {
+    return `<div class="pb-tag-card">${dogTag(name, filed, 156)}</div>`;
   }
 
   function stamp(text) {
@@ -183,7 +223,11 @@ const PB_BADGES_ON = true;
       if (!name) return;
       el.classList.add("pb-done");
       if (el.closest(".dossier")) {
-        el.outerHTML = tagSmall(name);
+        const holder = document.createElement("div");
+        holder.innerHTML = tagCard(name, "");
+        const tag = holder.firstElementChild;
+        el.replaceWith(tag);
+        getFiledCounts().then(c => { if (c[name]) tag.innerHTML = dogTag(name, c[name], 156); });
       } else {
         el.innerHTML = tagLarge(name, "");
         el.style.cssText += ";font-size:inherit;color:inherit;";
