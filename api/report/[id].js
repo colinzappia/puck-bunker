@@ -190,7 +190,7 @@ ${JSON.stringify({
     letter-spacing:0.05em; text-transform:uppercase; color:var(--hazard);
     margin-top:10px; overflow-wrap:break-word; word-break:break-word;
   }
-  .byline{ font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--steel); margin:18px 0; letter-spacing:0.06em; }
+  .byline{ font-family:'JetBrains Mono',monospace; font-size:12px; color:#CFD1D4; margin:18px 0; letter-spacing:0.06em; }
   .patreon-link{
     display:inline-flex; align-items:center; gap:10px;
     background:var(--panel); border:1px solid var(--hazard-2); color:var(--hazard);
@@ -247,7 +247,6 @@ ${JSON.stringify({
 
     <div class="report-head" data-seen-live="${report.seen_live ? 'true' : 'false'}">
       <span class="grade-pill mono ${gClass}">GRADE ${escapeHtml(letter)}</span>
-      <span class="mono" style="font-size:12px; color:var(--steel);">FILE #${escapeHtml(report.file_num || "----")}</span>
     </div>
     <h1 class="stencil">${escapeHtml(report.name || "Unnamed Prospect")}</h1>
     ${metaLine ? `<div class="prospect-meta">${metaLine}</div>` : ""}
