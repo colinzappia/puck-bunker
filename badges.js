@@ -23,6 +23,8 @@ const PB_BADGES_ON = true;
   .pb-name-row{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
   .pb-name-row h3{ flex:1; min-width:0; }
   .pb-name-col{ flex:1; min-width:0; }
+  .dossier-body .pb-name-col .prospect-meta{ margin-bottom:0; }
+  .dossier-body .pb-name-row{ margin-bottom:11px; }
   .pb-name-row .pb-chev{ flex-shrink:0; margin-top:-4px; transform:rotate(4deg); }
   .board-row .pb-chev{ transform:rotate(4deg); }
   .grade-stamp.pb-done{ border:0 !important; padding:0 !important; background:none !important; top:8px; right:8px; }
