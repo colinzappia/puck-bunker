@@ -22,6 +22,7 @@ const PB_BADGES_ON = true;
   .pb-chev svg{ display:block; }
   .pb-name-row{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
   .pb-name-row h3{ flex:1; min-width:0; }
+  .pb-name-col{ flex:1; min-width:0; }
   .pb-name-row .pb-chev{ flex-shrink:0; margin-top:-4px; transform:rotate(4deg); }
   .board-row .pb-chev{ transform:rotate(4deg); }
   .grade-stamp.pb-done{ border:0 !important; padding:0 !important; background:none !important; top:8px; right:8px; }
@@ -149,10 +150,18 @@ const PB_BADGES_ON = true;
       const title = card && card.querySelector(".dossier-body h3");
       if (title) {
         el.style.display = "none";
+        // The position/team line goes in the same column as the name, so it can
+        // only be as wide as that column and wraps before it reaches the badge.
+        const next = title.nextElementSibling;
+        const meta = next && next.classList.contains("prospect-meta") ? next : null;
         const row = document.createElement("div");
         row.className = "pb-name-row";
+        const col = document.createElement("div");
+        col.className = "pb-name-col";
         title.parentNode.insertBefore(row, title);
-        row.appendChild(title);
+        col.appendChild(title);
+        if (meta) col.appendChild(meta);
+        row.appendChild(col);
         row.insertAdjacentHTML("beforeend", chevron(g, 56));
       } else {
         el.innerHTML = chevron(g, 56);
