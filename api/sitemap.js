@@ -20,6 +20,15 @@ const STATIC_PAGES = [
   { path: "/predict.html", priority: "0.5", changefreq: "weekly" },
 ];
 
+// Same rule the rest of the site uses to decide two reports are the same player.
+function playerSlug(name) {
+  return String(name || "")
+    .toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 function escapeXml(str) {
   return String(str || "")
     .replace(/&/g, "&amp;")
@@ -30,7 +39,7 @@ function escapeXml(str) {
 }
 
 async function fetchPublishedReports() {
-  const url = `${SUPABASE_URL}/rest/v1/puckbunker_reports?status=eq.published&select=id,slug,updated_at`;
+  const url = `${SUPABASE_URL}/rest/v1/puckbunker_reports?status=eq.published&select=id,slug,name,updated_at`;
   const res = await fetch(url, {
     headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
   });
@@ -60,10 +69,30 @@ module.exports = async (req, res) => {
   </url>`;
     }).join("\n");
 
+    // Player pages: only for players with 2+ reports (a one-report player's page would just duplicate the report page)
+    const byPlayer = new Map();
+    reports.forEach(r => {
+      const slug = playerSlug(r.name);
+      if (!slug) return;
+      const entry = byPlayer.get(slug) || { count: 0, last: "" };
+      entry.count += 1;
+      if (r.updated_at && r.updated_at > entry.last) entry.last = r.updated_at;
+      byPlayer.set(slug, entry);
+    });
+    const playerUrls = [...byPlayer.entries()].filter(([, v]) => v.count > 1).map(([slug, v]) => {
+      const lastmod = v.last ? new Date(v.last).toISOString().split("T")[0] : "";
+      return `  <url>
+    <loc>${escapeXml(`${SITE_URL}/player/${slug}`)}</loc>${lastmod ? `\n    <lastmod>${lastmod}</lastmod>` : ""}
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>`;
+    }).join("\n");
+
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls}
 ${reportUrls}
+${playerUrls}
 </urlset>`;
 
     res.statusCode = 200;
