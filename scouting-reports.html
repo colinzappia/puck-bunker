@@ -521,6 +521,25 @@
   .filter-chip:hover{ border-color:var(--cyan-dim); color:var(--ice); }
   .filter-chip.active{ border-color:var(--hazard); color:var(--hazard); background:rgba(203,174,126,0.08); }
 
+  /* Player dropdown, same look as the position buttons */
+  .player-select{
+    margin-left:auto; min-width:230px; max-width:100%;
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:0.05em; text-transform:uppercase;
+    padding:9px 38px 9px 16px; border:1px solid var(--steel); color:var(--ice-dim); background-color:var(--panel);
+    cursor:pointer; appearance:none; -webkit-appearance:none; border-radius:0;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23CBAE7E' stroke-width='1.6'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 14px center;
+    transition:border-color .15s,color .15s;
+  }
+  .player-select:hover, .player-select:focus{ border-color:var(--cyan-dim); color:var(--ice); outline:none; }
+  .player-select.has-value{ border-color:var(--hazard); color:var(--hazard); background-color:rgba(203,174,126,0.08); }
+  .player-select:disabled{ opacity:0.55; cursor:default; }
+  .player-select option{ background:#17181A; color:#F2F2EF; text-transform:none; letter-spacing:0; }
+  .player-link-row{ margin:-14px 0 26px; font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:0.05em; text-transform:uppercase; }
+  .player-link-row a{ color:var(--hazard); border-bottom:1px solid var(--hazard-2); padding-bottom:2px; }
+  .player-link-row a:hover{ color:var(--ice); border-color:var(--ice); }
+  @media (max-width:720px){ .player-select{ margin-left:0; width:100%; } }
+
   .article-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:22px; margin-top:20px; }
   .article-card{ background:var(--panel); border:1px solid var(--steel); padding:26px 24px; transition:border-color .2s, transform .2s; }
   .article-card:hover{ border-color:var(--cyan-dim); transform:translateY(-4px); }
@@ -617,7 +636,7 @@
   <div class="wrap">
     <div class="eyebrow">The archive</div>
     <h1 class="stencil">Scouting reports.</h1>
-    <p>Every prospect we've filed a report on — skaters graded across 10 tools, goalies across nine position-specific criteria. Filter by position.</p>
+    <p>Every prospect we've filed a report on — skaters graded across 10 tools, goalies across nine position-specific criteria. Filter by position, or jump to a player.</p>
   </div>
 </section>
 
@@ -631,7 +650,11 @@
       <button class="filter-chip" data-filter="LD">Left Defense</button>
       <button class="filter-chip" data-filter="RD">Right Defense</button>
       <button class="filter-chip" data-filter="G">Goaltenders</button>
+      <select id="playerSelect" class="player-select" aria-label="Show reports on one player" disabled>
+        <option value="">All players</option>
+      </select>
     </div>
+    <div class="player-link-row" id="playerLinkRow" style="display:none;"><a id="playerPageLink" href="#"></a></div>
 
     <div class="filter-empty" id="filterEmpty">No reports filed at this position yet.</div>
 
@@ -854,29 +877,61 @@
   }, { threshold: 0.3 });
   gauges.forEach(el => gaugeIO.observe(el));
 
-  // Position filter on the Scouting Reports archive
+  // Filters on the Scouting Reports archive: position buttons AND the player dropdown, together.
   const filterRow = document.getElementById('filterRow');
+  const playerSelect = document.getElementById('playerSelect');
+
+  function applyReportFilters() {
+    const grid = document.getElementById('reportsGrid');
+    if (!grid) return;
+    const active = document.querySelector('#filterRow .filter-chip.active');
+    const pos = active ? active.dataset.filter.toUpperCase() : 'ALL';
+    const player = playerSelect ? playerSelect.value : '';
+    let shown = 0;
+    grid.querySelectorAll('.dossier').forEach(card => {
+      // Hide the whole grid item (the link wrapper if there is one) so no empty gaps are left behind
+      const item = card.parentElement === grid ? card : card.closest('#reportsGrid > *');
+      const cardPos = (card.dataset.pos || '').trim().toUpperCase();
+      const match = (pos === 'ALL' || cardPos === pos) && (!player || (card.dataset.player || '') === player);
+      item.classList.toggle('pb-hidden', !match);
+      if (match) shown++;
+    });
+    const empty = document.getElementById('filterEmpty');
+    if (empty) {
+      empty.textContent = player ? 'No reports on this player at this position.' : 'No reports filed at this position yet.';
+      empty.style.display = shown ? 'none' : 'block';
+    }
+    // A selected player with 2+ reports gets a link to his one-page view
+    const linkRow = document.getElementById('playerLinkRow');
+    const link = document.getElementById('playerPageLink');
+    if (playerSelect) {
+      playerSelect.classList.toggle('has-value', !!player);
+      const opt = playerSelect.selectedOptions && playerSelect.selectedOptions[0];
+      const count = opt ? parseInt(opt.dataset.count || '0', 10) : 0;
+      if (linkRow && link) {
+        if (player && count > 1) {
+          link.href = '/player/' + player;
+          link.textContent = 'See all ' + count + ' reports on ' + (opt.dataset.name || 'this player') + ' on one page →';
+          linkRow.style.display = 'block';
+        } else {
+          linkRow.style.display = 'none';
+        }
+      }
+    }
+    // Re-line-up the cards that are still showing
+    if (typeof pbLayoutCards === 'function') pbLayoutCards(grid);
+  }
+
   if (filterRow) {
     filterRow.addEventListener('click', (e) => {
       const btn = e.target.closest('.filter-chip');
       if (!btn) return;
       filterRow.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      const filter = btn.dataset.filter.toUpperCase();
-      const grid = document.getElementById('reportsGrid');
-      let shown = 0;
-      grid.querySelectorAll('.dossier').forEach(card => {
-        // Hide the whole grid item (the link wrapper if there is one) so no empty gaps are left behind
-        const item = card.parentElement === grid ? card : card.closest('#reportsGrid > *');
-        const pos = (card.dataset.pos || '').trim().toUpperCase();
-        const match = filter === 'ALL' || pos === filter;
-        item.classList.toggle('pb-hidden', !match);
-        if (match) shown++;
-      });
-      const empty = document.getElementById('filterEmpty');
-      if (empty) empty.style.display = shown ? 'none' : 'block';
+      applyReportFilters();
     });
   }
+  if (playerSelect) playerSelect.addEventListener('change', applyReportFilters);
 
 </script>
 
