@@ -35,6 +35,31 @@ function gradeClass(letter) {
   return "grade-C";
 }
 
+// Same rule the rest of the site uses to decide two reports are the same player.
+function playerSlug(name) {
+  return String(name || "")
+    .toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+// How many published reports exist on this player. Returns 0 on any failure,
+// so the report page still renders even if this lookup has a problem.
+async function countPlayerReports(name) {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/puckbunker_reports?status=eq.published&select=name`, {
+      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
+    });
+    if (!res.ok) return 0;
+    const rows = await res.json();
+    const slug = playerSlug(name);
+    return rows.filter(r => playerSlug(r.name) === slug).length;
+  } catch (e) {
+    return 0;
+  }
+}
+
 async function fetchReport(id) {
   const url = `${SUPABASE_URL}/rest/v1/puckbunker_reports?id=eq.${encodeURIComponent(id)}&status=eq.published&select=*`;
   const res = await fetch(url, {
@@ -76,7 +101,7 @@ function renderNotFoundPage() {
 </html>`;
 }
 
-function renderReportPage(report, reqHost) {
+function renderReportPage(report, reqHost, playerCount) {
   const letter = report.overall_grade || "B";
   const gClass = gradeClass(letter);
   const pageTitle = `${report.name} — Grade ${letter} | Puck Bunker`;
@@ -191,6 +216,8 @@ ${JSON.stringify({
     margin-top:10px; overflow-wrap:break-word; word-break:break-word;
   }
   .byline{ font-family:'JetBrains Mono',monospace; font-size:12px; color:#CFD1D4; margin:18px 0; letter-spacing:0.06em; }
+  .player-link{ display:inline-block; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--hazard); border:1px solid var(--hazard-2); padding:8px 14px; margin:0 0 6px; }
+  .player-link:hover{ background:var(--panel-2); border-color:var(--hazard); }
   .patreon-link{
     display:inline-flex; align-items:center; gap:10px;
     background:var(--panel); border:1px solid var(--hazard-2); color:var(--hazard);
@@ -252,6 +279,7 @@ ${JSON.stringify({
     ${metaLine ? `<div class="prospect-meta">${metaLine}</div>` : ""}
     ${report.title && report.title.trim() ? `<div class="subline" style="font-style:italic;">${escapeHtml(report.title)}</div>` : ""}
     ${bylineHtml}
+    ${playerCount > 1 ? `<a class="player-link" href="/player/${playerSlug(report.name)}">All ${playerCount} reports on ${escapeHtml(report.name)} →</a>` : ""}
 
     ${videoHtml}
 
@@ -290,7 +318,8 @@ module.exports = async (req, res) => {
     res.statusCode = 200;
     res.setHeader("Content-Type", "text/html; charset=utf-8");
     res.setHeader("Cache-Control", "public, s-maxage=300, stale-while-revalidate=600");
-    res.end(renderReportPage(report, req.headers.host));
+    const playerCount = await countPlayerReports(report.name);
+    res.end(renderReportPage(report, req.headers.host, playerCount));
   } catch (err) {
     console.error("report page error:", err);
     res.statusCode = 500;
