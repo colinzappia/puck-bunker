@@ -1,0 +1,60 @@
+# Runs the points update every morning and saves the results into the tracker/ folder of this repository.
+# Vercel then redeploys the site automatically, so the Prospect Tracker page always shows the latest numbers.
+name: Daily prospect points
+
+on:
+  schedule:
+    - cron: "30 11 * * *"   # 11:30 UTC = 7:30 am Toronto (6:30 am in winter)
+  workflow_dispatch:         # adds a "Run workflow" button for manual runs / a date range
+    inputs:
+      start:
+        description: "First date (YYYY-MM-DD), blank = yesterday"
+        required: false
+      end:
+        description: "Last date (YYYY-MM-DD), blank = same as first"
+        required: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-points
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tracker      # the scripts and their data live in the tracker/ folder
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Fetch points
+        run: |
+          if [ -n "${{ github.event.inputs.start }}" ]; then
+            python daily_points.py --start "${{ github.event.inputs.start }}" --end "${{ github.event.inputs.end || github.event.inputs.start }}"
+          else
+            python daily_points.py
+            # also re-check the day before, in case late results were posted
+            python daily_points.py --date "$(TZ=America/Toronto date -d '2 days ago' +%F)"
+          fi
+      - name: Fetch Europe, Russia and NCAA points
+        env:
+          EP_API_KEY: ${{ secrets.EP_API_KEY }}   # optional; leave unset until you have an Elite Prospects API key
+        run: |
+          if [ -n "${{ github.event.inputs.start }}" ]; then
+            python europe_points.py --start "${{ github.event.inputs.start }}" --end "${{ github.event.inputs.end || github.event.inputs.start }}"
+          else
+            python europe_points.py
+          fi
+      - name: Save results
+        run: |
+          git config user.name "points-bot"
+          git config user.email "points-bot@users.noreply.github.com"
+          git add data/points.json data/ep_snapshots.json data/manual.json
+          git diff --cached --quiet || git commit -m "Points update $(date +%F)"
+          git pull --rebase
+          git push
