@@ -45,6 +45,9 @@ function pbInjectCardStyles() {
       transition:background .15s, color .15s;
     }
     .dossier:hover .pb-readmore, .pb-card-link:focus-visible .pb-readmore{ background:var(--hazard); color:var(--black); }
+    .tool-tags .pb-multi{ cursor:pointer; color:var(--hazard); border-color:var(--hazard-2); font-weight:700; }
+    .dossier:hover .tool-tags .pb-multi{ color:var(--hazard); border-color:var(--hazard); }
+    .dossier:hover .tool-tags .pb-multi:hover{ background:var(--hazard); color:var(--black); }
   `;
   document.head.appendChild(style);
 }
@@ -129,6 +132,76 @@ function pbWireReadMore(grid) {
   }
 }
 
+
+// Same rule the server uses to decide two reports are the same player:
+// ignore capitals, accents and punctuation ("Landon DuPont" = "landon dupont").
+function pbPlayerSlug(name) {
+  return String(name || '')
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+// How many published reports exist per player (all of them, not just the ones on this page).
+let pbCountsPromise = null;
+function pbPlayerCounts() {
+  if (!pbCountsPromise) {
+    pbCountsPromise = (async () => {
+      try {
+        const { data } = await puckBunkerDB.from('puckbunker_reports').select('name').eq('status', 'published');
+        const map = {};
+        (data || []).forEach(r => { const k = pbPlayerSlug(r.name); if (k) map[k] = (map[k] || 0) + 1; });
+        return map;
+      } catch (e) { return {}; }
+    })();
+  }
+  return pbCountsPromise;
+}
+let PB_COUNTS = {};
+
+// The "N reports" chip sits inside the card's link, so it can't be a link itself;
+// catch its click and send the visitor to the player page instead.
+const pbMultiWired = new WeakSet();
+function pbWireMultiLinks(grid) {
+  if (pbMultiWired.has(grid)) return;
+  pbMultiWired.add(grid);
+  grid.addEventListener('click', e => {
+    const chip = e.target.closest && e.target.closest('.pb-multi');
+    if (!chip) return;
+    e.preventDefault();
+    e.stopPropagation();
+    window.location.href = chip.dataset.href;
+  });
+}
+
+// Fill the "player" dropdown on the Scouting Reports page, A to Z by last name.
+function pbPopulatePlayerSelect(reports) {
+  const sel = document.getElementById('playerSelect');
+  if (!sel) return;
+  const players = new Map();
+  reports.forEach(r => {
+    const key = pbPlayerSlug(r.name);
+    if (!key) return;
+    if (!players.has(key)) players.set(key, { key, name: r.name, count: 0 });   // newest report's spelling wins
+    players.get(key).count += 1;
+  });
+  const split = name => {
+    const t = String(name).trim().split(/\s+/);
+    return t.length < 2 ? { first: '', last: t[0] || '' } : { first: t[0], last: t.slice(1).join(' ') };
+  };
+  const list = [...players.values()].map(p => ({ ...p, ...split(p.name) })).sort((a, b) =>
+    a.last.localeCompare(b.last, undefined, { sensitivity: 'base' }) ||
+    a.first.localeCompare(b.first, undefined, { sensitivity: 'base' }));
+  const previous = sel.value;
+  sel.innerHTML = '<option value="">All players</option>' + list.map(p => {
+    const label = (p.first ? `${p.last}, ${p.first}` : p.last) + (p.count > 1 ? ` (${p.count})` : '');
+    return `<option value="${pbEscape(p.key)}" data-count="${p.count}" data-name="${pbEscape(p.name)}">${pbEscape(label)}</option>`;
+  }).join('');
+  if (previous && players.has(previous)) sel.value = previous;
+  sel.disabled = false;
+}
+
 function pbBuildCard(report) {
   const letter = report.overall_grade || 'B';
   const gClass = pbGradeClass(letter);
@@ -152,9 +225,14 @@ function pbBuildCard(report) {
     ? `<img src="${pbEscape(report.thumbnail_url)}" alt="${pbEscape(altText)}" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover;">`
     : '';
 
+  const pslug = pbPlayerSlug(report.name);
+  const pcount = PB_COUNTS[pslug] || 0;
+  const multi = pcount > 1
+    ? `<span class="pb-multi" data-href="/player/${pslug}" title="See all ${pcount} reports on ${pbEscape(report.name)}">${pcount} REPORTS ›</span>`
+    : '';
   const reportUrl = report.slug ? `/report/${report.slug}` : `/api/report/${report.id}`;
   return `<a href="${reportUrl}" class="pb-card-link" style="text-decoration:none; color:inherit;">
-  <article class="dossier hud" data-pos="${pbEscape(report.position || '')}" data-seen-live="${report.seen_live ? 'true' : 'false'}">
+  <article class="dossier hud" data-pos="${pbEscape(report.position || '')}" data-player="${pslug}" data-seen-live="${report.seen_live ? 'true' : 'false'}">
     <span class="hud-bl"></span><span class="hud-br"></span>
     <div class="dossier-thumb">
       ${thumbImg}
@@ -168,7 +246,7 @@ function pbBuildCard(report) {
       <p class="pb-excerpt" style="overflow-wrap:break-word; word-break:break-word;">${pbEscape(excerpt)}</p>
       <div class="pb-more-row"><span class="pb-readmore">Read more →</span></div>
       <div class="pb-card-foot">
-        <div class="tool-tags">${topTags.map(t => `<span>${pbEscape(t)}</span>`).join('')}</div>
+        <div class="tool-tags">${multi}${topTags.map(t => `<span>${pbEscape(t)}</span>`).join('')}</div>
       </div>
     </div>
   </article>
@@ -190,9 +268,12 @@ async function pbLoadPublished(gridId, limit) {
     const { data, error } = await query;
     if (error || !data || !data.length) return; // keep static sample cards as-is
 
+    PB_COUNTS = await pbPlayerCounts();
     pbInjectCardStyles();
     grid.innerHTML = data.map(pbBuildCard).join('');
+    pbWireMultiLinks(grid);
     pbWireReadMore(grid);
+    pbPopulatePlayerSelect(data);
   } catch (e) {
     console.error('Puck Bunker: failed to load published reports', e);
     // leave static fallback cards in place
