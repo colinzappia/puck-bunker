@@ -1,0 +1,381 @@
+{
+ "_notes": [
+  "Hand-entered rows (e.g. from the daily updates with Claude), for leagues the scripts can't read reliably.",
+  "points row: {date, player, team, league, opponent, g, a}. goalies row: {date, goalie, team, league, opponent, shots, saves, ga}.",
+  "Add \"confidence\": \"probable\" for points you could not pin to a date (shown, but not counted)."
+ ],
+ "points": [
+  {
+   "date": "2026-10-13",
+   "player": "Ilya Kolomytsev",
+   "team": "Irbis Kazan",
+   "league": "MHL",
+   "opponent": "vs SKA-1946",
+   "g": 1,
+   "a": 1,
+   "confidence": "official"
+  },
+  {
+   "date": "2026-10-14",
+   "player": "Oliver Sundberg",
+   "team": "Djurgården U20",
+   "league": "U20 Nationell",
+   "opponent": "vs Brynäs",
+   "g": 2,
+   "a": 0,
+   "confidence": "official"
+  },
+  {
+   "date": "2026-10-14",
+   "player": "Yevgeni Yakunin",
+   "team": "MHK Spartak",
+   "league": "MHL",
+   "opponent": "vs Atlant",
+   "g": 1,
+   "a": 1,
+   "confidence": "official"
+  },
+  {
+   "date": "2026-10-14",
+   "player": "Simon Sejc",
+   "team": "Växjö U20",
+   "league": "U20 Nationell",
+   "opponent": "vs HV71",
+   "g": 0,
+   "a": 1,
+   "confidence": "official"
+  },
+  {
+   "date": "2026-10-14",
+   "player": "Yelverton Lindberg Steen",
+   "team": "Växjö U20",
+   "league": "U20 Nationell",
+   "opponent": "vs HV71",
+   "g": 0,
+   "a": 1,
+   "confidence": "official"
+  },
+  {
+   "date": "2026-10-14",
+   "player": "Milan Sundström",
+   "team": "MoDo",
+   "league": "HockeyAllsvenskan",
+   "opponent": "@ Västerås",
+   "g": 0,
+   "a": 1,
+   "confidence": "official"
+  },
+  {
+   "date": "2026-10-15",
+   "player": "Leo Ulrich",
+   "team": "AIK U18",
+   "league": "U18 Region",
+   "opponent": "vs Almtuna",
+   "g": 1,
+   "a": 0,
+   "confidence": "official"
+  },
+  {
+   "date": "2026-10-16",
+   "player": "Nazar Privalov",
+   "team": "Krasnaya Armiya",
+   "league": "MHL",
+   "opponent": "vs Atlant",
+   "g": 1,
+   "a": 1,
+   "confidence": "official"
+  },
+  {
+   "date": "2026-10-16",
+   "player": "Simon Sejc",
+   "team": "Växjö U20",
+   "league": "U20 Nationell",
+   "opponent": "@ Rögle",
+   "g": 1,
+   "a": 1,
+   "confidence": "official"
+  },
+  {
+   "date": "2026-10-16",
+   "player": "Tom Bjurman",
+   "team": "Färjestad U20",
+   "league": "U20 Nationell",
+   "opponent": "@ Örebro",
+   "g": 0,
+   "a": 2,
+   "confidence": "official"
+  },
+  {
+   "date": "2026-10-16",
+   "player": "Daniil Savin",
+   "team": "SKA-1946",
+   "league": "MHL",
+   "opponent": "@ Tolpar",
+   "g": 1,
+   "a": 0,
+   "confidence": "official"
+  },
+  {
+   "date": "2026-10-16",
+   "player": "Tomas Selic",
+   "team": "Brno U20",
+   "league": "Czechia U20",
+   "opponent": "vs Třinec",
+   "g": 1,
+   "a": 0,
+   "confidence": "official"
+  },
+  {
+   "date": "2026-10-16",
+   "player": "Lukas Kachlir",
+   "team": "Liberec U20",
+   "league": "Czechia U20",
+   "opponent": "@ Plzeň",
+   "g": 0,
+   "a": 1,
+   "confidence": "official"
+  },
+  {
+   "date": "2026-10-17",
+   "player": "Michal Hartl",
+   "team": "Brno U20",
+   "league": "Czechia U20",
+   "opponent": "vs Vítkovice",
+   "g": 0,
+   "a": 2,
+   "confidence": "official"
+  },
+  {
+   "date": "2026-10-17",
+   "player": "Dorian Eklund-Aspe",
+   "team": "Djurgården U20",
+   "league": "U20 Nationell",
+   "opponent": "@ Björklöven",
+   "g": 1,
+   "a": 0,
+   "confidence": "official"
+  },
+  {
+   "date": "2026-10-17",
+   "player": "Noel Nord",
+   "team": "Leksand U20",
+   "league": "U20 Nationell",
+   "opponent": "@ Skellefteå",
+   "g": 1,
+   "a": 0,
+   "confidence": "official"
+  },
+  {
+   "date": "2026-10-17",
+   "player": "Tom Bjurman",
+   "team": "Färjestad U20",
+   "league": "U20 Nationell",
+   "opponent": "@ Västerås",
+   "g": 0,
+   "a": 1,
+   "confidence": "official"
+  },
+  {
+   "date": "2026-10-17",
+   "player": "Landon DuPont",
+   "team": "Michigan",
+   "league": "NCAA",
+   "opponent": "@ Denver",
+   "g": 0,
+   "a": 1,
+   "confidence": "official"
+  },
+  {
+   "date": "2026-10-17",
+   "player": "Loui Karlsson",
+   "team": "Leksand U20",
+   "league": "U20 Nationell",
+   "opponent": "@ Skellefteå",
+   "g": 0,
+   "a": 1,
+   "confidence": "official"
+  },
+  {
+   "date": "2026-10-17",
+   "player": "Ellioth Lahtinen",
+   "team": "Brynäs U20",
+   "league": "U20 Nationell",
+   "opponent": "@ AIK",
+   "g": 0,
+   "a": 1,
+   "confidence": "official"
+  },
+  {
+   "date": "2026-10-18",
+   "player": "Oliver Sundberg",
+   "team": "Djurgården U20",
+   "league": "U20 Nationell",
+   "opponent": "@ MoDo",
+   "g": 1,
+   "a": 2,
+   "confidence": "official"
+  },
+  {
+   "date": "2026-10-18",
+   "player": "Loui Karlsson",
+   "team": "Leksand U20",
+   "league": "U20 Nationell",
+   "opponent": "@ Luleå",
+   "g": 2,
+   "a": 0,
+   "confidence": "official"
+  },
+  {
+   "date": "2026-10-18",
+   "player": "Illarion Babkin",
+   "team": "MHK Spartak",
+   "league": "MHL",
+   "opponent": "vs Krasnaya Mashina Yunior",
+   "g": 1,
+   "a": 1,
+   "confidence": "official"
+  },
+  {
+   "date": "2026-10-18",
+   "player": "Benjamin Nyström",
+   "team": "Luleå U20",
+   "league": "U20 Nationell",
+   "opponent": "vs Leksand",
+   "g": 1,
+   "a": 1,
+   "confidence": "official"
+  },
+  {
+   "date": "2026-10-18",
+   "player": "Charlie Kalldin",
+   "team": "Frölunda U20",
+   "league": "U20 Nationell",
+   "opponent": "vs Södertälje",
+   "g": 0,
+   "a": 1,
+   "confidence": "official"
+  },
+  {
+   "date": "2026-10-18",
+   "player": "Noel Nord",
+   "team": "Leksand U20",
+   "league": "U20 Nationell",
+   "opponent": "@ Luleå",
+   "g": 0,
+   "a": 1,
+   "confidence": "official"
+  },
+  {
+   "date": "2026-10-18",
+   "player": "Patrik Rychlik",
+   "team": "Poprad U20",
+   "league": "Slovakia U20",
+   "opponent": "@ Zvolen",
+   "g": 0,
+   "a": 1,
+   "confidence": "official"
+  },
+  {
+   "date": "2026-10-17",
+   "player": "Melichar Kovar",
+   "team": "Pardubice U20",
+   "league": "Czechia U20",
+   "opponent": "",
+   "g": 1,
+   "a": 4,
+   "confidence": "probable",
+   "note": "+1G +4A over Oct 16 @ Sparta and Oct 17 @ Kladno"
+  },
+  {
+   "date": "2026-10-17",
+   "player": "Matus Valek",
+   "team": "Pardubice U20",
+   "league": "Czechia U20",
+   "opponent": "",
+   "g": 3,
+   "a": 3,
+   "confidence": "probable",
+   "note": "+3G +3A over Oct 16 and Oct 17 (unusually big jump)"
+  },
+  {
+   "date": "2026-10-17",
+   "player": "Davids Tarvids",
+   "team": "Plzeň U20",
+   "league": "Czechia U20",
+   "opponent": "",
+   "g": 1,
+   "a": 3,
+   "confidence": "probable",
+   "note": "+1G +3A over Oct 13, 16 and 17"
+  },
+  {
+   "date": "2026-10-18",
+   "player": "Jakub Simoncic",
+   "team": "Nitra U20",
+   "league": "Slovakia U20",
+   "opponent": "",
+   "g": 1,
+   "a": 1,
+   "confidence": "probable",
+   "note": "+1G +1A over Oct 17 and Oct 18 @ Košice"
+  },
+  {
+   "date": "2026-10-16",
+   "player": "Petr Tomek",
+   "team": "Karlovy Vary",
+   "league": "Czech Extraliga",
+   "opponent": "",
+   "g": 1,
+   "a": 0,
+   "confidence": "probable",
+   "note": "+1G on Oct 16 @ Olomouc or Oct 18 @ Litvínov"
+  },
+  {
+   "date": "2026-10-17",
+   "player": "Jonas Schwarz",
+   "team": "Lukko U20",
+   "league": "U20 SM-sarja",
+   "opponent": "",
+   "g": 0,
+   "a": 1,
+   "confidence": "probable",
+   "note": "+1A, Lukko games Oct 16-17 plus one earlier"
+  },
+  {
+   "date": "2026-10-17",
+   "player": "Jonah Neuenschwander",
+   "team": "EHC Biel",
+   "league": "National League",
+   "opponent": "",
+   "g": 1,
+   "a": 1,
+   "confidence": "probable",
+   "note": "+1G +1A over Oct 16 vs Ajoie and Oct 17 @ Rapperswil"
+  },
+  {
+   "date": "2026-10-17",
+   "player": "Sammy Nelson",
+   "team": "Notre Dame",
+   "league": "NCAA",
+   "opponent": "",
+   "g": 1,
+   "a": 1,
+   "confidence": "probable",
+   "note": "first points of the season; games Oct 8, 9, 16, 17"
+  }
+ ],
+ "goalies": [
+  {
+   "date": "2026-10-15",
+   "goalie": "William Lacelle",
+   "team": "Nebraska-Omaha",
+   "league": "NCAA",
+   "opponent": "@ Augustana",
+   "shots": null,
+   "saves": null,
+   "ga": 2,
+   "qualifies": true,
+   "confidence": "official"
+  }
+ ]
+}

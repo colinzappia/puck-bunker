@@ -1,0 +1,661 @@
+{
+ "_notes": [
+  "One entry per tracked player. 'team' is for display only; matching is by name within the league.",
+  "If two players in a league share a name, or a name is spelled differently by the league (e.g. 'John' vs 'Johnny'), add \"ht_id\": <HockeyTech player id> (or \"aliases\": [\"John McLaughlin\"]).",
+  "pos 'G' marks goalies (reported when they allow 2 or fewer goals)."
+ ],
+ "players": [
+  {
+   "name": "Keaton Ardagh",
+   "league": "OHL",
+   "team": "Brampton"
+  },
+  {
+   "name": "Peter Green",
+   "league": "OHL",
+   "team": "Brampton"
+  },
+  {
+   "name": "Kaden Aucoin",
+   "league": "OHL",
+   "team": "Sarnia"
+  },
+  {
+   "name": "Brenner Lammens",
+   "league": "OHL",
+   "team": "Sarnia"
+  },
+  {
+   "name": "Easton Walos",
+   "league": "OHL",
+   "team": "Sarnia"
+  },
+  {
+   "name": "Ty Bergeron",
+   "league": "OHL",
+   "team": "Windsor"
+  },
+  {
+   "name": "Johnny McLaughlin",
+   "league": "OHL",
+   "team": "Windsor",
+   "aliases": [
+    "John McLaughlin"
+   ]
+  },
+  {
+   "name": "Bogdan Yakushevsky",
+   "league": "OHL",
+   "team": "Windsor"
+  },
+  {
+   "name": "Brock Chitaroni",
+   "league": "OHL",
+   "team": "Ottawa"
+  },
+  {
+   "name": "Kohyn Eshkawkogan",
+   "league": "OHL",
+   "team": "Ottawa"
+  },
+  {
+   "name": "Trevor Daley Jr.",
+   "league": "OHL",
+   "team": "Soo"
+  },
+  {
+   "name": "Noah Laus",
+   "league": "OHL",
+   "team": "Soo"
+  },
+  {
+   "name": "Ryerson Edgar",
+   "league": "OHL",
+   "team": "Niagara"
+  },
+  {
+   "name": "Alexander Forrest",
+   "league": "OHL",
+   "team": "Kitchener",
+   "aliases": [
+    "Alex Forrest"
+   ]
+  },
+  {
+   "name": "Luca Santala",
+   "league": "OHL",
+   "team": "Kitchener"
+  },
+  {
+   "name": "Vilmer Salén Forsberg",
+   "league": "OHL",
+   "team": "Brantford",
+   "pos": "G"
+  },
+  {
+   "name": "Kaden McGregor",
+   "league": "OHL",
+   "team": "Brantford"
+  },
+  {
+   "name": "Adam Nemec",
+   "league": "OHL",
+   "team": "Brantford"
+  },
+  {
+   "name": "Abe Barnett",
+   "league": "OHL",
+   "team": "Brantford"
+  },
+  {
+   "name": "Levi Harper",
+   "league": "OHL",
+   "team": "Saginaw"
+  },
+  {
+   "name": "Drew Roscoe",
+   "league": "OHL",
+   "team": "Saginaw"
+  },
+  {
+   "name": "Dmitri Savin",
+   "league": "OHL",
+   "team": "Saginaw",
+   "aliases": [
+    "Dmitry Savin"
+   ]
+  },
+  {
+   "name": "Dima Zhilkin",
+   "league": "OHL",
+   "team": "Saginaw"
+  },
+  {
+   "name": "Tyler Hinde",
+   "league": "OHL",
+   "team": "Oshawa"
+  },
+  {
+   "name": "Timothy Kazda",
+   "league": "OHL",
+   "team": "Guelph",
+   "aliases": [
+    "Timo Kazda"
+   ]
+  },
+  {
+   "name": "Jaakko Wycisk",
+   "league": "OHL",
+   "team": "Guelph"
+  },
+  {
+   "name": "Aleks Kulemin",
+   "league": "OHL",
+   "team": "Kingston"
+  },
+  {
+   "name": "Nolan Snyder",
+   "league": "OHL",
+   "team": "Kingston"
+  },
+  {
+   "name": "Cooper McAslan",
+   "league": "OHL",
+   "team": "London"
+  },
+  {
+   "name": "Charlie Murata",
+   "league": "OHL",
+   "team": "Flint"
+  },
+  {
+   "name": "Alexander Sementsov",
+   "league": "OHL",
+   "team": "Barrie"
+  },
+  {
+   "name": "Michael Tang",
+   "league": "OHL",
+   "team": "Barrie"
+  },
+  {
+   "name": "Camryn Warren",
+   "league": "OHL",
+   "team": "North Bay",
+   "aliases": [
+    "Cam Warren"
+   ]
+  },
+  {
+   "name": "Luca Blonda",
+   "league": "OHL",
+   "team": "Sudbury"
+  },
+  {
+   "name": "Genc Ula",
+   "league": "OHL",
+   "team": "Sudbury"
+  },
+  {
+   "name": "Gavin Burcar",
+   "league": "WHL",
+   "team": "Spokane"
+  },
+  {
+   "name": "Rhett Sather",
+   "league": "WHL",
+   "team": "Spokane"
+  },
+  {
+   "name": "Luca Jarvis",
+   "league": "WHL",
+   "team": "Spokane"
+  },
+  {
+   "name": "Ossie McIntyre",
+   "league": "WHL",
+   "team": "Spokane"
+  },
+  {
+   "name": "Harry Mattern",
+   "league": "WHL",
+   "team": "Spokane"
+  },
+  {
+   "name": "Bryson Roberts",
+   "league": "WHL",
+   "team": "Spokane"
+  },
+  {
+   "name": "Carter Esler",
+   "league": "WHL",
+   "team": "Spokane",
+   "pos": "G"
+  },
+  {
+   "name": "Dominick Byrtus",
+   "league": "WHL",
+   "team": "Lethbridge"
+  },
+  {
+   "name": "Oliver Vanha",
+   "league": "WHL",
+   "team": "Lethbridge"
+  },
+  {
+   "name": "Tyden Lafournaise",
+   "league": "WHL",
+   "team": "Lethbridge"
+  },
+  {
+   "name": "Grady Pichette",
+   "league": "WHL",
+   "team": "Lethbridge"
+  },
+  {
+   "name": "Carter Casey",
+   "league": "WHL",
+   "team": "Medicine Hat",
+   "pos": "G"
+  },
+  {
+   "name": "Noah Davidson",
+   "league": "WHL",
+   "team": "Medicine Hat"
+  },
+  {
+   "name": "Shaeffer Gordon-Carroll",
+   "league": "WHL",
+   "team": "Medicine Hat"
+  },
+  {
+   "name": "Brock Cripps",
+   "league": "WHL",
+   "team": "Prince Albert"
+  },
+  {
+   "name": "Ben Harvey",
+   "league": "WHL",
+   "team": "Prince Albert"
+  },
+  {
+   "name": "Oskars Lūks",
+   "league": "WHL",
+   "team": "Prince Albert"
+  },
+  {
+   "name": "Brooks DeMars",
+   "league": "WHL",
+   "team": "Penticton"
+  },
+  {
+   "name": "Roberts Naudiņš",
+   "league": "WHL",
+   "team": "Penticton"
+  },
+  {
+   "name": "Alessandro Domenichelli",
+   "league": "WHL",
+   "team": "Portland"
+  },
+  {
+   "name": "Brock England",
+   "league": "WHL",
+   "team": "Seattle"
+  },
+  {
+   "name": "Colin Grubb",
+   "league": "WHL",
+   "team": "Brandon"
+  },
+  {
+   "name": "Jaxon Jacobson",
+   "league": "WHL",
+   "team": "Brandon"
+  },
+  {
+   "name": "Chase Surkan",
+   "league": "WHL",
+   "team": "Brandon"
+  },
+  {
+   "name": "Prabh Bhathal",
+   "league": "WHL",
+   "team": "Brandon"
+  },
+  {
+   "name": "Ludovic Perreault",
+   "league": "WHL",
+   "team": "Victoria"
+  },
+  {
+   "name": "Odin Vauhkonen",
+   "league": "WHL",
+   "team": "Victoria"
+  },
+  {
+   "name": "Kayden Stroeder",
+   "league": "WHL",
+   "team": "Edmonton"
+  },
+  {
+   "name": "Jonas Vanicek",
+   "league": "WHL",
+   "team": "Edmonton"
+  },
+  {
+   "name": "Boston Tait",
+   "league": "WHL",
+   "team": "Wenatchee"
+  },
+  {
+   "name": "Eli McKamey",
+   "league": "WHL",
+   "team": "Tri-City"
+  },
+  {
+   "name": "Crew Martinson",
+   "league": "WHL",
+   "team": "Tri-City"
+  },
+  {
+   "name": "Aden Bouchard",
+   "league": "WHL",
+   "team": "Tri-City"
+  },
+  {
+   "name": "Colt Carter",
+   "league": "WHL",
+   "team": "Moose Jaw"
+  },
+  {
+   "name": "Blake Chorney",
+   "league": "WHL",
+   "team": "Vancouver"
+  },
+  {
+   "name": "Calder Hamilton",
+   "league": "WHL",
+   "team": "Calgary"
+  },
+  {
+   "name": "Eric Tu",
+   "league": "WHL",
+   "team": "Calgary",
+   "pos": "G"
+  },
+  {
+   "name": "Artyom Katsuro",
+   "league": "WHL",
+   "team": "Calgary",
+   "aliases": [
+    "Artem Katsuro"
+   ]
+  },
+  {
+   "name": "Antonio Correia",
+   "league": "WHL",
+   "team": "Calgary"
+  },
+  {
+   "name": "Shaun Hildebrandt",
+   "league": "WHL",
+   "team": "Calgary"
+  },
+  {
+   "name": "Tate Batchelor",
+   "league": "WHL",
+   "team": "Calgary"
+  },
+  {
+   "name": "Jamie Glance",
+   "league": "QMJHL",
+   "team": "Saint John"
+  },
+  {
+   "name": "Alexis Joseph",
+   "league": "QMJHL",
+   "team": "Saint John"
+  },
+  {
+   "name": "Oliver Ozogany",
+   "league": "QMJHL",
+   "team": "Saint John"
+  },
+  {
+   "name": "Ilya Kolmakov",
+   "league": "QMJHL",
+   "team": "Sherbrooke"
+  },
+  {
+   "name": "Daniyar Aibatov",
+   "league": "QMJHL",
+   "team": "Sherbrooke"
+  },
+  {
+   "name": "Malik L'Italien",
+   "league": "QMJHL",
+   "team": "Halifax"
+  },
+  {
+   "name": "Cameron Minella",
+   "league": "QMJHL",
+   "team": "Halifax"
+  },
+  {
+   "name": "Paul Sintschnig",
+   "league": "QMJHL",
+   "team": "Halifax"
+  },
+  {
+   "name": "Max Mares",
+   "league": "QMJHL",
+   "team": "Rimouski"
+  },
+  {
+   "name": "Caiden Pellegrino",
+   "league": "QMJHL",
+   "team": "Rimouski"
+  },
+  {
+   "name": "Carter Meyer",
+   "league": "QMJHL",
+   "team": "Québec"
+  },
+  {
+   "name": "James Scantlebury",
+   "league": "QMJHL",
+   "team": "Québec"
+  },
+  {
+   "name": "Patrick Déniger",
+   "league": "QMJHL",
+   "team": "Québec",
+   "pos": "G"
+  },
+  {
+   "name": "Vladimir Shtyrkhunov",
+   "league": "QMJHL",
+   "team": "Shawinigan"
+  },
+  {
+   "name": "Leonards Aleksandrs Grundmanis",
+   "league": "QMJHL",
+   "team": "Charlottetown"
+  },
+  {
+   "name": "Artyom Mate",
+   "league": "QMJHL",
+   "team": "Charlottetown"
+  },
+  {
+   "name": "Loïk Gariépy",
+   "league": "QMJHL",
+   "team": "Victoriaville"
+  },
+  {
+   "name": "Andrei Nikolayev",
+   "league": "QMJHL",
+   "team": "Victoriaville",
+   "pos": "G"
+  },
+  {
+   "name": "Nolann Héroux",
+   "league": "QMJHL",
+   "team": "Val-d'Or"
+  },
+  {
+   "name": "Sebastian Taliga",
+   "league": "QMJHL",
+   "team": "Drummondville"
+  },
+  {
+   "name": "Samuel Rheault",
+   "league": "QMJHL",
+   "team": "Rouyn-Noranda"
+  },
+  {
+   "name": "Liam Armit",
+   "league": "QMJHL",
+   "team": "Baie-Comeau"
+  },
+  {
+   "name": "Gunnar Conboy",
+   "league": "USHL",
+   "team": "Green Bay"
+  },
+  {
+   "name": "Becker Wenkus",
+   "league": "USHL",
+   "team": "Des Moines"
+  },
+  {
+   "name": "Riley Zupfer",
+   "league": "USHL",
+   "team": "Des Moines"
+  },
+  {
+   "name": "Adam Israilov",
+   "league": "USHL",
+   "team": "Omaha"
+  },
+  {
+   "name": "Ryland Rooney",
+   "league": "USHL",
+   "team": "Sioux Falls"
+  },
+  {
+   "name": "Ethan Sung",
+   "league": "USHL",
+   "team": "Sioux Falls"
+  },
+  {
+   "name": "Iļja Ņikitins",
+   "league": "USHL",
+   "team": "Sioux Falls",
+   "pos": "G"
+  },
+  {
+   "name": "Gerry DiCunzolo",
+   "league": "USHL",
+   "team": "USA Hockey NTDP"
+  },
+  {
+   "name": "Nolan Fitzhenry",
+   "league": "USHL",
+   "team": "USA Hockey NTDP"
+  },
+  {
+   "name": "Diego Gutierrez",
+   "league": "USHL",
+   "team": "USA Hockey NTDP"
+  },
+  {
+   "name": "Charlie Mineman",
+   "league": "USHL",
+   "team": "USA Hockey NTDP"
+  },
+  {
+   "name": "Rocco Pelosi",
+   "league": "USHL",
+   "team": "USA Hockey NTDP"
+  },
+  {
+   "name": "Jake Prunty",
+   "league": "USHL",
+   "team": "USA Hockey NTDP"
+  },
+  {
+   "name": "Ben Geiger",
+   "league": "USHL",
+   "team": "USA Hockey NTDP"
+  },
+  {
+   "name": "Finn Sears",
+   "league": "USHL",
+   "team": "USA Hockey NTDP"
+  },
+  {
+   "name": "Braden Horton",
+   "league": "USHL",
+   "team": "USA Hockey NTDP"
+  },
+  {
+   "name": "Carson Scott",
+   "league": "USHL",
+   "team": "USA Hockey NTDP"
+  },
+  {
+   "name": "Freddie Schneider",
+   "league": "USHL",
+   "team": "USA Hockey NTDP"
+  },
+  {
+   "name": "Easton Johnson",
+   "league": "USHL",
+   "team": "USA Hockey NTDP"
+  },
+  {
+   "name": "Jackson Hendricks",
+   "league": "USHL",
+   "team": "USA Hockey NTDP"
+  },
+  {
+   "name": "Sam Pandolfo",
+   "league": "USHL",
+   "team": "USA Hockey NTDP"
+  },
+  {
+   "name": "Luke Pietila",
+   "league": "USHL",
+   "team": "USA Hockey NTDP"
+  },
+  {
+   "name": "Hudson Salvador",
+   "league": "USHL",
+   "team": "USA Hockey NTDP"
+  },
+  {
+   "name": "Griffin Storey",
+   "league": "USHL",
+   "team": "USA Hockey NTDP"
+  },
+  {
+   "name": "Brayden Willis",
+   "league": "USHL",
+   "team": "USA Hockey NTDP"
+  },
+  {
+   "name": "Nathaniel Chizik",
+   "league": "USHL",
+   "team": "USA Hockey NTDP",
+   "pos": "G"
+  },
+  {
+   "name": "Eli Winters",
+   "league": "USHL",
+   "team": "USA Hockey NTDP",
+   "pos": "G"
+  }
+ ]
+}
