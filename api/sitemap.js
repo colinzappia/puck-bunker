@@ -16,6 +16,7 @@ const STATIC_PAGES = [
   { path: "/articles.html", priority: "0.5", changefreq: "weekly" },
   { path: "/analytics.html", priority: "0.4", changefreq: "monthly" },
   { path: "/bunker-data.html", priority: "0.6", changefreq: "weekly" },
+  { path: "/prospect-tracker.html", priority: "0.7", changefreq: "daily" },
   { path: "/compare.html", priority: "0.5", changefreq: "weekly" },
   { path: "/predict.html", priority: "0.5", changefreq: "weekly" },
 ];
