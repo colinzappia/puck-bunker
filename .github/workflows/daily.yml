@@ -1,3 +1,4 @@
+
 # Runs the points update every morning and saves the results into the tracker/ folder of this repository.
 # Vercel then redeploys the site automatically, so the Prospect Tracker page always shows the latest numbers.
 name: Daily prospect points
