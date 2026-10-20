@@ -47,7 +47,8 @@ For each player and date, the script keeps the best source available: API first,
   - In the OHL, WHL, QMJHL or USHL, edit `tracker/players.json`.
   - Elsewhere, edit `tracker/players_europe.json` and include the number from his Elite Prospects address. For `eliteprospects.com/player/1010942/milan-sundstrom`, that's `1010942`.
 - **Players still missing an Elite Prospects number:** Lazovsky, Martinek, Havel, Pikna, Rautio, Lacelle, Hanson. Add them once you have their pages.
-- **Hand-entered results:** add rows to `tracker/data/manual.json`. The format is in the file's notes. Mark anything unconfirmed with `"confidence": "probable"`.
+- **Fixing a player's points when the update gets them wrong:** use the **Prospect Tracker — Point Corrections** panel on the Admin page. Pick the game date and player, enter his goals and assists (or a goalie game), and save. It replaces whatever the update found for that player on that date and shows on the Tracker page right away. Enter 0 and 0 to remove points the update got wrong. The daily update never overwrites a correction; delete the correction to go back to the automatic numbers. (This needs `supabase-migration-tracker-adjustments.sql` to have been run once in Supabase.)
+- **Hand-entered results in bulk:** add rows to `tracker/data/manual.json`. The format is in the file's notes. Mark anything unconfirmed with `"confidence": "probable"`.
 - **Re-run a past date:** Actions → Run workflow, then enter the start and end dates. This re-runs the league feeds, the API and manual entries. The public-page fallback only ever works "since yesterday".
 - **Problems** are listed under `"problems"` in `tracker/data/points.json`, and the run shows a red X if something fails outright.
 - **How many days show:** the page has a tab for the last 7 days. To change that, edit `DAYS_SHOWN` near the bottom of `prospect-tracker.html`.
