@@ -628,6 +628,111 @@
           </div>
         </div>
 
+        <div class="panel">
+          <div class="panel-head"><h2>Prospect Tracker — Point Corrections</h2></div>
+          <div class="panel-body">
+            <p style="font-size:13px; color:var(--ice-dim); margin-bottom:18px;">
+              If the automatic update misses or miscounts a player, enter the right numbers here. A correction <strong>replaces</strong> whatever the update found for that player on that date, and it shows on the Prospect Tracker page right away. Enter 0 goals and 0 assists to remove points the update got wrong.
+            </p>
+
+            <div class="field-row">
+              <div class="field">
+                <label>Type</label>
+                <select id="trkKind">
+                  <option value="skater">Skater points</option>
+                  <option value="goalie">Goalie game</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Game Date</label>
+                <input type="date" id="trkDate">
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field" style="grid-column:1 / -1;">
+                <label>Player</label>
+                <input type="text" id="trkPlayer" list="trkPlayers" placeholder="Start typing a tracked player's name" autocomplete="off">
+                <datalist id="trkPlayers"></datalist>
+                <span class="hint">Pick a tracked player and his team and league fill in. A player who isn't on the list works too — just fill in the team and league.</span>
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label>Team</label>
+                <input type="text" id="trkTeam" placeholder="e.g. Saginaw">
+              </div>
+              <div class="field">
+                <label>League</label>
+                <input type="text" id="trkLeague" placeholder="e.g. OHL">
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field" style="grid-column:1 / -1;">
+                <label>Opponent (optional)</label>
+                <input type="text" id="trkOpp" placeholder="e.g. vs Sarnia  or  @ Lethbridge">
+              </div>
+            </div>
+
+            <div id="trkSkaterFields">
+              <div class="field-row">
+                <div class="field">
+                  <label>Goals</label>
+                  <input type="number" id="trkG" min="0" step="1" value="0">
+                </div>
+                <div class="field">
+                  <label>Assists</label>
+                  <input type="number" id="trkA" min="0" step="1" value="0">
+                </div>
+              </div>
+              <div class="field-row">
+                <div class="field" style="grid-column:1 / -1;">
+                  <label for="trkClears" style="display:flex; align-items:center; gap:10px; cursor:pointer; text-transform:none; letter-spacing:0; font-size:13px; font-weight:400;">
+                    <input type="checkbox" id="trkClears" style="width:18px; height:18px; accent-color:var(--hazard);">
+                    This settles a "probable" entry for this player — hide it
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div id="trkGoalieFields" style="display:none;">
+              <div class="field-row">
+                <div class="field">
+                  <label>Goals Against</label>
+                  <input type="number" id="trkGA" min="0" step="1" placeholder="e.g. 1">
+                </div>
+                <div class="field">
+                  <label>Shots Against (optional)</label>
+                  <input type="number" id="trkShots" min="0" step="1" placeholder="e.g. 30">
+                </div>
+              </div>
+              <div class="field-row">
+                <div class="field">
+                  <label>Saves (optional)</label>
+                  <input type="number" id="trkSaves" min="0" step="1" placeholder="e.g. 29">
+                </div>
+                <div class="field">
+                  <span class="hint" style="margin-top:22px;">Only games with 2 or fewer goals against show on the page.</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="field-row">
+              <div class="field" style="grid-column:1 / -1;">
+                <label>Note (optional, not shown on the site)</label>
+                <input type="text" id="trkNote" placeholder="e.g. Fixed from the official game sheet">
+              </div>
+            </div>
+
+            <div style="display:flex; gap:10px; margin-bottom:8px;">
+              <button class="btn btn-primary" id="trkSaveBtn" type="button">Save Correction</button>
+              <button class="btn btn-ghost" id="trkCancelBtn" type="button" style="display:none;">Cancel Edit</button>
+            </div>
+            <div id="trkStatus" class="mono" style="font-size:11px; color:var(--ice-dim); margin-bottom:8px;"></div>
+
+            <div id="trkList" style="margin-top:18px;"></div>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -1585,12 +1690,224 @@
   }
 
   // ============ INIT ============
+  // ============ PROSPECT TRACKER: POINT CORRECTIONS ============
+  const TRK_TABLE = 'puckbunker_tracker_adjustments';
+  let trkRoster = [];      // tracked players, used for the name suggestions
+  let trkEditId = null;    // the correction being edited, if any
+  let trkRows = [];
+
+  // Same name rule the Prospect Tracker page uses to match a correction to a player
+  function trkKey(name){
+    return String(name || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, ' ').trim();
+  }
+  function trkIso(d){
+    const p = n => (n < 10 ? '0' : '') + n;
+    return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+  }
+  function trkDateLabel(iso){
+    return new Date(iso + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+  }
+  function trkField(id){ return document.getElementById(id); }
+
+  async function loadTrackerRoster(){
+    const seen = new Set();
+    for (const file of ['/tracker/players.json', '/tracker/players_europe.json']) {
+      try {
+        const res = await fetch(file, { cache: 'no-store' });
+        if (!res.ok) continue;
+        const data = await res.json();
+        (data.players || []).forEach(p => {
+          const k = trkKey(p.name);
+          if (!k || seen.has(k)) return;
+          seen.add(k);
+          trkRoster.push({ name: p.name, team: p.team || '', league: p.league || '', goalie: p.pos === 'G' });
+        });
+      } catch (e) { /* the form still works without the suggestions */ }
+    }
+    trkRoster.sort((a, b) => a.name.localeCompare(b.name));
+    trkFillSuggestions();
+  }
+  function trkFillSuggestions(){
+    const goalie = trkField('trkKind').value === 'goalie';
+    trkField('trkPlayers').innerHTML = trkRoster
+      .filter(p => p.goalie === goalie)
+      .map(p => `<option value="${escapeHtml(p.name)}">${escapeHtml(p.team + ' · ' + p.league)}</option>`).join('');
+  }
+  function trkAutofill(){
+    const k = trkKey(trkField('trkPlayer').value);
+    const p = trkRoster.find(r => trkKey(r.name) === k);
+    if (!p) return;
+    trkField('trkTeam').value = p.team;
+    trkField('trkLeague').value = p.league;
+  }
+  function trkToggleKind(){
+    const goalie = trkField('trkKind').value === 'goalie';
+    trkField('trkSkaterFields').style.display = goalie ? 'none' : '';
+    trkField('trkGoalieFields').style.display = goalie ? '' : 'none';
+    trkFillSuggestions();
+  }
+
+  function trkResetForm(keepDateAndType){
+    trkEditId = null;
+    ['trkPlayer', 'trkTeam', 'trkLeague', 'trkOpp', 'trkNote', 'trkGA', 'trkShots', 'trkSaves'].forEach(id => { trkField(id).value = ''; });
+    trkField('trkG').value = 0;
+    trkField('trkA').value = 0;
+    trkField('trkClears').checked = false;
+    trkField('trkSaveBtn').textContent = 'Save Correction';
+    trkField('trkCancelBtn').style.display = 'none';
+    if (!keepDateAndType) {
+      trkField('trkKind').value = 'skater';
+      trkToggleKind();
+      trkField('trkDate').value = trkIso(new Date(Date.now() - 86400000));   // yesterday
+    }
+  }
+
+  async function loadTrackerCorrections(){
+    const list = trkField('trkList');
+    const { data, error } = await sb.from(TRK_TABLE).select('*')
+      .order('game_date', { ascending: false })
+      .order('created_at', { ascending: false })
+      .limit(100);
+    if (error) {
+      const missing = error.code === '42P01' || /does not exist|schema cache/i.test(error.message || '');
+      list.innerHTML = `<div style="font-size:12px; color:var(--ice-dim);">${missing
+        ? "The corrections table isn't set up yet. Run supabase-migration-tracker-adjustments.sql in Supabase first."
+        : "Couldn't load the corrections."}</div>`;
+      return;
+    }
+    trkRows = data || [];
+    if (!trkRows.length) {
+      list.innerHTML = `<div style="font-size:12px; color:var(--ice-dim);">No corrections yet.</div>`;
+      return;
+    }
+    list.innerHTML = trkRows.map(r => {
+      const goalie = r.kind === 'goalie';
+      const headline = goalie
+        ? `${escapeHtml(r.player)} <span style="color:var(--ice-dim); font-weight:400;">· goalie</span> — ${r.ga} GA` +
+          (r.shots != null && r.saves != null ? ` (${r.saves}/${r.shots} saves)` : '')
+        : `${escapeHtml(r.player)} — ${r.g} G, ${r.a} A` +
+          ((r.g + r.a) === 0 ? ` <span style="color:var(--red); font-weight:400;">(removes points)</span>` : '');
+      const bits = [trkDateLabel(r.game_date), r.team, r.league, r.opponent, r.note, r.created_by_name ? 'entered by ' + r.created_by_name : '']
+        .filter(Boolean).map(escapeHtml).join(' · ');
+      return `
+        <div class="board-item">
+          <div class="bi-main" style="flex-direction:column; align-items:flex-start; gap:2px;">
+            <div style="font-weight:700;">${headline}</div>
+            <div class="bi-meta">${bits}</div>
+          </div>
+          <div class="bi-actions">
+            <button type="button" data-trk-edit="${escapeHtml(r.id)}">Edit</button>
+            <button type="button" class="bi-delete" data-trk-del="${escapeHtml(r.id)}">Delete</button>
+          </div>
+        </div>`;
+    }).join('');
+    list.querySelectorAll('[data-trk-edit]').forEach(b => b.addEventListener('click', () => trkStartEdit(b.dataset.trkEdit)));
+    list.querySelectorAll('[data-trk-del]').forEach(b => b.addEventListener('click', () => trkDelete(b.dataset.trkDel)));
+  }
+
+  function trkStartEdit(id){
+    const r = trkRows.find(x => x.id === id);
+    if (!r) return;
+    trkEditId = id;
+    trkField('trkKind').value = r.kind;
+    trkToggleKind();
+    trkField('trkDate').value = r.game_date;
+    trkField('trkPlayer').value = r.player;
+    trkField('trkTeam').value = r.team || '';
+    trkField('trkLeague').value = r.league || '';
+    trkField('trkOpp').value = r.opponent || '';
+    trkField('trkNote').value = r.note || '';
+    trkField('trkG').value = r.g;
+    trkField('trkA').value = r.a;
+    trkField('trkClears').checked = !!r.clears_probable;
+    trkField('trkGA').value = r.ga == null ? '' : r.ga;
+    trkField('trkShots').value = r.shots == null ? '' : r.shots;
+    trkField('trkSaves').value = r.saves == null ? '' : r.saves;
+    trkField('trkSaveBtn').textContent = 'Update Correction';
+    trkField('trkCancelBtn').style.display = '';
+    trkField('trkStatus').textContent = 'Editing — change what you need and press Update.';
+    trkField('trkPlayer').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  // A whole number, 0 or more. Blank gives null; anything else gives NaN.
+  function trkWhole(id){
+    const v = trkField(id).value.trim();
+    if (v === '') return null;
+    const n = Number(v);
+    return Number.isInteger(n) && n >= 0 ? n : NaN;
+  }
+
+  async function saveTrackerCorrection(){
+    const status = trkField('trkStatus');
+    const kind = trkField('trkKind').value;
+    const date = trkField('trkDate').value;
+    // Use the proper spelling from the tracked-players list when he's on it ("landon dupont" becomes "Landon DuPont")
+    const typed = trkField('trkPlayer').value.trim().replace(/\s+/g, ' ');
+    const known = trkRoster.find(r => trkKey(r.name) === trkKey(typed));
+    const player = known ? known.name : typed;
+    const team = trkField('trkTeam').value.trim();
+    const league = trkField('trkLeague').value.trim();
+    if (!date) { status.textContent = 'Pick the game date.'; return; }
+    if (!player) { status.textContent = "Enter the player's name."; return; }
+    if (!team || !league) { status.textContent = 'Add the team and the league.'; return; }
+
+    const row = {
+      kind, game_date: date, player, player_key: trkKey(player), team, league,
+      opponent: trkField('trkOpp').value.trim() || null,
+      g: 0, a: 0, shots: null, saves: null, ga: null, clears_probable: false,
+      note: trkField('trkNote').value.trim() || null,
+      created_by_name: currentReporterName,
+      updated_at: new Date().toISOString(),
+    };
+    if (kind === 'goalie') {
+      const ga = trkWhole('trkGA'), shots = trkWhole('trkShots'), saves = trkWhole('trkSaves');
+      if (ga === null || Number.isNaN(ga)) { status.textContent = 'Enter goals against as a whole number (0 or more).'; return; }
+      if (Number.isNaN(shots) || Number.isNaN(saves)) { status.textContent = 'Shots and saves must be whole numbers (0 or more).'; return; }
+      if (shots !== null && saves !== null && saves > shots) { status.textContent = "Saves can't be more than shots against."; return; }
+      row.ga = ga; row.shots = shots; row.saves = saves;
+    } else {
+      const g = trkWhole('trkG'), a = trkWhole('trkA');
+      if (Number.isNaN(g) || Number.isNaN(a)) { status.textContent = 'Goals and assists must be whole numbers (0 or more).'; return; }
+      row.g = g === null ? 0 : g;
+      row.a = a === null ? 0 : a;
+      row.clears_probable = trkField('trkClears').checked;
+    }
+
+    status.textContent = 'Saving…';
+    const res = trkEditId
+      ? await sb.from(TRK_TABLE).update(row).eq('id', trkEditId)
+      : await sb.from(TRK_TABLE).insert(row);
+    if (res.error) {
+      const dup = res.error.code === '23505' || /duplicate/i.test(res.error.message || '');
+      status.textContent = dup
+        ? `There's already a correction for ${player} on ${trkDateLabel(date)}. Edit that one from the list below.`
+        : 'Failed: ' + res.error.message;
+      return;
+    }
+    status.textContent = 'Saved. It is live on the Prospect Tracker page.';
+    trkResetForm(true);   // keep the date and type, handy for entering several in a row
+    loadTrackerCorrections();
+  }
+
+  async function trkDelete(id){
+    const r = trkRows.find(x => x.id === id);
+    if (!r) return;
+    if (!confirm(`Delete this correction for ${r.player} on ${trkDateLabel(r.game_date)}? The page goes back to the automatic numbers for that player and date.`)) return;
+    const { error } = await sb.from(TRK_TABLE).delete().eq('id', id);
+    if (error) { alert('Failed to delete: ' + error.message); return; }
+    if (trkEditId === id) trkResetForm(true);
+    loadTrackerCorrections();
+  }
+
   async function initAdmin(){
     await loadDrafts();
     renderDraftsList();
     loadExcludedEpisodes();
     await populateBoardReportOptions();
     loadBoard();
+    trkResetForm();
+    loadTrackerRoster();
+    loadTrackerCorrections();
     if (drafts.length){
       loadDraft([...drafts].sort((a,b) => b.updated - a.updated)[0].id);
     } else {
@@ -1625,6 +1942,11 @@
     document.getElementById('excludeAddBtn').addEventListener('click', addExclusion);
     document.getElementById('boardSaveBtn').addEventListener('click', saveBoardEntry);
     document.getElementById('boardCancelBtn').addEventListener('click', resetBoardForm);
+    trkField('trkKind').addEventListener('change', trkToggleKind);
+    trkField('trkPlayer').addEventListener('input', trkAutofill);
+    trkField('trkPlayer').addEventListener('change', trkAutofill);
+    trkField('trkSaveBtn').addEventListener('click', saveTrackerCorrection);
+    trkField('trkCancelBtn').addEventListener('click', () => { trkResetForm(true); trkField('trkStatus').textContent = ''; });
 
     document.getElementById('exportSnippetBtn').addEventListener('click', () => {
       openModal('Dossier HTML — paste into index.html', buildDossierSnippet());
