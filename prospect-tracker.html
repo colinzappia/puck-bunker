@@ -827,7 +827,8 @@
     return sm === em ? sm + " " + s.getDate() + " – " + e.getDate() : shortDate(w.start) + " – " + shortDate(w.end);
   }
   function counted(r) { return r.confidence !== "probable"; }
-  function keyOf(r) { return r.player + "|" + r.league; }
+  // One row per player, even if he has played in more than one league (the names on the tracked list are unique).
+  function keyOf(r) { return nameKey(r.player); }
 
   // Each player's running season total, counting every day up to and including `through`.
   function seasonThrough(through) {
@@ -837,7 +838,7 @@
       (data.days[d].points || []).filter(counted).forEach(function (r) {
         var k = keyOf(r);
         m[k] = m[k] || { player: r.player, team: r.team, league: r.league, g: 0, a: 0 };
-        m[k].g += r.g; m[k].a += r.a; m[k].team = r.team;
+        m[k].g += r.g; m[k].a += r.a; m[k].team = r.team; m[k].league = r.league;
       });
     });
     return m;
@@ -911,7 +912,7 @@
           (data.days[d].points || []).filter(counted).forEach(function (r) {
             var k = keyOf(r);
             t[k] = t[k] || { player: r.player, team: r.team, league: r.league, g: 0, a: 0 };
-            t[k].g += r.g; t[k].a += r.a;
+            t[k].g += r.g; t[k].a += r.a; t[k].team = r.team; t[k].league = r.league;
           });
           gk = gk.concat(data.days[d].goalies || []);
         });
