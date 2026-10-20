@@ -810,6 +810,9 @@
   var sub = document.getElementById("ttSub"), tabs = document.getElementById("ttTabs"),
       body = document.getElementById("ttBody"), weekSel = document.getElementById("ttWeek");
   var data = null, weeks = [], updatedText = "";
+  // Each player's season total from before the weekly tracking began (from the season spreadsheet), so
+  // "Season" always lands on the real season number. Days up to `through` are already inside it.
+  var baseline = { through: "", players: {} };
 
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
   function last(n) { var p = n.split(" ").filter(function (w) { return !/^(jr|sr|ii|iii)\.?$/i.test(w); }); return (p[p.length - 1] || "").toLowerCase(); }
@@ -833,8 +836,12 @@
   // Each player's running season total, counting every day up to and including `through`.
   function seasonThrough(through) {
     var m = {};
+    Object.keys(baseline.players).forEach(function (k) {
+      var b = baseline.players[k];
+      m[k] = { player: b.player, team: b.team, league: b.league, g: b.g, a: b.a };
+    });
     Object.keys(data.days).sort().forEach(function (d) {
-      if (d > through) return;
+      if (d > through || d <= baseline.through) return;       // days up to the baseline date are already inside it
       (data.days[d].points || []).filter(counted).forEach(function (r) {
         var k = keyOf(r);
         m[k] = m[k] || { player: r.player, team: r.team, league: r.league, g: 0, a: 0 };
@@ -940,7 +947,7 @@
   // ---- the whole season so far: every player's cumulative totals ----
   function showSeason() {
     tabs.innerHTML = ""; tabs.style.display = "none";
-    var all = Object.keys(data.days).sort(), through = all[all.length - 1], gk = [];
+    var all = Object.keys(data.days).filter(function (day) { return day > baseline.through; }).sort(), through = all[all.length - 1], gk = [];
     sub.textContent = "2027 draft prospects · Season to date, through " + label(through) + updatedText;
     all.forEach(function (d) { gk = gk.concat(data.days[d].goalies || []); });
     body.innerHTML = '<h3 class="tt-h3">Season points</h3>' + seasonTable(listOf(seasonThrough(through)).sort(sortRows)) +
@@ -955,7 +962,7 @@
 
   function render(d) {
     data = d;
-    var dates = Object.keys(data.days || {}).sort();
+    var dates = Object.keys(data.days || {}).filter(function (day) { return day > baseline.through; }).sort();
     if (!dates.length) { sub.textContent = "No games yet."; weekSel.innerHTML = "<option>No games yet</option>"; return; }
     if (data.updated) {
       var u = new Date(data.updated);
@@ -979,18 +986,28 @@
   // ---- Corrections the admins enter (Admin page, "Prospect Tracker — Point Corrections") ----
   // They sit on top of the daily data. One per player per game date, and it REPLACES whatever the
   // daily update found for that player on that date.
-  function loadCorrections() {
+  function loadRows(table) {
     return new Promise(function (resolve) {
       var done = false;
       function finish(rows) { if (!done) { done = true; resolve(rows || []); } }
       setTimeout(function () { finish([]); }, 4000);          // never hold the page up for these
       try {
         if (typeof puckBunkerDB === "undefined") return finish([]);
-        puckBunkerDB.from("puckbunker_tracker_adjustments").select("*").then(
+        puckBunkerDB.from(table).select("*").then(
           function (res) { finish(res && !res.error ? res.data : []); },
           function () { finish([]); }
         );
       } catch (e) { finish([]); }
+    });
+  }
+  function loadCorrections() { return loadRows("puckbunker_tracker_adjustments"); }
+  function loadBaseline() { return loadRows("puckbunker_tracker_baseline"); }
+  function applyBaseline(rows) {
+    baseline = { through: "", players: {} };
+    (rows || []).forEach(function (r) {
+      var c = String(r.covers_through || "").slice(0, 10);
+      if (c > baseline.through) baseline.through = c;
+      baseline.players[nameKey(r.player)] = { player: r.player, team: r.team || "", league: r.league || "", g: r.g || 0, a: r.a || 0 };
     });
   }
   function nameKey(s) { return String(s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, " ").trim(); }
@@ -1027,9 +1044,10 @@
 
   Promise.all([
     fetch(DATA_URL, { cache: "no-store" }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }),
-    loadCorrections()
+    loadCorrections(),
+    loadBaseline()
   ])
-    .then(function (res) { render(applyCorrections(res[0], res[1])); })
+    .then(function (res) { applyBaseline(res[2]); render(applyCorrections(res[0], res[1])); })
     .catch(function () { sub.textContent = "Stats are temporarily unavailable. Check back soon."; weekSel.innerHTML = "<option>Unavailable</option>"; });
 })();
 </script>
