@@ -1478,6 +1478,8 @@
      "opponent": "vs Prince Albert",
      "g": 3,
      "a": 0,
+     "game_id": "1023189",
+     "score": "PA 4 @ BDN 5",
      "source": "hockeytech",
      "confidence": "official"
     },
@@ -1489,6 +1491,8 @@
      "opponent": "vs Chicoutimi",
      "g": 1,
      "a": 2,
+     "game_id": "33011",
+     "score": "Chi 4 @ Rim 3",
      "source": "hockeytech",
      "confidence": "official"
     },
@@ -1511,6 +1515,8 @@
      "opponent": "vs Victoria",
      "g": 0,
      "a": 3,
+     "game_id": "1023190",
+     "score": "VIC 3 @ EDM 4",
      "source": "hockeytech",
      "confidence": "official"
     },
@@ -1544,6 +1550,8 @@
      "opponent": "@ North Bay",
      "g": 1,
      "a": 1,
+     "game_id": "29099",
+     "score": "NIAG 5 @ NB 4",
      "source": "hockeytech",
      "confidence": "official"
     },
@@ -1555,6 +1563,8 @@
      "opponent": "@ Victoriaville",
      "g": 1,
      "a": 1,
+     "game_id": "33205",
+     "score": "Que 8 @ Vic 3",
      "source": "hockeytech",
      "confidence": "official"
     },
@@ -1577,6 +1587,8 @@
      "opponent": "@ Victoriaville",
      "g": 1,
      "a": 1,
+     "game_id": "33205",
+     "score": "Que 8 @ Vic 3",
      "source": "hockeytech",
      "confidence": "official"
     },
@@ -1588,6 +1600,8 @@
      "opponent": "vs Victoria",
      "g": 1,
      "a": 1,
+     "game_id": "1023190",
+     "score": "VIC 3 @ EDM 4",
      "source": "hockeytech",
      "confidence": "official"
     },
@@ -1599,6 +1613,8 @@
      "opponent": "@ Brandon",
      "g": 0,
      "a": 2,
+     "game_id": "1023189",
+     "score": "PA 4 @ BDN 5",
      "source": "hockeytech",
      "confidence": "official"
     },
@@ -1610,6 +1626,8 @@
      "opponent": "vs Shawinigan",
      "g": 0,
      "a": 2,
+     "game_id": "32879",
+     "score": "Sha 3 @ Hal 4",
      "source": "hockeytech",
      "confidence": "official"
     },
@@ -1621,6 +1639,21 @@
      "opponent": "vs Shawinigan",
      "g": 0,
      "a": 2,
+     "game_id": "32879",
+     "score": "Sha 3 @ Hal 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-18",
+     "player": "Chase Surkan",
+     "team": "Brandon",
+     "league": "WHL",
+     "opponent": "vs Prince Albert",
+     "g": 0,
+     "a": 2,
+     "game_id": "1023189",
+     "score": "PA 4 @ BDN 5",
      "source": "hockeytech",
      "confidence": "official"
     },
@@ -1632,17 +1665,8 @@
      "opponent": "@ Brantford",
      "g": 1,
      "a": 0,
-     "source": "hockeytech",
-     "confidence": "official"
-    },
-    {
-     "date": "2026-10-18",
-     "player": "Max Mares",
-     "team": "Rimouski",
-     "league": "QMJHL",
-     "opponent": "vs Chicoutimi",
-     "g": 1,
-     "a": 0,
+     "game_id": "29097",
+     "score": "SOO 2 @ BFD 5",
      "source": "hockeytech",
      "confidence": "official"
     },
@@ -1654,6 +1678,8 @@
      "opponent": "vs Shawinigan",
      "g": 1,
      "a": 0,
+     "game_id": "32879",
+     "score": "Sha 3 @ Hal 4",
      "source": "hockeytech",
      "confidence": "official"
     },
@@ -1665,6 +1691,8 @@
      "opponent": "vs Owen Sound",
      "g": 1,
      "a": 0,
+     "game_id": "29101",
+     "score": "OS 2 @ SAG 1",
      "source": "hockeytech",
      "confidence": "official"
     },
@@ -1676,6 +1704,8 @@
      "opponent": "@ Baie-Comeau",
      "g": 0,
      "a": 1,
+     "game_id": "32658",
+     "score": "She 3 @ BaC 4",
      "source": "hockeytech",
      "confidence": "official"
     },
@@ -1687,6 +1717,8 @@
      "opponent": "vs Val-d'Or",
      "g": 0,
      "a": 1,
+     "game_id": "33077",
+     "score": "VdO 3 @ SNB 1",
      "source": "hockeytech",
      "confidence": "official"
     },
@@ -1698,6 +1730,8 @@
      "opponent": "vs Kitchener",
      "g": 0,
      "a": 1,
+     "game_id": "29100",
+     "score": "KIT 2 @ OSH 1",
      "source": "hockeytech",
      "confidence": "official"
     },
@@ -1709,6 +1743,8 @@
      "opponent": "vs Val-d'Or",
      "g": 0,
      "a": 1,
+     "game_id": "33077",
+     "score": "VdO 3 @ SNB 1",
      "source": "hockeytech",
      "confidence": "official"
     },
@@ -1731,6 +1767,8 @@
      "opponent": "@ Baie-Comeau",
      "g": 0,
      "a": 1,
+     "game_id": "32658",
+     "score": "She 3 @ BaC 4",
      "source": "hockeytech",
      "confidence": "official"
     },
@@ -1739,9 +1777,11 @@
      "player": "Kaden McGregor",
      "team": "Brantford",
      "league": "OHL",
-     "opponent": "vs Soo",
+     "opponent": "vs Sault Ste. Marie",
      "g": 0,
      "a": 1,
+     "game_id": "29097",
+     "score": "SOO 2 @ BFD 5",
      "source": "hockeytech",
      "confidence": "official"
     },
@@ -1775,17 +1815,8 @@
      "opponent": "@ Halifax",
      "g": 0,
      "a": 1,
-     "source": "hockeytech",
-     "confidence": "official"
-    },
-    {
-     "date": "2026-10-18",
-     "player": "Chase Surkan",
-     "team": "Brandon",
-     "league": "WHL",
-     "opponent": "vs Prince Albert",
-     "g": 0,
-     "a": 1,
+     "game_id": "32879",
+     "score": "Sha 3 @ Hal 4",
      "source": "hockeytech",
      "confidence": "official"
     },
@@ -1797,6 +1828,8 @@
      "opponent": "vs Niagara",
      "g": 0,
      "a": 1,
+     "game_id": "29099",
+     "score": "NIAG 5 @ NB 4",
      "source": "hockeytech",
      "confidence": "official"
     },
@@ -1819,20 +1852,196 @@
      "goalie": "Vilmer Salén Forsberg",
      "team": "Brantford",
      "league": "OHL",
-     "opponent": "vs Soo",
+     "opponent": "vs Sault Ste. Marie",
      "shots": 44,
      "saves": 42,
      "ga": 2,
+     "toi": "60:00",
      "qualifies": true,
+     "game_id": "29097",
+     "score": "SOO 2 @ BFD 5",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-18",
+     "goalie": "Andrei Nikolayev",
+     "team": "Victoriaville",
+     "league": "QMJHL",
+     "opponent": "vs Québec",
+     "shots": 18,
+     "saves": 12,
+     "ga": 6,
+     "toi": "25:04",
+     "qualifies": false,
+     "game_id": "33205",
+     "score": "Que 8 @ Vic 3",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-18",
+     "goalie": "Patrick Déniger",
+     "team": "Québec",
+     "league": "QMJHL",
+     "opponent": "@ Victoriaville",
+     "shots": 35,
+     "saves": 32,
+     "ga": 3,
+     "toi": "60:00",
+     "qualifies": false,
+     "game_id": "33205",
+     "score": "Que 8 @ Vic 3",
      "source": "hockeytech",
      "confidence": "official"
     }
    ],
+   "games_checked": [
+    {
+     "league": "OHL",
+     "game_id": "29099",
+     "matchup": "NIAG @ NB"
+    },
+    {
+     "league": "OHL",
+     "game_id": "29097",
+     "matchup": "SOO @ BFD"
+    },
+    {
+     "league": "OHL",
+     "game_id": "29098",
+     "matchup": "SBY @ GUE"
+    },
+    {
+     "league": "OHL",
+     "game_id": "29101",
+     "matchup": "OS @ SAG"
+    },
+    {
+     "league": "OHL",
+     "game_id": "29100",
+     "matchup": "KIT @ OSH"
+    },
+    {
+     "league": "WHL",
+     "game_id": "1023189",
+     "matchup": "PA @ BDN"
+    },
+    {
+     "league": "WHL",
+     "game_id": "1023190",
+     "matchup": "VIC @ EDM"
+    },
+    {
+     "league": "QMJHL",
+     "game_id": "32879",
+     "matchup": "Sha @ Hal"
+    },
+    {
+     "league": "QMJHL",
+     "game_id": "33077",
+     "matchup": "VdO @ SNB"
+    },
+    {
+     "league": "QMJHL",
+     "game_id": "33011",
+     "matchup": "Chi @ Rim"
+    },
+    {
+     "league": "QMJHL",
+     "game_id": "32812",
+     "matchup": "NFL @ Dru"
+    },
+    {
+     "league": "QMJHL",
+     "game_id": "33205",
+     "matchup": "Que @ Vic"
+    },
+    {
+     "league": "QMJHL",
+     "game_id": "32658",
+     "matchup": "She @ BaC"
+    },
+    {
+     "league": "USHL",
+     "game_id": "13542",
+     "matchup": "DBQ @ NTDP"
+    }
+   ],
+   "updated": "2026-10-20T11:46:12-04:00"
+  },
+  "2026-10-19": {
+   "date": "2026-10-19",
+   "points": [],
+   "goalies": [],
    "games_checked": [],
-   "updated": "2026-10-19T12:00:00-04:00",
-   "source": "Oct 13-18 update (all leagues, incl. Europe)"
+   "updated": "2026-10-20T11:45:59-04:00"
   }
  },
- "updated": "2026-10-19T12:00:00-04:00",
- "problems": {}
+ "updated": "2026-10-20T11:48:45-04:00",
+ "problems": {
+  "hockeytech": [],
+  "europe": [
+   "Theo Berggren: EP page returned 403 (blocked or down)",
+   "Tom Bjurman: EP page returned 403 (blocked or down)",
+   "Oscar Blom: EP page returned 403 (blocked or down)",
+   "Dorian Eklund-Aspe: EP page returned 403 (blocked or down)",
+   "Wiggo Forsberg: EP page returned 403 (blocked or down)",
+   "Douglas Johnsson: EP page returned 403 (blocked or down)",
+   "Charlie Kalldin: EP page returned 403 (blocked or down)",
+   "Loui Karlsson: EP page returned 403 (blocked or down)",
+   "Ellioth Lahtinen: EP page returned 403 (blocked or down)",
+   "Yelverton Lindberg Steen: EP page returned 403 (blocked or down)",
+   "Bosse Meijer: EP page returned 403 (blocked or down)",
+   "Noel Nord: EP page returned 403 (blocked or down)",
+   "Vilgot Nygren: EP page returned 403 (blocked or down)",
+   "Benjamin Nyström: EP page returned 403 (blocked or down)",
+   "Kellan Case O'Leary: EP page returned 403 (blocked or down)",
+   "Simon Sejc: EP page returned 403 (blocked or down)",
+   "Oliver Sundberg: EP page returned 403 (blocked or down)",
+   "Milan Sundström: EP page returned 403 (blocked or down)",
+   "Olle Törnqvist: EP page returned 403 (blocked or down)",
+   "Leo Ulrich: EP page returned 403 (blocked or down)",
+   "Ludvig Vestman: EP page returned 403 (blocked or down)",
+   "Olle Zetterstedt: EP page returned 403 (blocked or down)",
+   "Joel Ikonen: EP page returned 403 (blocked or down)",
+   "Joonas Lehtinen: EP page returned 403 (blocked or down)",
+   "Max Syrjäläinen: EP page returned 403 (blocked or down)",
+   "Roni Kuukasjärvi: EP page returned 403 (blocked or down)",
+   "Miska Liljeberg: EP page returned 403 (blocked or down)",
+   "Max Poikela: EP page returned 403 (blocked or down)",
+   "Lenni Kokkonen: EP page returned 403 (blocked or down)",
+   "Olli Kylmälä: EP page returned 403 (blocked or down)",
+   "Luukas Kokkonen: EP page returned 403 (blocked or down)",
+   "Jonas Schwarz: EP page returned 403 (blocked or down)",
+   "Jonah Neuenschwander: EP page returned 403 (blocked or down)",
+   "Max Calce: EP page returned 403 (blocked or down)",
+   "Melichar Kovar: EP page returned 403 (blocked or down)",
+   "Matus Valek: EP page returned 403 (blocked or down)",
+   "Michal Hartl: EP page returned 403 (blocked or down)",
+   "Tomas Selic: EP page returned 403 (blocked or down)",
+   "Sean Zuffa: EP page returned 403 (blocked or down)",
+   "Lukas Kachlir: EP page returned 403 (blocked or down)",
+   "Stepan Tomka: EP page returned 403 (blocked or down)",
+   "Davids Tarvids: EP page returned 403 (blocked or down)",
+   "Petr Tomek: EP page returned 403 (blocked or down)",
+   "Jakub Simoncic: EP page returned 403 (blocked or down)",
+   "Oliver Botka: EP page returned 403 (blocked or down)",
+   "Miroslav Kalousek: EP page returned 403 (blocked or down)",
+   "Patrik Rychlik: EP page returned 403 (blocked or down)",
+   "Nazar Privalov: EP page returned 403 (blocked or down)",
+   "Sergei Skvortsov: EP page returned 403 (blocked or down)",
+   "Andrei Pustovoy: EP page returned 403 (blocked or down)",
+   "Ruslan Umerov: EP page returned 403 (blocked or down)",
+   "Yevgeni Yakunin: EP page returned 403 (blocked or down)",
+   "Illarion Babkin: EP page returned 403 (blocked or down)",
+   "Daniil Yermolov: EP page returned 403 (blocked or down)",
+   "Semyon Gerasimov: EP page returned 403 (blocked or down)",
+   "Ilya Kolomytsev: EP page returned 403 (blocked or down)",
+   "Daniil Savin: EP page returned 403 (blocked or down)",
+   "Roman Kozhevnikov: EP page returned 403 (blocked or down)",
+   "Landon DuPont: EP page returned 403 (blocked or down)",
+   "Sammy Nelson: EP page returned 403 (blocked or down)"
+  ]
+ }
 }
