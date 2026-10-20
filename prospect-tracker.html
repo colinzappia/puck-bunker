@@ -801,6 +801,8 @@
 </script>
 
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-client.js"></script>
 <script>
 (function () {
   // Where the daily update saves its results (see tracker/README.md)
@@ -972,9 +974,61 @@
     choose(weeks[0].start);
   }
 
-  fetch(DATA_URL, { cache: "no-store" })
-    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-    .then(render)
+
+  // ---- Corrections the admins enter (Admin page, "Prospect Tracker — Point Corrections") ----
+  // They sit on top of the daily data. One per player per game date, and it REPLACES whatever the
+  // daily update found for that player on that date.
+  function loadCorrections() {
+    return new Promise(function (resolve) {
+      var done = false;
+      function finish(rows) { if (!done) { done = true; resolve(rows || []); } }
+      setTimeout(function () { finish([]); }, 4000);          // never hold the page up for these
+      try {
+        if (typeof puckBunkerDB === "undefined") return finish([]);
+        puckBunkerDB.from("puckbunker_tracker_adjustments").select("*").then(
+          function (res) { finish(res && !res.error ? res.data : []); },
+          function () { finish([]); }
+        );
+      } catch (e) { finish([]); }
+    });
+  }
+  function nameKey(s) { return String(s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, " ").trim(); }
+  function daysApart(a, b) { return Math.abs(Date.parse(a + "T12:00:00Z") - Date.parse(b + "T12:00:00Z")) / 86400000; }
+
+  function applyCorrections(d, rows) {
+    if (!rows || !rows.length) return d;
+    d.days = d.days || {};
+    rows.forEach(function (r) {
+      var day = r.game_date, who = nameKey(r.player);
+      var D = d.days[day] = d.days[day] || { date: day, points: [], goalies: [] };
+      D.points = D.points || []; D.goalies = D.goalies || [];
+      if (r.kind === "goalie") {
+        D.goalies = D.goalies.filter(function (g) { return nameKey(g.goalie) !== who; });
+        D.goalies.push({ date: day, goalie: r.player, team: r.team || "", league: r.league || "", opponent: r.opponent || "",
+                         shots: r.shots, saves: r.saves, ga: r.ga, qualifies: r.ga != null && r.ga <= 2, source: "admin", confidence: "official" });
+      } else {
+        D.points = D.points.filter(function (p) { return nameKey(p.player) !== who; });
+        if (r.g + r.a > 0) {
+          D.points.push({ date: day, player: r.player, team: r.team || "", league: r.league || "", opponent: r.opponent || "",
+                          g: r.g, a: r.a, source: "admin", confidence: "official" });
+        }
+        if (r.clears_probable) {      // settles this player's "probable" entry, which is dated at the end of its span
+          Object.keys(d.days).forEach(function (k) {
+            if (daysApart(k, day) <= 3) {
+              d.days[k].points = (d.days[k].points || []).filter(function (p) { return !(p.confidence === "probable" && nameKey(p.player) === who); });
+            }
+          });
+        }
+      }
+    });
+    return d;
+  }
+
+  Promise.all([
+    fetch(DATA_URL, { cache: "no-store" }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }),
+    loadCorrections()
+  ])
+    .then(function (res) { render(applyCorrections(res[0], res[1])); })
     .catch(function () { sub.textContent = "Stats are temporarily unavailable. Check back soon."; weekSel.innerHTML = "<option>Unavailable</option>"; });
 })();
 </script>
