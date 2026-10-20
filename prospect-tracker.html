@@ -537,6 +537,19 @@
 
   /* ---------- Prospect Tracker ---------- */
   .tt-sub{ font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:0.05em; text-transform:uppercase; color:var(--ice-dim); margin-bottom:20px; }
+  .tt-controls{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:18px; }
+  .tt-label{ font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:var(--ice-dim); }
+  .tt-select{
+    min-width:260px; max-width:100%;
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:0.05em; text-transform:uppercase;
+    padding:10px 38px 10px 16px; border:1px solid var(--hazard); color:var(--hazard); background-color:rgba(203,174,126,0.08);
+    cursor:pointer; appearance:none; -webkit-appearance:none; border-radius:0;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23CBAE7E' stroke-width='1.6'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 14px center;
+  }
+  .tt-select:hover, .tt-select:focus{ border-color:var(--ice); outline:none; }
+  .tt-select:disabled{ opacity:0.55; cursor:default; }
+  .tt-select option, .tt-select optgroup{ background:#17181A; color:#F2F2EF; text-transform:none; letter-spacing:0; }
   .tt-tabs{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:30px; }
   .tt-tab{
     font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:0.05em; text-transform:uppercase;
@@ -563,13 +576,19 @@
   .tt-table td.note{ white-space:normal; color:var(--ice-dim); font-size:12px; min-width:220px; }
   .tt-mark{ color:var(--hazard); margin-left:3px; cursor:help; }
   .tt-empty{ color:var(--ice-dim); font-style:italic; padding:18px 16px; }
-  .tt-foot{ color:var(--ice-dim); font-size:12px; line-height:1.6; margin-top:34px; max-width:720px; }
   @media (max-width:600px){
     .tt-table{ font-size:13px; }
     .tt-table th, .tt-table td{ padding:10px 8px; }
     .tt-table th:nth-child(1), .tt-table td:nth-child(1), .tt-table th:nth-child(2), .tt-table td:nth-child(2){ white-space:normal; }
     .tt-table .hide-sm{ display:none; }
     .tt-tab{ padding:8px 12px; }
+    .tt-controls{ flex-direction:column; align-items:stretch; gap:8px; }
+    .tt-select{ width:100%; min-width:0; }
+  }
+  @media (max-width:400px){
+    .tt-table{ font-size:12.5px; }
+    .tt-table th, .tt-table td{ padding:10px 6px; }
+    .tt-table th{ letter-spacing:0.04em; }
   }
 </style>
 
@@ -653,16 +672,21 @@
   <div class="wrap">
     <div class="eyebrow">Daily points</div>
     <h1 class="stencil">Prospect Tracker.</h1>
-    <p>Every point scored by the 2027 draft-eligible prospects we are tracking, day by day. Pick a day, or see the running totals.</p>
+    <p>Every point scored by the 2027 draft-eligible prospects we are tracking. Pick a week and a day, or switch to the season-to-date totals.</p>
   </div>
 </section>
 
 <section>
   <div class="wrap">
+    <div class="tt-controls">
+      <label class="tt-label" for="ttWeek">Show</label>
+      <select id="ttWeek" class="tt-select" aria-label="Choose a week, or the season total" disabled>
+        <option>Loading…</option>
+      </select>
+    </div>
     <p class="tt-sub" id="ttSub">Loading…</p>
     <div class="tt-tabs" id="ttTabs" role="tablist" aria-label="Choose a day"></div>
     <div id="ttBody"></div>
-    <p class="tt-foot">Stats come from the leagues' official game summaries and Elite Prospects. An asterisk (*) means the points were taken from a change in season totals when only one game was played. "Probable" points could not be tied to a single game, so they are listed separately and not counted.</p>
   </div>
 </section>
 
@@ -781,34 +805,69 @@
 (function () {
   // Where the daily update saves its results (see tracker/README.md)
   var DATA_URL = "/tracker/data/points.json";
-  var DAYS_SHOWN = 7;            // how many recent days get a tab
-  var sub = document.getElementById("ttSub"), tabs = document.getElementById("ttTabs"), body = document.getElementById("ttBody");
+  var sub = document.getElementById("ttSub"), tabs = document.getElementById("ttTabs"),
+      body = document.getElementById("ttBody"), weekSel = document.getElementById("ttWeek");
+  var data = null, weeks = [], updatedText = "";
 
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
   function last(n) { var p = n.split(" ").filter(function (w) { return !/^(jr|sr|ii|iii)\.?$/i.test(w); }); return (p[p.length - 1] || "").toLowerCase(); }
   function sortRows(a, b) { return (b.g + b.a) - (a.g + a.a) || b.g - a.g || last(a.player).localeCompare(last(b.player)); }
-  function label(iso) { var d = new Date(iso + "T12:00:00"); return d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }); }
-  function counted(r) { return r.confidence !== "probable"; }
-
-  function probableTable(rows) {
-    rows = rows.filter(function (r) { return !counted(r); });
-    if (!rows.length) return "";
-    var h = '<h3 class="tt-h3">Probable (not counted)</h3><div class="tt-panel"><table class="tt-table"><thead><tr><th>Player</th><th>Team</th><th class="n">G</th><th class="n">A</th><th class="hide-sm">Why</th></tr></thead><tbody>';
-    rows.forEach(function (r) {
-      h += "<tr><td>" + esc(r.player) + '</td><td class="dim">' + esc(r.team) + '</td><td class="n">' + r.g + '</td><td class="n">' + r.a +
-           '</td><td class="hide-sm note">' + esc(r.note || "Couldn't be pinned to one game") + "</td></tr>";
-    });
-    return h + "</tbody></table></div>";
+  function pad(n) { return (n < 10 ? "0" : "") + n; }
+  function parse(iso) { return new Date(iso + "T12:00:00"); }
+  function isoOf(d) { return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
+  function addDays(iso, n) { var d = parse(iso); d.setDate(d.getDate() + n); return isoOf(d); }
+  function mondayOf(iso) { var d = parse(iso); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); return isoOf(d); }
+  function label(iso) { return parse(iso).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }); }
+  function shortDate(iso) { return parse(iso).toLocaleDateString("en-US", { month: "short", day: "numeric" }); }
+  function weekLabel(w) {
+    var s = parse(w.start), e = parse(w.end);
+    var sm = s.toLocaleDateString("en-US", { month: "short" }), em = e.toLocaleDateString("en-US", { month: "short" });
+    return sm === em ? sm + " " + s.getDate() + " – " + e.getDate() : shortDate(w.start) + " – " + shortDate(w.end);
   }
-  function table(rows, withOpp) {
+  function counted(r) { return r.confidence !== "probable"; }
+  function keyOf(r) { return r.player + "|" + r.league; }
+
+  // Each player's running season total, counting every day up to and including `through`.
+  function seasonThrough(through) {
+    var m = {};
+    Object.keys(data.days).sort().forEach(function (d) {
+      if (d > through) return;
+      (data.days[d].points || []).filter(counted).forEach(function (r) {
+        var k = keyOf(r);
+        m[k] = m[k] || { player: r.player, team: r.team, league: r.league, g: 0, a: 0 };
+        m[k].g += r.g; m[k].a += r.a; m[k].team = r.team;
+      });
+    });
+    return m;
+  }
+  function listOf(m) { return Object.keys(m).map(function (k) { return m[k]; }); }
+
+  var EMPTY = '<div class="tt-panel"><div class="tt-empty">No points from tracked prospects.</div></div>';
+
+  // Points table. opts.opp = show the opponent column; opts.season = running season totals to show beside each row.
+  function table(rows, opts) {
     rows = rows.filter(counted);
-    if (!rows.length) return '<div class="tt-panel"><div class="tt-empty">No points from tracked prospects.</div></div>';
+    if (!rows.length) return EMPTY;
+    var withOpp = !!opts.opp, season = opts.season;
     var h = '<div class="tt-panel"><table class="tt-table"><thead><tr><th>Player</th><th>Team</th><th class="hide-sm">League</th>' + (withOpp ? '<th class="hide-sm">Opponent</th>' : "") +
-            '<th class="n">G</th><th class="n">A</th><th class="n">PTS</th></tr></thead><tbody>';
+            '<th class="n">G</th><th class="n">A</th><th class="n">PTS</th>' +
+            (season ? '<th class="n" title="' + esc(opts.seasonTip) + '">Season</th>' : "") + '</tr></thead><tbody>';
     rows.forEach(function (r) {
+      var sv = season ? season[keyOf(r)] : null;
       h += "<tr><td>" + esc(r.player) + (r.confidence === "single-game" ? '<span class="tt-mark" title="From the season-total change; only one game was played">*</span>' : "") +
            '</td><td class="dim">' + esc(r.team) + '</td><td class="dim hide-sm">' + esc(r.league) + "</td>" +
            (withOpp ? '<td class="dim hide-sm">' + esc(r.opponent) + "</td>" : "") +
+           '<td class="n">' + r.g + '</td><td class="n">' + r.a + '</td><td class="n pts">' + (r.g + r.a) + "</td>" +
+           (season ? '<td class="n season">' + (sv ? sv.g + sv.a : "–") + "</td>" : "") + "</tr>";
+    });
+    return h + "</tbody></table></div>";
+  }
+  // Season-to-date table: everyone's cumulative goals, assists and points.
+  function seasonTable(rows) {
+    if (!rows.length) return EMPTY;
+    var h = '<div class="tt-panel"><table class="tt-table"><thead><tr><th>Player</th><th>Team</th><th class="hide-sm">League</th><th class="n">G</th><th class="n">A</th><th class="n">PTS</th></tr></thead><tbody>';
+    rows.forEach(function (r) {
+      h += "<tr><td>" + esc(r.player) + '</td><td class="dim">' + esc(r.team) + '</td><td class="dim hide-sm">' + esc(r.league) + '</td>' +
            '<td class="n">' + r.g + '</td><td class="n">' + r.a + '</td><td class="n pts">' + (r.g + r.a) + "</td></tr>";
     });
     return h + "</tbody></table></div>";
@@ -823,35 +882,44 @@
     });
     return h + "</tbody></table></div>";
   }
+  function probableTable(rows) {
+    rows = rows.filter(function (r) { return !counted(r); });
+    if (!rows.length) return "";
+    var h = '<h3 class="tt-h3">Probable (not counted)</h3><div class="tt-panel"><table class="tt-table"><thead><tr><th>Player</th><th>Team</th><th class="n">G</th><th class="n">A</th><th class="hide-sm">Why</th></tr></thead><tbody>';
+    rows.forEach(function (r) {
+      h += "<tr><td>" + esc(r.player) + '</td><td class="dim">' + esc(r.team) + '</td><td class="n">' + r.g + '</td><td class="n">' + r.a +
+           '</td><td class="hide-sm note">' + esc(r.note || "Couldn't be pinned to one game") + "</td></tr>";
+    });
+    return h + "</tbody></table></div>";
+  }
+  function newestFirst(a, b) { return b.date < a.date ? -1 : b.date > a.date ? 1 : 0; }
 
-  function render(data) {
-    var dates = Object.keys(data.days || {}).sort().slice(-DAYS_SHOWN);
-    if (!dates.length) { sub.textContent = "No games yet."; return; }
-    var updated = "";
-    if (data.updated) {
-      var u = new Date(data.updated);
-      if (!isNaN(u)) updated = " · Updated " + u.toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
-    }
-    sub.textContent = "2027 draft prospects, " + label(dates[0]) + " to " + label(dates[dates.length - 1]) + updated;
-    var views = dates.map(function (d) { return { id: d, name: label(d) }; }).concat([{ id: "totals", name: "Totals" }]);
+  // ---- one week: a tab for each day that has games, plus the week total ----
+  function showWeek(w) {
+    tabs.style.display = "";
+    var first = w.days[0], lastDay = w.days[w.days.length - 1];
+    sub.textContent = "2027 draft prospects · " + label(first) + " to " + label(lastDay) + updatedText;
+    var views = w.days.map(function (d) { return { id: d, name: label(d) }; }).concat([{ id: "total", name: "Week total" }]);
 
     function show(id) {
       Array.prototype.forEach.call(tabs.children, function (b) { b.setAttribute("aria-selected", b.dataset.id === id ? "true" : "false"); });
-      if (id === "totals") {
+      if (id === "total") {
         var t = {}, gk = [];
-        dates.forEach(function (d) {
+        w.days.forEach(function (d) {
           (data.days[d].points || []).filter(counted).forEach(function (r) {
-            var k = r.player + "|" + r.league;
+            var k = keyOf(r);
             t[k] = t[k] || { player: r.player, team: r.team, league: r.league, g: 0, a: 0 };
             t[k].g += r.g; t[k].a += r.a;
           });
           gk = gk.concat(data.days[d].goalies || []);
         });
-        body.innerHTML = '<h3 class="tt-h3">Points</h3>' + table(Object.keys(t).map(function (k) { return t[k]; }).sort(sortRows), false) +
-                         '<h3 class="tt-h3">Goalies: 2 or fewer goals against</h3>' + goalieTable(gk);
+        body.innerHTML = '<h3 class="tt-h3">Points this week</h3>' +
+                         table(listOf(t).sort(sortRows), { opp: false, season: seasonThrough(lastDay), seasonTip: "Season total through the end of this week" }) +
+                         '<h3 class="tt-h3">Goalies: 2 or fewer goals against</h3>' + goalieTable(gk.sort(newestFirst));
       } else {
         var day = data.days[id];
-        body.innerHTML = '<h3 class="tt-h3">Points</h3>' + table((day.points || []).slice().sort(sortRows), true) +
+        body.innerHTML = '<h3 class="tt-h3">Points</h3>' +
+                         table((day.points || []).slice().sort(sortRows), { opp: true, season: seasonThrough(id), seasonTip: "Season total through this date" }) +
                          '<h3 class="tt-h3">Goalies: 2 or fewer goals against</h3>' + goalieTable(day.goalies || []) +
                          probableTable(day.points || []);
       }
@@ -863,13 +931,51 @@
       b.onclick = function () { show(v.id); };
       tabs.appendChild(b);
     });
-    show("totals");
+    show("total");
+  }
+
+  // ---- the whole season so far: every player's cumulative totals ----
+  function showSeason() {
+    tabs.innerHTML = ""; tabs.style.display = "none";
+    var all = Object.keys(data.days).sort(), through = all[all.length - 1], gk = [];
+    sub.textContent = "2027 draft prospects · Season to date, through " + label(through) + updatedText;
+    all.forEach(function (d) { gk = gk.concat(data.days[d].goalies || []); });
+    body.innerHTML = '<h3 class="tt-h3">Season points</h3>' + seasonTable(listOf(seasonThrough(through)).sort(sortRows)) +
+                     '<h3 class="tt-h3">Goalies: 2 or fewer goals against, all season</h3>' + goalieTable(gk.sort(newestFirst));
+  }
+
+  function choose(value) {
+    if (value === "season") return showSeason();
+    var w = weeks.filter(function (x) { return x.start === value; })[0];
+    if (w) showWeek(w);
+  }
+
+  function render(d) {
+    data = d;
+    var dates = Object.keys(data.days || {}).sort();
+    if (!dates.length) { sub.textContent = "No games yet."; weekSel.innerHTML = "<option>No games yet</option>"; return; }
+    if (data.updated) {
+      var u = new Date(data.updated);
+      if (!isNaN(u)) updatedText = " · Updated " + u.toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+    }
+    // group the dates into Monday-to-Sunday weeks, newest first
+    var byWeek = {};
+    dates.forEach(function (day) { var m = mondayOf(day); (byWeek[m] = byWeek[m] || []).push(day); });
+    weeks = Object.keys(byWeek).sort().reverse().map(function (m) { return { start: m, end: addDays(m, 6), days: byWeek[m].sort() }; });
+
+    var opts = '<option value="season">Season to date</option><optgroup label="By week">';
+    weeks.forEach(function (w, i) { opts += '<option value="' + w.start + '">' + esc(weekLabel(w)) + (i === 0 ? " (latest)" : "") + "</option>"; });
+    weekSel.innerHTML = opts + "</optgroup>";
+    weekSel.disabled = false;
+    weekSel.onchange = function () { choose(weekSel.value); };
+    weekSel.value = weeks[0].start;
+    choose(weeks[0].start);
   }
 
   fetch(DATA_URL, { cache: "no-store" })
     .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
     .then(render)
-    .catch(function () { sub.textContent = "Stats are temporarily unavailable. Check back soon."; });
+    .catch(function () { sub.textContent = "Stats are temporarily unavailable. Check back soon."; weekSel.innerHTML = "<option>Unavailable</option>"; });
 })();
 </script>
 </body>
