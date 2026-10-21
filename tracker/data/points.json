@@ -1975,10 +1975,47 @@
    "points": [],
    "goalies": [],
    "games_checked": [],
-   "updated": "2026-10-20T11:45:59-04:00"
+   "updated": "2026-10-21T12:03:51-04:00"
+  },
+  "2026-10-20": {
+   "date": "2026-10-20",
+   "points": [
+    {
+     "date": "2026-10-20",
+     "player": "Blake Chorney",
+     "team": "Vancouver",
+     "league": "WHL",
+     "opponent": "@ Prince George",
+     "g": 0,
+     "a": 1,
+     "game_id": "1023192",
+     "score": "VAN 5 @ PG 2",
+     "source": "hockeytech",
+     "confidence": "official"
+    }
+   ],
+   "goalies": [],
+   "games_checked": [
+    {
+     "league": "WHL",
+     "game_id": "1023191",
+     "matchup": "SC @ MJ"
+    },
+    {
+     "league": "WHL",
+     "game_id": "1023192",
+     "matchup": "VAN @ PG"
+    },
+    {
+     "league": "USHL",
+     "game_id": "13544",
+     "matchup": "LIN @ SF"
+    }
+   ],
+   "updated": "2026-10-21T12:03:48-04:00"
   }
  },
- "updated": "2026-10-20T11:48:45-04:00",
+ "updated": "2026-10-21T12:06:25-04:00",
  "problems": {
   "hockeytech": [],
   "europe": [
