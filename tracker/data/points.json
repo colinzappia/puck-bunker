@@ -1992,6 +1992,19 @@
      "score": "VAN 5 @ PG 2",
      "source": "hockeytech",
      "confidence": "official"
+    },
+    {
+     "date": "2026-10-20",
+     "player": "Ethan Sung",
+     "team": "Sioux Falls",
+     "league": "USHL",
+     "opponent": "vs Lincoln",
+     "g": 0,
+     "a": 1,
+     "game_id": "13544",
+     "score": "LIN 1 @ SF 4",
+     "source": "hockeytech",
+     "confidence": "official"
     }
    ],
    "goalies": [],
@@ -2012,10 +2025,132 @@
      "matchup": "LIN @ SF"
     }
    ],
-   "updated": "2026-10-21T12:03:48-04:00"
+   "updated": "2026-10-22T11:58:11-04:00"
+  },
+  "2026-10-21": {
+   "date": "2026-10-21",
+   "points": [
+    {
+     "date": "2026-10-21",
+     "player": "Easton Walos",
+     "team": "Sarnia",
+     "league": "OHL",
+     "opponent": "vs London",
+     "g": 0,
+     "a": 4,
+     "game_id": "29102",
+     "score": "LDN 4 @ SAR 6",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-21",
+     "player": "Blake Chorney",
+     "team": "Vancouver",
+     "league": "WHL",
+     "opponent": "@ Prince George",
+     "g": 2,
+     "a": 1,
+     "game_id": "1023196",
+     "score": "VAN 5 @ PG 3",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-21",
+     "player": "Artyom Katsuro",
+     "team": "Calgary",
+     "league": "WHL",
+     "opponent": "vs Penticton",
+     "g": 1,
+     "a": 1,
+     "game_id": "1023193",
+     "score": "PEN 3 @ CGY 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-21",
+     "player": "Calder Hamilton",
+     "team": "Calgary",
+     "league": "WHL",
+     "opponent": "vs Penticton",
+     "g": 0,
+     "a": 1,
+     "game_id": "1023193",
+     "score": "PEN 3 @ CGY 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-21",
+     "player": "Shaun Hildebrandt",
+     "team": "Calgary",
+     "league": "WHL",
+     "opponent": "vs Penticton",
+     "g": 0,
+     "a": 1,
+     "game_id": "1023193",
+     "score": "PEN 3 @ CGY 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-21",
+     "player": "Brenner Lammens",
+     "team": "Sarnia",
+     "league": "OHL",
+     "opponent": "vs London",
+     "g": 0,
+     "a": 1,
+     "game_id": "29102",
+     "score": "LDN 4 @ SAR 6",
+     "source": "hockeytech",
+     "confidence": "official"
+    }
+   ],
+   "goalies": [],
+   "games_checked": [
+    {
+     "league": "OHL",
+     "game_id": "29102",
+     "matchup": "LDN @ SAR"
+    },
+    {
+     "league": "WHL",
+     "game_id": "1023198",
+     "matchup": "EVT @ SAS"
+    },
+    {
+     "league": "WHL",
+     "game_id": "1023193",
+     "matchup": "PEN @ CGY"
+    },
+    {
+     "league": "WHL",
+     "game_id": "1023197",
+     "matchup": "SEA @ REG"
+    },
+    {
+     "league": "WHL",
+     "game_id": "1023194",
+     "matchup": "TC @ KAM"
+    },
+    {
+     "league": "WHL",
+     "game_id": "1023196",
+     "matchup": "VAN @ PG"
+    },
+    {
+     "league": "WHL",
+     "game_id": "1023195",
+     "matchup": "POR @ KEL"
+    }
+   ],
+   "updated": "2026-10-22T11:58:07-04:00"
   }
  },
- "updated": "2026-10-21T12:06:25-04:00",
+ "updated": "2026-10-22T12:00:51-04:00",
  "problems": {
   "hockeytech": [],
   "europe": [
