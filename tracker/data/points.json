@@ -2123,13 +2123,13 @@
     },
     {
      "league": "WHL",
-     "game_id": "1023193",
-     "matchup": "PEN @ CGY"
+     "game_id": "1023197",
+     "matchup": "SEA @ REG"
     },
     {
      "league": "WHL",
-     "game_id": "1023197",
-     "matchup": "SEA @ REG"
+     "game_id": "1023193",
+     "matchup": "PEN @ CGY"
     },
     {
      "league": "WHL",
@@ -2147,10 +2147,153 @@
      "matchup": "POR @ KEL"
     }
    ],
-   "updated": "2026-10-22T11:58:07-04:00"
+   "updated": "2026-10-23T11:50:46-04:00"
+  },
+  "2026-10-22": {
+   "date": "2026-10-22",
+   "points": [
+    {
+     "date": "2026-10-22",
+     "player": "Adam Nemec",
+     "team": "Brantford",
+     "league": "OHL",
+     "opponent": "@ North Bay",
+     "g": 1,
+     "a": 2,
+     "game_id": "29104",
+     "score": "SBY 4 @ NB 3",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-22",
+     "player": "Bogdan Yakushevsky",
+     "team": "Windsor",
+     "league": "OHL",
+     "opponent": "@ Sault Ste. Marie",
+     "g": 2,
+     "a": 0,
+     "game_id": "29106",
+     "score": "WSR 4 @ SOO 5",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-22",
+     "player": "Tyler Hinde",
+     "team": "Oshawa",
+     "league": "OHL",
+     "opponent": "@ Peterborough",
+     "g": 1,
+     "a": 1,
+     "game_id": "29105",
+     "score": "OSH 4 @ PBO 5",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-22",
+     "player": "Noah Laus",
+     "team": "Soo",
+     "league": "OHL",
+     "opponent": "vs Windsor",
+     "g": 1,
+     "a": 1,
+     "game_id": "29106",
+     "score": "WSR 4 @ SOO 5",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-22",
+     "player": "Ty Bergeron",
+     "team": "Windsor",
+     "league": "OHL",
+     "opponent": "@ Sault Ste. Marie",
+     "g": 1,
+     "a": 0,
+     "game_id": "29106",
+     "score": "WSR 4 @ SOO 5",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-22",
+     "player": "Johnny McLaughlin",
+     "team": "Windsor",
+     "league": "OHL",
+     "opponent": "@ Sault Ste. Marie",
+     "g": 1,
+     "a": 0,
+     "game_id": "29106",
+     "score": "WSR 4 @ SOO 5",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-22",
+     "player": "Ilya Kolmakov",
+     "team": "Sherbrooke",
+     "league": "QMJHL",
+     "opponent": "@ Victoriaville",
+     "g": 0,
+     "a": 1,
+     "game_id": "33206",
+     "score": "She 2 @ Vic 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-22",
+     "player": "Camryn Warren",
+     "team": "North Bay",
+     "league": "OHL",
+     "opponent": "vs Sudbury",
+     "g": 0,
+     "a": 1,
+     "game_id": "29104",
+     "score": "SBY 4 @ NB 3",
+     "source": "hockeytech",
+     "confidence": "official"
+    }
+   ],
+   "goalies": [],
+   "games_checked": [
+    {
+     "league": "OHL",
+     "game_id": "29103",
+     "matchup": "OS @ BAR"
+    },
+    {
+     "league": "OHL",
+     "game_id": "29104",
+     "matchup": "SBY @ NB"
+    },
+    {
+     "league": "OHL",
+     "game_id": "29105",
+     "matchup": "OSH @ PBO"
+    },
+    {
+     "league": "OHL",
+     "game_id": "29106",
+     "matchup": "WSR @ SOO"
+    },
+    {
+     "league": "QMJHL",
+     "game_id": "33206",
+     "matchup": "She @ Vic"
+    },
+    {
+     "league": "USHL",
+     "game_id": "13545",
+     "matchup": "CR @ FGO"
+    }
+   ],
+   "updated": "2026-10-23T11:50:40-04:00"
   }
  },
- "updated": "2026-10-22T12:00:51-04:00",
+ "updated": "2026-10-23T11:53:20-04:00",
  "problems": {
   "hockeytech": [],
   "europe": [
