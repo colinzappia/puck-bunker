@@ -1,8 +1,9 @@
 {
  "_notes": [
-  "European, Russian and NCAA players, looked up by Elite Prospects player id (ep_id = the number in the player's EP page address).",
+  "European, Russian, NCAA and other non-CHL/USHL players (NAHL, BCHL, GOHL, US high school), looked up by Elite Prospects player id (ep_id = the number in the player's EP page address).",
   "'team' and 'league' are display labels; the actual league for each game comes from the data.",
-  "Players without an ep_id yet (add the number from their EP page to include them): Michal Lazovsky (Třinec U20); Jaroslav Martinek G (Mladá Boleslav U20); Nicko Zakk Havel G (Dukla Trenčín); Viliam Pikna (Slovan Bratislava); Konsta Rautio (Kärpät U18); William Lacelle G (Nebraska-Omaha); Rylan Hanson (Elk River HS)"
+  "143 players don't have an ep_id yet. They're skipped until you add the number from their EP page. Also still to add: Nicko Zakk Havel G (Dukla Trenčín).",
+  "'ncs' is the player's NHL Central Scouting Preliminary Players To Watch rating (26-Oct-2026): A = 1st round, B = 2nd/3rd, C = 4th/5th, W = 6th/7th, LV = limited viewing."
  ],
  "players": [
   {
@@ -16,115 +17,134 @@
    "name": "Theo Berggren",
    "team": "BIK Karlskoga U20",
    "league": "U20 Nationell",
-   "ep_id": 1041356
+   "ep_id": 1041356,
+   "ncs": "W"
   },
   {
    "name": "Tom Bjurman",
    "team": "Färjestad U20",
    "league": "U20 Nationell",
-   "ep_id": 1010863
+   "ep_id": 1010863,
+   "ncs": "W"
   },
   {
    "name": "Oscar Blom",
    "team": "Färjestad U18",
    "league": "U18 Region",
-   "ep_id": 1010864
+   "ep_id": 1010864,
+   "ncs": "W"
   },
   {
    "name": "Dorian Eklund-Aspe",
    "team": "Djurgården U20",
    "league": "U20 Nationell",
-   "ep_id": 971366
+   "ep_id": 971366,
+   "ncs": "B"
   },
   {
    "name": "Wiggo Forsberg",
    "team": "Frölunda U20",
    "league": "U20 Nationell",
-   "ep_id": 971729
+   "ep_id": 971729,
+   "ncs": "B"
   },
   {
    "name": "Douglas Johnsson",
    "team": "Skellefteå U20",
    "league": "U20 Nationell",
-   "ep_id": 1063798
+   "ep_id": 1063798,
+   "ncs": "B"
   },
   {
    "name": "Charlie Kalldin",
    "team": "Frölunda U20",
    "league": "U20 Nationell",
-   "ep_id": 1033434
+   "ep_id": 1033434,
+   "ncs": "W"
   },
   {
    "name": "Loui Karlsson",
    "team": "Leksand U20",
    "league": "U20 Nationell",
-   "ep_id": 1009026
+   "ep_id": 1009026,
+   "ncs": "C"
   },
   {
    "name": "Ellioth Lahtinen",
    "team": "Brynäs U20",
    "league": "U20 Nationell",
-   "ep_id": 997384
+   "ep_id": 997384,
+   "ncs": "W"
   },
   {
    "name": "Yelverton Lindberg Steen",
    "team": "Växjö U20",
    "league": "U20 Nationell",
-   "ep_id": 962001
+   "ep_id": 962001,
+   "ncs": "W"
   },
   {
    "name": "Bosse Meijer",
    "team": "Frölunda",
    "league": "SHL",
-   "ep_id": 876780
+   "ep_id": 876780,
+   "ncs": "A"
   },
   {
    "name": "Noel Nord",
    "team": "Leksand U20",
    "league": "U20 Nationell",
-   "ep_id": 963863
+   "ep_id": 963863,
+   "ncs": "W"
   },
   {
    "name": "Vilgot Nygren",
    "team": "Färjestad U18",
    "league": "U18 Region",
-   "ep_id": 973258
+   "ep_id": 973258,
+   "ncs": "W"
   },
   {
    "name": "Benjamin Nyström",
    "team": "Luleå U20",
    "league": "U20 Nationell",
-   "ep_id": 1053297
+   "ep_id": 1053297,
+   "ncs": "C"
   },
   {
    "name": "Kellan Case O'Leary",
    "team": "Brynäs U18",
    "league": "U18 Region",
-   "ep_id": 937010
+   "ep_id": 937010,
+   "ncs": "W"
   },
   {
    "name": "Simon Sejc",
    "team": "Växjö U20",
    "league": "U20 Nationell",
-   "ep_id": 933152
+   "ep_id": 933152,
+   "ncs": "C"
   },
   {
    "name": "Oliver Sundberg",
    "team": "Djurgården U20",
    "league": "U20 Nationell",
-   "ep_id": 978511
+   "ep_id": 978511,
+   "ncs": "B"
   },
   {
    "name": "Milan Sundström",
    "team": "MoDo",
    "league": "HockeyAllsvenskan",
-   "ep_id": 1010942
+   "ep_id": 1010942,
+   "ncs": "A"
   },
   {
    "name": "Olle Törnqvist",
    "team": "Örebro U20",
    "league": "U20 Nationell",
-   "ep_id": 969728
+   "ep_id": 969728,
+   "ncs": "W"
   },
   {
    "name": "Leo Ulrich",
@@ -136,155 +156,180 @@
    "name": "Ludvig Vestman",
    "team": "Skellefteå U20",
    "league": "U20 Nationell",
-   "ep_id": 1010065
+   "ep_id": 1010065,
+   "ncs": "W"
   },
   {
    "name": "Olle Zetterstedt",
    "team": "Frölunda U20",
    "league": "U20 Nationell",
-   "ep_id": 884680
+   "ep_id": 884680,
+   "ncs": "C"
   },
   {
    "name": "Kaspars Gabriels Konrads",
    "team": "Brynäs U18",
    "league": "U18 Region",
    "ep_id": 1011001,
-   "pos": "G"
+   "pos": "G",
+   "ncs": "W"
   },
   {
    "name": "Joel Ikonen",
    "team": "Jokerit U20",
    "league": "U20 SM-sarja",
-   "ep_id": 1008859
+   "ep_id": 1008859,
+   "ncs": "C"
   },
   {
    "name": "Joonas Lehtinen",
    "team": "Jokerit U20",
    "league": "U20 SM-sarja",
-   "ep_id": 1041631
+   "ep_id": 1041631,
+   "ncs": "C"
   },
   {
    "name": "Max Syrjäläinen",
    "team": "Jokerit U20",
    "league": "U20 SM-sarja",
-   "ep_id": 1008855
+   "ep_id": 1008855,
+   "ncs": "W"
   },
   {
    "name": "Roni Kuukasjärvi",
    "team": "Ilves U20",
    "league": "U20 SM-sarja",
-   "ep_id": 1032870
+   "ep_id": 1032870,
+   "ncs": "B"
   },
   {
    "name": "Miska Liljeberg",
    "team": "Ilves U20",
    "league": "U20 SM-sarja",
-   "ep_id": 1032879
+   "ep_id": 1032879,
+   "ncs": "C"
   },
   {
    "name": "Max Poikela",
    "team": "Ilves U20",
    "league": "U20 SM-sarja",
-   "ep_id": 1009083
+   "ep_id": 1009083,
+   "ncs": "C"
   },
   {
    "name": "Lenni Kokkonen",
    "team": "Kärpät U20",
    "league": "U20 SM-sarja",
-   "ep_id": 1113813
+   "ep_id": 1113813,
+   "ncs": "B"
   },
   {
    "name": "Olli Kylmälä",
    "team": "Kärpät U20",
    "league": "U20 SM-sarja",
-   "ep_id": 1033455
+   "ep_id": 1033455,
+   "ncs": "C"
   },
   {
    "name": "Luukas Kokkonen",
    "team": "KalPa U20",
    "league": "U20 SM-sarja",
-   "ep_id": 1032262
+   "ep_id": 1032262,
+   "ncs": "W"
   },
   {
    "name": "Jonas Schwarz",
    "team": "Lukko U20",
    "league": "U20 SM-sarja",
-   "ep_id": 915294
+   "ep_id": 915294,
+   "ncs": "C"
   },
   {
    "name": "Samuel Heikkinen",
    "team": "KooKoo U20",
    "league": "U20 SM-sarja",
    "ep_id": 1030685,
-   "pos": "G"
+   "pos": "G",
+   "ncs": "W"
   },
   {
    "name": "Krystof Stepanek",
    "team": "SaiPa U20",
    "league": "U20 SM-sarja",
    "ep_id": 982868,
-   "pos": "G"
+   "pos": "G",
+   "ncs": "W"
   },
   {
    "name": "Ayden Huet",
    "team": "Lausanne U21",
    "league": "U21-Elit",
    "ep_id": 937072,
-   "pos": "G"
+   "pos": "G",
+   "ncs": "W"
   },
   {
    "name": "Jonah Neuenschwander",
    "team": "EHC Biel",
    "league": "National League",
-   "ep_id": 709625
+   "ep_id": 709625,
+   "ncs": "A"
   },
   {
    "name": "Max Calce",
    "team": "Adler Mannheim",
    "league": "DEL",
-   "ep_id": 879926
+   "ep_id": 879926,
+   "ncs": "A"
   },
   {
    "name": "Melichar Kovar",
    "team": "Pardubice U20",
    "league": "Czechia U20",
-   "ep_id": 982570
+   "ep_id": 982570,
+   "ncs": "C"
   },
   {
    "name": "Matus Valek",
    "team": "Pardubice U20",
    "league": "Czechia U20",
-   "ep_id": 958711
+   "ep_id": 958711,
+   "ncs": "C"
   },
   {
    "name": "Michal Hartl",
    "team": "Brno U20",
    "league": "Czechia U20",
-   "ep_id": 982803
+   "ep_id": 982803,
+   "ncs": "B"
   },
   {
    "name": "Tomas Selic",
    "team": "Brno U20",
    "league": "Czechia U20",
-   "ep_id": 958777
+   "ep_id": 958777,
+   "ncs": "B"
   },
   {
    "name": "Sean Zuffa",
    "team": "Třinec U20",
    "league": "Czechia U20",
-   "ep_id": 982576
+   "ep_id": 982576,
+   "ncs": "W"
   },
   {
    "name": "Lukas Kachlir",
    "team": "Liberec U20",
    "league": "Czechia U20",
-   "ep_id": 917756
+   "ep_id": 917756,
+   "ncs": "C"
   },
   {
    "name": "Stepan Tomka",
    "team": "Slavia U20",
    "league": "Czechia U20",
-   "ep_id": 1032976
+   "ep_id": 1032976,
+   "ncs": "W"
   },
   {
    "name": "Davids Tarvids",
@@ -296,123 +341,1024 @@
    "name": "Petr Tomek",
    "team": "Karlovy Vary",
    "league": "Czech Extraliga",
-   "ep_id": 937109
+   "ep_id": 937109,
+   "ncs": "B"
   },
   {
    "name": "Jakub Simoncic",
    "team": "Nitra U20",
    "league": "Slovakia U20",
-   "ep_id": 969655
+   "ep_id": 969655,
+   "ncs": "W"
   },
   {
    "name": "Oliver Botka",
    "team": "HK Nitra",
    "league": "Slovakia",
-   "ep_id": 961122
+   "ep_id": 961122,
+   "ncs": "B"
   },
   {
    "name": "Miroslav Kalousek",
    "team": "Liptovský Mikuláš",
    "league": "Slovakia U20",
-   "ep_id": 977368
+   "ep_id": 977368,
+   "ncs": "W"
   },
   {
    "name": "Patrik Rychlik",
    "team": "Poprad U20",
    "league": "Slovakia U20",
-   "ep_id": 962113
+   "ep_id": 962113,
+   "ncs": "W"
   },
   {
    "name": "Jakub Husar",
    "team": "Košice U20",
    "league": "Slovakia U20",
    "ep_id": 961268,
-   "pos": "G"
+   "pos": "G",
+   "ncs": "C"
   },
   {
    "name": "Nazar Privalov",
    "team": "CSKA Moskva",
    "league": "KHL",
-   "ep_id": 993675
+   "ep_id": 993675,
+   "ncs": "A"
   },
   {
    "name": "Sergei Skvortsov",
    "team": "Torpedo",
    "league": "KHL",
-   "ep_id": 993791
+   "ep_id": 993791,
+   "ncs": "A"
   },
   {
    "name": "Andrei Pustovoy",
    "team": "Lokomotiv",
    "league": "KHL",
-   "ep_id": 996108
+   "ep_id": 996108,
+   "ncs": "A"
   },
   {
    "name": "Ruslan Umerov",
    "team": "Lada",
    "league": "KHL",
-   "ep_id": 993792
+   "ep_id": 993792,
+   "ncs": "W"
   },
   {
    "name": "Yevgeni Yakunin",
    "team": "MHK Spartak",
    "league": "MHL",
-   "ep_id": 993672
+   "ep_id": 993672,
+   "ncs": "B"
   },
   {
    "name": "Illarion Babkin",
    "team": "MHK Spartak",
    "league": "MHL",
-   "ep_id": 1138530
+   "ep_id": 1138530,
+   "ncs": "W"
   },
   {
    "name": "Daniil Yermolov",
    "team": "Krasnaya Armiya",
    "league": "MHL",
-   "ep_id": 993670
+   "ep_id": 993670,
+   "ncs": "B"
   },
   {
    "name": "Semyon Gerasimov",
    "team": "Kuznetskie Medvedi",
    "league": "MHL",
-   "ep_id": 974116
+   "ep_id": 974116,
+   "ncs": "C"
   },
   {
    "name": "Ilya Kolomytsev",
    "team": "Irbis Kazan",
    "league": "MHL",
-   "ep_id": 1121225
+   "ep_id": 1121225,
+   "ncs": "W"
   },
   {
    "name": "Daniil Savin",
    "team": "SKA-1946",
    "league": "MHL",
-   "ep_id": 1057262
+   "ep_id": 1057262,
+   "ncs": "W"
   },
   {
    "name": "Roman Kozhevnikov",
    "team": "Chelmet",
    "league": "VHL",
-   "ep_id": 995203
+   "ep_id": 995203,
+   "ncs": "W"
   },
   {
    "name": "Yaroslav Vetrov",
    "team": "Sibirskie Snaipery",
    "league": "MHL",
    "ep_id": 1135233,
-   "pos": "G"
+   "pos": "G",
+   "ncs": "C"
   },
   {
    "name": "Landon DuPont",
    "team": "Michigan",
    "league": "NCAA",
-   "ep_id": 701503
+   "ep_id": 701503,
+   "ncs": "A"
   },
   {
    "name": "Sammy Nelson",
    "team": "Notre Dame",
    "league": "NCAA",
-   "ep_id": 863816
+   "ep_id": 863816,
+   "ncs": "A"
+  },
+  {
+   "name": "Isak Holtet",
+   "team": "Farjestad U20",
+   "league": "U20 Nationell",
+   "ncs": "B"
+  },
+  {
+   "name": "Vilgot Liden",
+   "team": "Leksand",
+   "league": "HockeyAllsvenskan",
+   "ncs": "B"
+  },
+  {
+   "name": "Hampus Zirath",
+   "team": "Djurgarden U20",
+   "league": "U20 Nationell",
+   "ncs": "B"
+  },
+  {
+   "name": "Yegor Batsokin",
+   "team": "Corpus Christi",
+   "league": "NAHL",
+   "pos": "G",
+   "ncs": "C"
+  },
+  {
+   "name": "Jan Fodor",
+   "team": "Plzen U20",
+   "league": "Czechia U20",
+   "ncs": "C"
+  },
+  {
+   "name": "Juuso Fredrikson",
+   "team": "K-Espoo U20",
+   "league": "U20 SM-sarja",
+   "ncs": "C"
+  },
+  {
+   "name": "Artyom Frolov",
+   "team": "Loko-76 Yaroslavl",
+   "league": "MHL",
+   "ncs": "C"
+  },
+  {
+   "name": "Olle Karlsson",
+   "team": "Vaxjo",
+   "league": "SHL",
+   "ncs": "C"
+  },
+  {
+   "name": "Ferenc Karsai",
+   "team": "Jokerit U20",
+   "league": "U20 SM-sarja",
+   "ncs": "C"
+  },
+  {
+   "name": "William Lacelle",
+   "team": "Nebraska-Omaha",
+   "league": "NCAA",
+   "pos": "G",
+   "ncs": "C"
+  },
+  {
+   "name": "Jack O'Dell",
+   "team": "Phillips Andover Academy",
+   "league": "USHS-Prep",
+   "ncs": "C"
+  },
+  {
+   "name": "Jesse Pahkamaa",
+   "team": "K-Espoo U20",
+   "league": "U20 SM-sarja",
+   "ncs": "C"
+  },
+  {
+   "name": "Dmitry Pavlov",
+   "team": "Sherwood Park",
+   "league": "BCHL",
+   "ncs": "C"
+  },
+  {
+   "name": "Fabian Salasca Naas",
+   "team": "Bjorkloven U20",
+   "league": "U20 Nationell",
+   "pos": "G",
+   "ncs": "C"
+  },
+  {
+   "name": "Gavin Sattler",
+   "team": "Providence Academy",
+   "league": "USHS-MN",
+   "ncs": "C"
+  },
+  {
+   "name": "Cole Swanson",
+   "team": "Hibbing/Chisholm",
+   "league": "USHS-MN",
+   "ncs": "C"
+  },
+  {
+   "name": "Dmitry Tokmakov",
+   "team": "Yekaterinburg Jr.",
+   "league": "MHL",
+   "ncs": "C"
+  },
+  {
+   "name": "Kevin Tornblom",
+   "team": "Orebro U20",
+   "league": "U20 Nationell",
+   "pos": "G",
+   "ncs": "C"
+  },
+  {
+   "name": "Sergei Zatsepin",
+   "team": "SKA St. Petersburg Jr.",
+   "league": "MHL",
+   "ncs": "C"
+  },
+  {
+   "name": "Maximilliam Vatn Aas",
+   "team": "Farjestad U20",
+   "league": "U20 Nationell",
+   "pos": "G",
+   "ncs": "W"
+  },
+  {
+   "name": "Noam Aebischer",
+   "team": "Fribourg U21",
+   "league": "U21-Elit",
+   "pos": "G",
+   "ncs": "W"
+  },
+  {
+   "name": "Viktor Almtorp",
+   "team": "Rogle U18",
+   "league": "U18 Region",
+   "ncs": "W"
+  },
+  {
+   "name": "Oliver Andrle",
+   "team": "Malmo U20",
+   "league": "U20 Nationell",
+   "ncs": "W"
+  },
+  {
+   "name": "Max Aronson",
+   "team": "Minnetonka",
+   "league": "USHS-MN",
+   "ncs": "W"
+  },
+  {
+   "name": "Lou Bachler",
+   "team": "Davos U21",
+   "league": "U21-Elit",
+   "ncs": "W"
+  },
+  {
+   "name": "Niklas Borgstrom",
+   "team": "Jokerit U20",
+   "league": "U20 SM-sarja",
+   "ncs": "W"
+  },
+  {
+   "name": "Noel Bosshard",
+   "team": "Kloten U21",
+   "league": "U21-Elit",
+   "ncs": "W"
+  },
+  {
+   "name": "Yaroslav Builov",
+   "team": "Dynamo Moscow Jr.",
+   "league": "MHL",
+   "ncs": "W"
+  },
+  {
+   "name": "Mikhail Bulgakov",
+   "team": "Loko-76 Yaroslavl",
+   "league": "MHL",
+   "ncs": "W"
+  },
+  {
+   "name": "Kirill Burmistrov",
+   "team": "Omsk Jr.",
+   "league": "MHL",
+   "ncs": "W"
+  },
+  {
+   "name": "Arvid Bystrom",
+   "team": "Modo U20",
+   "league": "U20 Nationell",
+   "pos": "G",
+   "ncs": "W"
+  },
+  {
+   "name": "Vladislav Chapayev",
+   "team": "Novokuznetsk U18",
+   "league": "Russia U18",
+   "pos": "G",
+   "ncs": "W"
+  },
+  {
+   "name": "Ivan Chervyakov",
+   "team": "SKA St. Petersburg Jr.",
+   "league": "MHL",
+   "ncs": "W"
+  },
+  {
+   "name": "Jonathan Cremonese",
+   "team": "Sodertalje U20",
+   "league": "U20 Nationell",
+   "ncs": "W"
+  },
+  {
+   "name": "Yegor Devyatov",
+   "team": "Irbis Kazan",
+   "league": "MHL",
+   "ncs": "W"
+  },
+  {
+   "name": "Stepan Dmitriyev",
+   "team": "Dynamo Moscow Jr.",
+   "league": "MHL",
+   "ncs": "W"
+  },
+  {
+   "name": "Luka Dolzan",
+   "team": "Rogle U20",
+   "league": "U20 Nationell",
+   "pos": "G",
+   "ncs": "W"
+  },
+  {
+   "name": "Yaroslav Dyominsky",
+   "team": "Khabarovsk",
+   "league": "KHL",
+   "ncs": "W"
+  },
+  {
+   "name": "Egon Ekberg",
+   "team": "Djurgarden U20",
+   "league": "U20 Nationell",
+   "ncs": "W"
+  },
+  {
+   "name": "Ville Finnstrom",
+   "team": "Rogle U20",
+   "league": "U20 Nationell",
+   "ncs": "W"
+  },
+  {
+   "name": "Svante Forsman",
+   "team": "Orebro U18",
+   "league": "U18 Region",
+   "ncs": "W"
+  },
+  {
+   "name": "Mio Forssell",
+   "team": "Skelleftea U20",
+   "league": "U20 Nationell",
+   "ncs": "W"
+  },
+  {
+   "name": "Grigori Frolov",
+   "team": "Chelyabinsk Jr.",
+   "league": "MHL",
+   "ncs": "W"
+  },
+  {
+   "name": "Daniel Fuchs",
+   "team": "Zug U21",
+   "league": "U21-Elit",
+   "ncs": "W"
+  },
+  {
+   "name": "Ethan Gingeleskie",
+   "team": "Avon Old Farms",
+   "league": "USHS-Prep",
+   "ncs": "W"
+  },
+  {
+   "name": "Channing Goodwin",
+   "team": "Rosemount",
+   "league": "USHS-MN",
+   "ncs": "W"
+  },
+  {
+   "name": "Ivan Grebenyuk",
+   "team": "Dynamo Moscow Jr.",
+   "league": "MHL",
+   "ncs": "W"
+  },
+  {
+   "name": "Lukas Hajek",
+   "team": "Karlovy Vary U20",
+   "league": "Czechia U20",
+   "ncs": "W"
+  },
+  {
+   "name": "Richard Halas",
+   "team": "Brno U20",
+   "league": "Czechia U20",
+   "ncs": "W"
+  },
+  {
+   "name": "Rylan Hanson",
+   "team": "Elk River",
+   "league": "USHS-MN",
+   "ncs": "W"
+  },
+  {
+   "name": "Tim Hartmann",
+   "team": "Mannheim U20",
+   "league": "DNL U20",
+   "ncs": "W"
+  },
+  {
+   "name": "Nicko Zakk Havel",
+   "team": "Poprad U20",
+   "league": "Slovakia U20",
+   "pos": "G",
+   "ncs": "W"
+  },
+  {
+   "name": "Milo Helte",
+   "team": "Vaxjo U20",
+   "league": "U20 Nationell",
+   "ncs": "W"
+  },
+  {
+   "name": "Rennick Hendrickson",
+   "team": "Shattuck-St. Mary's",
+   "league": "USHS-MN",
+   "ncs": "W"
+  },
+  {
+   "name": "Dag Henriksson",
+   "team": "Djurgarden U20",
+   "league": "U20 Nationell",
+   "ncs": "W"
+  },
+  {
+   "name": "Niilo Hinno",
+   "team": "Karpat U20",
+   "league": "U20 SM-sarja",
+   "pos": "G",
+   "ncs": "W"
+  },
+  {
+   "name": "Marek Hrabina",
+   "team": "Vitkovice U20",
+   "league": "Czechia U20",
+   "ncs": "W"
+  },
+  {
+   "name": "Adam Hynek",
+   "team": "Pardubice U20",
+   "league": "Czechia U20",
+   "ncs": "W"
+  },
+  {
+   "name": "Johannes Jaako",
+   "team": "Karpat U20",
+   "league": "U20 SM-sarja",
+   "ncs": "W"
+  },
+  {
+   "name": "Theodor Janosek",
+   "team": "Vitkovice U20",
+   "league": "Czechia U20",
+   "ncs": "W"
+  },
+  {
+   "name": "Max Jarventie",
+   "team": "Tappara U20",
+   "league": "U20 SM-sarja",
+   "ncs": "W"
+  },
+  {
+   "name": "Patrik Joensuu",
+   "team": "Karpat U20",
+   "league": "U20 SM-sarja",
+   "pos": "G",
+   "ncs": "W"
+  },
+  {
+   "name": "Michal Jordan",
+   "team": "Pelicans U18",
+   "league": "U18 SM-sarja",
+   "ncs": "W"
+  },
+  {
+   "name": "Mans Josbrant",
+   "team": "Lulea U20",
+   "league": "U20 Nationell",
+   "ncs": "W"
+  },
+  {
+   "name": "Leevi Kantola",
+   "team": "Assat U20",
+   "league": "U20 SM-sarja",
+   "ncs": "W"
+  },
+  {
+   "name": "Vladimir Karabaev",
+   "team": "Dinamo-Shinnik Jr.",
+   "league": "MHL",
+   "ncs": "W"
+  },
+  {
+   "name": "Matvey Karasyov",
+   "team": "Ufa Jr.",
+   "league": "MHL",
+   "ncs": "W"
+  },
+  {
+   "name": "Graham Karlsen",
+   "team": "Elk River",
+   "league": "USHS-MN",
+   "pos": "G",
+   "ncs": "W"
+  },
+  {
+   "name": "Miron Karpov",
+   "team": "Ufa Jr.",
+   "league": "MHL",
+   "ncs": "W"
+  },
+  {
+   "name": "Filip Klima",
+   "team": "HPK U20",
+   "league": "U20 SM-sarja",
+   "ncs": "W"
+  },
+  {
+   "name": "Adam Konvalinka",
+   "team": "Chomutov",
+   "league": "Czechia2",
+   "ncs": "W"
+  },
+  {
+   "name": "Ivan Kovalenko",
+   "team": "Loko-76 Yaroslavl",
+   "league": "MHL",
+   "ncs": "W"
+  },
+  {
+   "name": "Pepe Rene Kretzschmar",
+   "team": "Eisbaren Berlin U20",
+   "league": "DNL U20",
+   "ncs": "W"
+  },
+  {
+   "name": "Matej Kucera",
+   "team": "Liberec U20",
+   "league": "Czechia U20",
+   "ncs": "W"
+  },
+  {
+   "name": "Maxim Kupriyanov",
+   "team": "Novosibirsk Jr.",
+   "league": "MHL",
+   "ncs": "W"
+  },
+  {
+   "name": "Oskari Kuusisto",
+   "team": "HPK U20",
+   "league": "U20 SM-sarja",
+   "ncs": "W"
+  },
+  {
+   "name": "Igor Kuznetsov",
+   "team": "Yaroslavl Jr.",
+   "league": "MHL",
+   "ncs": "W"
+  },
+  {
+   "name": "Paavo Laine",
+   "team": "HPK U20",
+   "league": "U20 SM-sarja",
+   "ncs": "W"
+  },
+  {
+   "name": "Anton Langenskiold",
+   "team": "Jokerit U18",
+   "league": "U18 SM-sarja",
+   "ncs": "W"
+  },
+  {
+   "name": "Michal Lazovsky",
+   "team": "Trinec",
+   "league": "Czech Extraliga",
+   "ncs": "W"
+  },
+  {
+   "name": "Tim Lindstein",
+   "team": "Brynas U20",
+   "league": "U20 Nationell",
+   "ncs": "W"
+  },
+  {
+   "name": "Love Lorentzon",
+   "team": "Skelleftea U20",
+   "league": "U20 Nationell",
+   "ncs": "W"
+  },
+  {
+   "name": "Olle Lundstrom",
+   "team": "Skelleftea U20",
+   "league": "U20 Nationell",
+   "ncs": "W"
+  },
+  {
+   "name": "Denis Luzanov",
+   "team": "Yaroslavl Jr.",
+   "league": "MHL",
+   "ncs": "W"
+  },
+  {
+   "name": "Ilari Makinen",
+   "team": "HPK U20",
+   "league": "U20 SM-sarja",
+   "ncs": "W"
+  },
+  {
+   "name": "Maxim Malikov",
+   "team": "Dynamo Moscow Jr.",
+   "league": "MHL",
+   "ncs": "W"
+  },
+  {
+   "name": "Dylan McFadyen",
+   "team": "Idaho Falls",
+   "league": "NAHL",
+   "pos": "G",
+   "ncs": "W"
+  },
+  {
+   "name": "Rasmus Miilunpohja",
+   "team": "KalPa",
+   "league": "Liiga",
+   "ncs": "W"
+  },
+  {
+   "name": "Artyom Mishin",
+   "team": "CSKA Jr.",
+   "league": "MHL",
+   "ncs": "W"
+  },
+  {
+   "name": "Valeri Nikonov",
+   "team": "Red Machine Krasnogorsk Jr.",
+   "league": "MHL",
+   "pos": "G",
+   "ncs": "W"
+  },
+  {
+   "name": "Alfred Norden",
+   "team": "HV71 U20",
+   "league": "U20 Nationell",
+   "ncs": "W"
+  },
+  {
+   "name": "Leonid Onishchuk",
+   "team": "Yekaterinburg Jr.",
+   "league": "MHL",
+   "ncs": "W"
+  },
+  {
+   "name": "Isac Pagels",
+   "team": "Malmo U20",
+   "league": "U20 Nationell",
+   "ncs": "W"
+  },
+  {
+   "name": "Marshall Paul",
+   "team": "Avon Old Farms",
+   "league": "USHS-Prep",
+   "ncs": "W"
+  },
+  {
+   "name": "Liron Pellizzari",
+   "team": "Augsburg U20",
+   "league": "DNL U20",
+   "ncs": "W"
+  },
+  {
+   "name": "Derek Petrovic",
+   "team": "Sparta U20",
+   "league": "Czechia U20",
+   "ncs": "W"
+  },
+  {
+   "name": "Axel Pettersson",
+   "team": "Vasteras U20",
+   "league": "U20 Nationell",
+   "ncs": "W"
+  },
+  {
+   "name": "Viliam Pikna",
+   "team": "Slovakia U18",
+   "league": "Slovakia2",
+   "ncs": "W"
+  },
+  {
+   "name": "Vaclav Pitter",
+   "team": "Plzen U20",
+   "league": "Czechia U20",
+   "ncs": "W"
+  },
+  {
+   "name": "Kristers Plepis",
+   "team": "Shreveport",
+   "league": "NAHL",
+   "pos": "G",
+   "ncs": "W"
+  },
+  {
+   "name": "Patrik Polacek",
+   "team": "Sparta U20",
+   "league": "Czechia U20",
+   "ncs": "W"
+  },
+  {
+   "name": "Jakub Polasek",
+   "team": "Trinec U20",
+   "league": "Czechia U20",
+   "ncs": "W"
+  },
+  {
+   "name": "Tom Prahl",
+   "team": "Djurgarden U20",
+   "league": "U20 Nationell",
+   "ncs": "W"
+  },
+  {
+   "name": "Alexander Ranert",
+   "team": "Ufa Jr.",
+   "league": "MHL",
+   "ncs": "W"
+  },
+  {
+   "name": "Konsta Rautio",
+   "team": "Karpat U20",
+   "league": "U20 SM-sarja",
+   "ncs": "W"
+  },
+  {
+   "name": "Ivan Ryabov",
+   "team": "Novosibirsk Jr.",
+   "league": "MHL",
+   "ncs": "W"
+  },
+  {
+   "name": "Elisei Ryabykin",
+   "team": "Dynamo Moscow Jr.",
+   "league": "MHL",
+   "ncs": "W"
+  },
+  {
+   "name": "Tadeas Schejbal",
+   "team": "Liberec U20",
+   "league": "Czechia U20",
+   "pos": "G",
+   "ncs": "W"
+  },
+  {
+   "name": "Jannes Schreiber",
+   "team": "Krefeld U20",
+   "league": "DNL U20",
+   "ncs": "W"
+  },
+  {
+   "name": "Michal Sebesta",
+   "team": "Vitkovice U20",
+   "league": "Czechia U20",
+   "ncs": "W"
+  },
+  {
+   "name": "Kirill Shcherbakov",
+   "team": "Nizhny Novgorod Jr.",
+   "league": "MHL",
+   "ncs": "W"
+  },
+  {
+   "name": "Nikita Silyutin",
+   "team": "SKA St. Petersburg Jr.",
+   "league": "MHL",
+   "ncs": "W"
+  },
+  {
+   "name": "Henry Skale",
+   "team": "Winchendon",
+   "league": "USHS-Prep",
+   "pos": "G",
+   "ncs": "W"
+  },
+  {
+   "name": "Alvar Soisalo",
+   "team": "Pelicans U20",
+   "league": "U20 SM-sarja",
+   "ncs": "W"
+  },
+  {
+   "name": "Sergei Sokolkin",
+   "team": "Yekaterinburg Jr.",
+   "league": "MHL",
+   "pos": "G",
+   "ncs": "W"
+  },
+  {
+   "name": "Kade Stengrim",
+   "team": "St. Thomas",
+   "league": "NCAA",
+   "ncs": "W"
+  },
+  {
+   "name": "Noel Stenlund",
+   "team": "Malmo U20",
+   "league": "U20 Nationell",
+   "ncs": "W"
+  },
+  {
+   "name": "Josef Suchy",
+   "team": "Karlovy Vary U20",
+   "league": "Czechia U20",
+   "ncs": "W"
+  },
+  {
+   "name": "Christian Sundberg",
+   "team": "K-Espoo U20",
+   "league": "U20 SM-sarja",
+   "ncs": "W"
+  },
+  {
+   "name": "Jesse Suopanki",
+   "team": "Lulea U18",
+   "league": "U18 Region",
+   "ncs": "W"
+  },
+  {
+   "name": "Miron Tatsi",
+   "team": "Spartak Jr.",
+   "league": "MHL",
+   "ncs": "W"
+  },
+  {
+   "name": "Kirill Teplyakov",
+   "team": "Omsk Jr.",
+   "league": "MHL",
+   "ncs": "W"
+  },
+  {
+   "name": "Alexander Thunblom",
+   "team": "HV71 U20",
+   "league": "U20 Nationell",
+   "ncs": "W"
+  },
+  {
+   "name": "Felix Timraz-Westin",
+   "team": "Vaxjo U20",
+   "league": "U20 Nationell",
+   "pos": "G",
+   "ncs": "W"
+  },
+  {
+   "name": "Yaroslav Tkachyov",
+   "team": "Omsk Jr.",
+   "league": "MHL",
+   "ncs": "W"
+  },
+  {
+   "name": "Joakim Torvinen",
+   "team": "Pelicans U20",
+   "league": "U20 SM-sarja",
+   "ncs": "W"
+  },
+  {
+   "name": "Denis Toth",
+   "team": "Michalovce",
+   "league": "Slovakia",
+   "ncs": "W"
+  },
+  {
+   "name": "Yegor Trofimchuk",
+   "team": "Omsk Jr.",
+   "league": "MHL",
+   "ncs": "W"
+  },
+  {
+   "name": "Yaroslav Trofimov",
+   "team": "CSKA Jr.",
+   "league": "MHL",
+   "ncs": "W"
+  },
+  {
+   "name": "Ilya Troyanov",
+   "team": "Almetyevsk",
+   "league": "VHL",
+   "ncs": "W"
+  },
+  {
+   "name": "Tim Noah Trussel",
+   "team": "Bern U21",
+   "league": "U21-Elit",
+   "ncs": "W"
+  },
+  {
+   "name": "Denis Viedemann",
+   "team": "Lausanne U21",
+   "league": "U21-Elit",
+   "ncs": "W"
+  },
+  {
+   "name": "Petteri Vilhunen",
+   "team": "TPS U20",
+   "league": "U20 SM-sarja",
+   "ncs": "W"
+  },
+  {
+   "name": "Jeremi Virtanen",
+   "team": "TPS",
+   "league": "Liiga",
+   "ncs": "W"
+  },
+  {
+   "name": "Akseli Virtanen",
+   "team": "Jokerit U20",
+   "league": "U20 SM-sarja",
+   "ncs": "W"
+  },
+  {
+   "name": "Krystof Vrbata",
+   "team": "C. Budejovice U20",
+   "league": "Czechia U20",
+   "ncs": "W"
+  },
+  {
+   "name": "Aatu Vuohijoki",
+   "team": "TPS U20",
+   "league": "U20 SM-sarja",
+   "ncs": "W"
+  },
+  {
+   "name": "Filip Wahlen",
+   "team": "Orebro U20",
+   "league": "U20 Nationell",
+   "ncs": "W"
+  },
+  {
+   "name": "Charlie Weiss",
+   "team": "St. Thomas",
+   "league": "GOHL",
+   "pos": "G",
+   "ncs": "W"
+  },
+  {
+   "name": "Olle Willen",
+   "team": "HV71 U20",
+   "league": "U20 Nationell",
+   "ncs": "W"
+  },
+  {
+   "name": "Alexander Woller",
+   "team": "Fairbanks",
+   "league": "NAHL",
+   "pos": "G",
+   "ncs": "W"
+  },
+  {
+   "name": "Alexander Kireyev",
+   "team": "SKA-Academy St. Petersburg",
+   "league": "MHL",
+   "ncs": "W"
+  },
+  {
+   "name": "Jaroslav Martinek",
+   "team": "C. Budejovice U18",
+   "league": "Czechia U18",
+   "pos": "G",
+   "ncs": "W"
   }
  ]
 }

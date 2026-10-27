@@ -46,7 +46,8 @@ For each player and date, the script keeps the best source available: API first,
 - **Add or move a player:**
   - In the OHL, WHL, QMJHL or USHL, edit `tracker/players.json`.
   - Elsewhere, edit `tracker/players_europe.json` and include the number from his Elite Prospects address. For `eliteprospects.com/player/1010942/milan-sundstrom`, that's `1010942`.
-- **Players still missing an Elite Prospects number:** Lazovsky, Martinek, Havel, Pikna, Rautio, Lacelle, Hanson. Add them once you have their pages.
+- **Players still missing an Elite Prospects number:** 143, mostly players added from the NHL Central Scouting list (Oct 2026). They're in `tracker/players_europe.json` without an `ep_id` and are skipped until you add one.
+- **`ncs`** on a player is his NHL Central Scouting Preliminary Players To Watch rating (A, B, C, W or LV).
 - **Fixing a player's points when the update gets them wrong:** use the **Prospect Tracker — Point Corrections** panel on the Admin page. Pick the game date and player, enter his goals and assists (or a goalie game), and save. It replaces whatever the update found for that player on that date and shows on the Tracker page right away. Enter 0 and 0 to remove points the update got wrong. The daily update never overwrites a correction; delete the correction to go back to the automatic numbers. (This needs `supabase-migration-tracker-adjustments.sql` to have been run once in Supabase.)
 - **Hand-entered results in bulk:** add rows to `tracker/data/manual.json`. The format is in the file's notes. Mark anything unconfirmed with `"confidence": "probable"`.
 - **Re-run a past date:** Actions → Run workflow, then enter the start and end dates. This re-runs the league feeds, the API and manual entries. The public-page fallback only ever works "since yesterday".
