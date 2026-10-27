@@ -3572,6 +3572,32 @@
     },
     {
      "date": "2026-10-25",
+     "player": "Mark Pape",
+     "team": "Oshawa",
+     "league": "OHL",
+     "opponent": "vs Sudbury",
+     "g": 1,
+     "a": 1,
+     "game_id": "29124",
+     "score": "SBY 3 @ OSH 2",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-25",
+     "player": "Antoine Provencher",
+     "team": "Charlottetown",
+     "league": "QMJHL",
+     "opponent": "@ Cape Breton",
+     "g": 1,
+     "a": 1,
+     "game_id": "32719",
+     "score": "Cha 2 @ Cap 6",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-25",
      "player": "Nolan Snyder",
      "team": "Kingston",
      "league": "OHL",
@@ -3585,6 +3611,32 @@
     },
     {
      "date": "2026-10-25",
+     "player": "Max Delisle",
+     "team": "Owen Sound",
+     "league": "OHL",
+     "opponent": "vs Barrie",
+     "g": 0,
+     "a": 2,
+     "game_id": "29126",
+     "score": "BAR 4 @ OS 5",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-25",
+     "player": "Filip Kovalcik",
+     "team": "Drummondville",
+     "league": "QMJHL",
+     "opponent": "vs Saint John",
+     "g": 0,
+     "a": 2,
+     "game_id": "32814",
+     "score": "SNB 7 @ Dru 5",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-25",
      "player": "Carter Meyer",
      "team": "Québec",
      "league": "QMJHL",
@@ -3593,6 +3645,32 @@
      "a": 2,
      "game_id": "33172",
      "score": "Que 3 @ VdO 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-25",
+     "player": "Frederic Bergeron",
+     "team": "Shawinigan",
+     "league": "QMJHL",
+     "opponent": "vs Moncton",
+     "g": 1,
+     "a": 0,
+     "game_id": "33104",
+     "score": "Mon 1 @ Sha 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-25",
+     "player": "Thomas Charbonneau",
+     "team": "Saint John",
+     "league": "QMJHL",
+     "opponent": "@ Drummondville",
+     "g": 1,
+     "a": 0,
+     "game_id": "32814",
+     "score": "SNB 7 @ Dru 5",
      "source": "hockeytech",
      "confidence": "official"
     },
@@ -3632,6 +3710,32 @@
      "a": 0,
      "game_id": "1023218",
      "score": "SAS 4 @ CGY 5",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-25",
+     "player": "Lauri Kouhia",
+     "team": "Fargo",
+     "league": "USHL",
+     "opponent": "@ Sioux Falls",
+     "g": 1,
+     "a": 0,
+     "game_id": "13559",
+     "score": "FGO 4 @ SF 1",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-25",
+     "player": "Sebastian Mogull",
+     "team": "Barrie",
+     "league": "OHL",
+     "opponent": "@ Owen Sound",
+     "g": 1,
+     "a": 0,
+     "game_id": "29126",
+     "score": "BAR 4 @ OS 5",
      "source": "hockeytech",
      "confidence": "official"
     },
@@ -3689,6 +3793,32 @@
     },
     {
      "date": "2026-10-25",
+     "player": "Dario Blengino",
+     "team": "Everett",
+     "league": "WHL",
+     "opponent": "@ Brandon",
+     "g": 0,
+     "a": 1,
+     "game_id": "1023217",
+     "score": "EVT 5 @ BDN 3",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-25",
+     "player": "Jacob Dumansky",
+     "team": "Kamloops",
+     "league": "WHL",
+     "opponent": "@ Wenatchee",
+     "g": 0,
+     "a": 1,
+     "game_id": "1023220",
+     "score": "KAM 4 @ WEN 5",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-25",
      "player": "Aleks Kulemin",
      "team": "Kingston",
      "league": "OHL",
@@ -3697,6 +3827,32 @@
      "a": 1,
      "game_id": "29125",
      "score": "KGN 6 @ OTT 1",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-25",
+     "player": "Broden McArthur",
+     "team": "Erie",
+     "league": "OHL",
+     "opponent": "@ Brampton",
+     "g": 0,
+     "a": 1,
+     "game_id": "29121",
+     "score": "ER 5 @ BRAM 2",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-25",
+     "player": "Derik Morin",
+     "team": "Drummondville",
+     "league": "QMJHL",
+     "opponent": "vs Saint John",
+     "g": 0,
+     "a": 1,
+     "game_id": "32814",
+     "score": "SNB 7 @ Dru 5",
      "source": "hockeytech",
      "confidence": "official"
     },
@@ -3741,6 +3897,54 @@
     }
    ],
    "goalies": [
+    {
+     "date": "2026-10-25",
+     "goalie": "Royden Smith",
+     "team": "Kingston",
+     "league": "OHL",
+     "opponent": "@ Ottawa",
+     "shots": 39,
+     "saves": 38,
+     "ga": 1,
+     "toi": "60:00",
+     "qualifies": true,
+     "game_id": "29125",
+     "score": "KGN 6 @ OTT 1",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-25",
+     "goalie": "David Vermirovsky",
+     "team": "Sault Ste. Marie",
+     "league": "OHL",
+     "opponent": "@ Flint",
+     "shots": 33,
+     "saves": 32,
+     "ga": 1,
+     "toi": "58:34",
+     "qualifies": true,
+     "game_id": "29122",
+     "score": "SOO 0 @ FLNT 1",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-25",
+     "goalie": "Bennett Byers",
+     "team": "Everett",
+     "league": "WHL",
+     "opponent": "@ Brandon",
+     "shots": 29,
+     "saves": 26,
+     "ga": 3,
+     "toi": "60:00",
+     "qualifies": false,
+     "game_id": "1023217",
+     "score": "EVT 5 @ BDN 3",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
     {
      "date": "2026-10-25",
      "goalie": "Eric Tu",
@@ -3788,18 +3992,66 @@
      "score": "Que 3 @ VdO 4",
      "source": "hockeytech",
      "confidence": "official"
+    },
+    {
+     "date": "2026-10-25",
+     "goalie": "Jacoby Weiner",
+     "team": "Moncton",
+     "league": "QMJHL",
+     "opponent": "@ Shawinigan",
+     "shots": 21,
+     "saves": 17,
+     "ga": 4,
+     "toi": "60:00",
+     "qualifies": false,
+     "game_id": "33104",
+     "score": "Mon 1 @ Sha 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-25",
+     "goalie": "Jan Larys",
+     "team": "Drummondville",
+     "league": "QMJHL",
+     "opponent": "vs Saint John",
+     "shots": 23,
+     "saves": 19,
+     "ga": 4,
+     "toi": "38:24",
+     "qualifies": false,
+     "game_id": "32814",
+     "score": "SNB 7 @ Dru 5",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-25",
+     "goalie": "Mathys Fortin",
+     "team": "Drummondville",
+     "league": "QMJHL",
+     "opponent": "vs Saint John",
+     "shots": 7,
+     "saves": 5,
+     "ga": 2,
+     "toi": "20:00",
+     "qualifies": true,
+     "game_id": "32814",
+     "score": "SNB 7 @ Dru 5",
+     "source": "hockeytech",
+     "confidence": "official"
     }
    ],
    "games_checked": [
     {
      "league": "OHL",
-     "game_id": "29121",
-     "matchup": "ER @ BRAM"
+     "game_id": "29126",
+     "matchup": "BAR @ OS"
     },
     {
      "league": "OHL",
-     "game_id": "29126",
-     "matchup": "BAR @ OS"
+     "game_id": "29121",
+     "matchup": "ER @ BRAM"
     },
     {
      "league": "OHL",
@@ -3835,6 +4087,11 @@
      "league": "WHL",
      "game_id": "1023219",
      "matchup": "PEN @ EDM"
+    },
+    {
+     "league": "WHL",
+     "game_id": "1023220",
+     "matchup": "KAM @ WEN"
     },
     {
      "league": "QMJHL",
@@ -3877,10 +4134,17 @@
      "matchup": "FGO @ SF"
     }
    ],
-   "updated": "2026-10-26T13:33:15-04:00"
+   "updated": "2026-10-27T12:48:26-04:00"
+  },
+  "2026-10-26": {
+   "date": "2026-10-26",
+   "points": [],
+   "goalies": [],
+   "games_checked": [],
+   "updated": "2026-10-27T12:48:08-04:00"
   }
  },
- "updated": "2026-10-26T13:36:23-04:00",
+ "updated": "2026-10-27T12:51:08-04:00",
  "problems": {
   "hockeytech": [],
   "europe": [
