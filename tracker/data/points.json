@@ -4141,10 +4141,116 @@
    "points": [],
    "goalies": [],
    "games_checked": [],
-   "updated": "2026-10-27T12:48:08-04:00"
+   "updated": "2026-10-28T13:16:21-04:00"
+  },
+  "2026-10-27": {
+   "date": "2026-10-27",
+   "points": [
+    {
+     "date": "2026-10-27",
+     "player": "Jaxon Jacobson",
+     "team": "Brandon",
+     "league": "WHL",
+     "opponent": "@ Moose Jaw",
+     "g": 0,
+     "a": 3,
+     "game_id": "1023221",
+     "score": "BDN 6 @ MJ 2",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-27",
+     "player": "Colin Grubb",
+     "team": "Brandon",
+     "league": "WHL",
+     "opponent": "@ Moose Jaw",
+     "g": 0,
+     "a": 2,
+     "game_id": "1023221",
+     "score": "BDN 6 @ MJ 2",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-27",
+     "player": "Chase Surkan",
+     "team": "Brandon",
+     "league": "WHL",
+     "opponent": "@ Moose Jaw",
+     "g": 1,
+     "a": 0,
+     "game_id": "1023221",
+     "score": "BDN 6 @ MJ 2",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-27",
+     "player": "Cameron Kuzma",
+     "team": "Red Deer",
+     "league": "WHL",
+     "opponent": "vs Saskatoon",
+     "g": 0,
+     "a": 1,
+     "game_id": "1023222",
+     "score": "SAS 4 @ RD 6",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-27",
+     "player": "Mathis Paull",
+     "team": "Regina",
+     "league": "WHL",
+     "opponent": "vs Everett",
+     "g": 0,
+     "a": 1,
+     "game_id": "1023223",
+     "score": "EVT 0 @ REG 3",
+     "source": "hockeytech",
+     "confidence": "official"
+    }
+   ],
+   "goalies": [
+    {
+     "date": "2026-10-27",
+     "goalie": "Bennett Byers",
+     "team": "Everett",
+     "league": "WHL",
+     "opponent": "@ Regina",
+     "shots": 19,
+     "saves": 16,
+     "ga": 3,
+     "toi": "60:00",
+     "qualifies": false,
+     "game_id": "1023223",
+     "score": "EVT 0 @ REG 3",
+     "source": "hockeytech",
+     "confidence": "official"
+    }
+   ],
+   "games_checked": [
+    {
+     "league": "WHL",
+     "game_id": "1023222",
+     "matchup": "SAS @ RD"
+    },
+    {
+     "league": "WHL",
+     "game_id": "1023223",
+     "matchup": "EVT @ REG"
+    },
+    {
+     "league": "WHL",
+     "game_id": "1023221",
+     "matchup": "BDN @ MJ"
+    }
+   ],
+   "updated": "2026-10-28T13:16:20-04:00"
   }
  },
- "updated": "2026-10-27T12:51:08-04:00",
+ "updated": "2026-10-28T13:19:04-04:00",
  "problems": {
   "hockeytech": [],
   "europe": [
