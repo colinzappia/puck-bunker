@@ -6,9 +6,12 @@ Uses up to three sources per player, best first, and labels every row with how s
   1. Elite Prospects official API game logs ("official")        - needs EP_API_KEY
      Per-game goals, assists, goals against and saves. Exact.
   2. Your manual entries in data/manual.json ("official")       - from the daily updates
-  3. Elite Prospects public player pages ("single-game" or "probable")
-     The script saves each player's season totals every day and compares them with the
-     previous day's. New points are pinned to a date only when exactly one game was
+  3. Elite Prospects public player pages ("single-game" or "probable")   *** OFF BY DEFAULT ***
+     Elite Prospects blocks automated reads of its public pages (HTTP 403 from GitHub's
+     servers) and this site has no API key, so this reader is switched off. Set the
+     environment variable EP_PUBLIC_PAGES=1 to turn it back on.
+     When on, the script saves each player's season totals every day and compares them with
+     the previous day's. New points are pinned to a date only when exactly one game was
      played in between ("single-game", counted). Otherwise they're listed as
      "probable" with the possible dates and NOT counted in totals.
 
@@ -41,6 +44,8 @@ SNAP_FILE = ROOT / "data" / "ep_snapshots.json"
 API = "https://api.eliteprospects.com/v1"
 SEASON_START_YEAR = 2026
 UA = "Mozilla/5.0 (compatible; PuckBunker-points/1.0; +https://www.PuckBunker.com)"
+# Public-page reading is OFF unless EP_PUBLIC_PAGES=1 (see the note at the top of this file).
+USE_PUBLIC_PAGES = os.environ.get("EP_PUBLIC_PAGES", "").strip() == "1"
 MY_SOURCES = {"ep_api", "ep_page", "manual"}
 RANK = {"ep_api": 3, "manual": 2, "ep_page": 1}
 
@@ -317,7 +322,7 @@ def main():
             time.sleep(0.3)
         # 3. public page, once per day, only when the API didn't cover this player.
         #    Goalies are skipped: public pages give GAA, not goals against per game.
-        if not got_api and not args.start and p.get("pos") != "G":
+        if USE_PUBLIC_PAGES and not got_api and not args.start and p.get("pos") != "G":
             prev = snaps.get(str(p["ep_id"]))
             if prev and prev.get("taken") == today.isoformat():
                 continue  # already compared today
