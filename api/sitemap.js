@@ -1,5 +1,5 @@
 // Vercel Serverless Function — generates sitemap.xml dynamically, listing
-// every static page plus every published scouting report. This is what
+// every static page plus every published scouting report and article. This is what
 // lets search engines discover report pages directly, instead of relying
 // on them rendering the JavaScript on the archive pages to find the links.
 //
@@ -13,7 +13,7 @@ const STATIC_PAGES = [
   { path: "/", priority: "1.0", changefreq: "daily" },
   { path: "/episodes.html", priority: "0.8", changefreq: "weekly" },
   { path: "/scouting-reports.html", priority: "0.9", changefreq: "daily" },
-  { path: "/articles.html", priority: "0.5", changefreq: "weekly" },
+  { path: "/articles.html", priority: "0.7", changefreq: "weekly" },
   { path: "/analytics.html", priority: "0.4", changefreq: "monthly" },
   { path: "/bunker-data.html", priority: "0.6", changefreq: "weekly" },
   { path: "/prospect-tracker.html", priority: "0.7", changefreq: "daily" },
@@ -48,9 +48,23 @@ async function fetchPublishedReports() {
   return res.json();
 }
 
+// Returns [] if the articles table isn't set up yet, so the sitemap still works.
+async function fetchPublishedArticles() {
+  try {
+    const url = `${SUPABASE_URL}/rest/v1/puckbunker_articles?status=eq.published&select=slug,updated_at`;
+    const res = await fetch(url, {
+      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
+    });
+    if (!res.ok) return [];
+    return res.json();
+  } catch (e) {
+    return [];
+  }
+}
+
 module.exports = async (req, res) => {
   try {
-    const reports = await fetchPublishedReports();
+    const [reports, articles] = await Promise.all([fetchPublishedReports(), fetchPublishedArticles()]);
 
     let urls = STATIC_PAGES.map(p => `  <url>
     <loc>${SITE_URL}${p.path}</loc>
@@ -89,11 +103,21 @@ module.exports = async (req, res) => {
   </url>`;
     }).join("\n");
 
+    const articleUrls = articles.filter(a => a.slug).map(a => {
+      const lastmod = a.updated_at ? new Date(a.updated_at).toISOString().split("T")[0] : "";
+      return `  <url>
+    <loc>${escapeXml(`${SITE_URL}/article/${a.slug}`)}</loc>${lastmod ? `\n    <lastmod>${lastmod}</lastmod>` : ""}
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>`;
+    }).join("\n");
+
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls}
 ${reportUrls}
 ${playerUrls}
+${articleUrls}
 </urlset>`;
 
     res.statusCode = 200;

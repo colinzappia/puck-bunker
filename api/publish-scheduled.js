@@ -1,5 +1,5 @@
-// Vercel Serverless Function — checks for scheduled reports whose release
-// time has passed, and flips them from "scheduled" to "published".
+// Vercel Serverless Function — checks for scheduled reports and articles whose
+// release time has passed, and flips them from "scheduled" to "published".
 //
 // This is what actually makes scheduled publishing work: something has to
 // periodically check the clock. Two ways to trigger this endpoint:
@@ -51,52 +51,60 @@ module.exports = async (req, res) => {
 
   try {
     const nowIso = new Date().toISOString();
+    const headers = {
+      apikey: serviceKey,
+      Authorization: `Bearer ${serviceKey}`,
+      "Content-Type": "application/json",
+      Prefer: "return=representation",
+    };
 
-    // Find scheduled reports whose release time has passed.
-    const findUrl = `${SUPABASE_URL}/rest/v1/puckbunker_reports?status=eq.scheduled&scheduled_at=lte.${encodeURIComponent(nowIso)}&select=id,name,scheduled_at`;
-    const findRes = await fetch(findUrl, {
-      headers: {
-        apikey: serviceKey,
-        Authorization: `Bearer ${serviceKey}`,
-      },
-    });
-    if (!findRes.ok) {
-      const body = await findRes.text();
-      throw new Error(`Lookup failed (${findRes.status}): ${body}`);
-    }
-    const due = await findRes.json();
+    // Find rows in a table whose release time has passed, and flip them to
+    // published. Returns the rows that were published.
+    async function publishDue(table, select, extraFields) {
+      const findUrl = `${SUPABASE_URL}/rest/v1/${table}?status=eq.scheduled&scheduled_at=lte.${encodeURIComponent(nowIso)}&select=${select}`;
+      const findRes = await fetch(findUrl, { headers });
+      if (!findRes.ok) {
+        const body = await findRes.text();
+        throw new Error(`${table} lookup failed (${findRes.status}): ${body}`);
+      }
+      const due = await findRes.json();
+      if (!due.length) return [];
 
-    if (!due.length) {
-      res.statusCode = 200;
-      res.setHeader("Content-Type", "application/json");
-      res.end(JSON.stringify({ published: 0, message: "Nothing due right now." }));
-      return;
+      const ids = due.map(r => r.id);
+      const updateUrl = `${SUPABASE_URL}/rest/v1/${table}?id=in.(${ids.join(",")})`;
+      const updateRes = await fetch(updateUrl, {
+        method: "PATCH",
+        headers,
+        body: JSON.stringify({ status: "published", ...extraFields }),
+      });
+      if (!updateRes.ok) {
+        const body = await updateRes.text();
+        throw new Error(`${table} update failed (${updateRes.status}): ${body}`);
+      }
+      return updateRes.json();
     }
 
-    // Flip them to published.
-    const ids = due.map(r => r.id);
-    const updateUrl = `${SUPABASE_URL}/rest/v1/puckbunker_reports?id=in.(${ids.join(",")})`;
-    const updateRes = await fetch(updateUrl, {
-      method: "PATCH",
-      headers: {
-        apikey: serviceKey,
-        Authorization: `Bearer ${serviceKey}`,
-        "Content-Type": "application/json",
-        Prefer: "return=representation",
-      },
-      body: JSON.stringify({ status: "published" }),
-    });
-    if (!updateRes.ok) {
-      const body = await updateRes.text();
-      throw new Error(`Update failed (${updateRes.status}): ${body}`);
+    const reports = await publishDue("puckbunker_reports", "id,name,scheduled_at", {});
+
+    // Articles are checked separately, so a problem with them (for example the
+    // articles table not being set up yet) never stops reports from publishing.
+    let articles = [];
+    let articleError = null;
+    try {
+      articles = await publishDue("puckbunker_articles", "id,title,scheduled_at", { published_at: nowIso });
+    } catch (e) {
+      articleError = String(e && e.message || e);
+      console.error("publish-scheduled articles error:", e);
     }
-    const updated = await updateRes.json();
 
     res.statusCode = 200;
     res.setHeader("Content-Type", "application/json");
     res.end(JSON.stringify({
-      published: updated.length,
-      reports: updated.map(r => ({ id: r.id, name: r.name })),
+      published: reports.length + articles.length,
+      reports: reports.map(r => ({ id: r.id, name: r.name })),
+      articles: articles.map(a => ({ id: a.id, title: a.title })),
+      ...(articleError ? { articleError } : {}),
+      ...(reports.length + articles.length ? {} : { message: "Nothing due right now." }),
     }));
   } catch (err) {
     console.error("publish-scheduled error:", err);
