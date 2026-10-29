@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@700;800;900&family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="article-format.js"></script>
 <style>
   :root{
     --black:#0B0C0D;
@@ -341,6 +342,57 @@
     .drafts-head, .drafts-foot{ padding:12px 14px; }
     .draft-item{ padding:11px 14px; }
   }
+
+  /* ---------- Reports / Articles switch ---------- */
+  .mode-switch{ display:inline-flex; border:1px solid var(--steel); }
+  .mode-switch button{
+    background:none; border:0; color:var(--ice-dim); cursor:pointer;
+    font:700 12px 'Archivo',sans-serif; letter-spacing:0.08em; text-transform:uppercase; padding:11px 16px;
+  }
+  .mode-switch button + button{ border-left:1px solid var(--steel); }
+  .mode-switch button[aria-pressed="true"]{ background:var(--hazard); color:#1c1608; }
+  .layout[hidden], .btn[hidden]{ display:none !important; }
+
+  /* ---------- Article editor ---------- */
+  .art-slug{ font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--ice-dim); overflow-wrap:anywhere; }
+  .art-slug b{ color:var(--hazard); font-weight:500; }
+  .art-slug button{ background:none; border:0; color:var(--ice-dim); text-decoration:underline; cursor:pointer; font:inherit; margin-left:6px; }
+  .art-count{ font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--ice-dim); align-self:flex-end; }
+  .art-count.over{ color:var(--red); }
+  .art-toolbar{ display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-bottom:10px; }
+  .art-toolbar button{
+    background:var(--black); border:1px solid var(--steel); color:var(--ice); cursor:pointer;
+    font:600 12px 'Archivo',sans-serif; padding:7px 11px; min-width:36px;
+  }
+  .art-toolbar button:hover{ border-color:var(--hazard); color:var(--hazard); }
+  .art-toolbar .sep{ width:1px; height:22px; background:var(--steel); margin:0 4px; }
+  .art-tabs{ margin-left:auto; display:inline-flex; border:1px solid var(--steel); }
+  .art-tabs button{ border:0; min-width:0; }
+  .art-tabs button[aria-pressed="true"]{ background:var(--steel); color:var(--ice); }
+  #aBody{ min-height:420px; font-size:15px; line-height:1.7; }
+  .art-preview{ background:var(--black); border:1px solid var(--steel); padding:22px 24px; min-height:420px; font-size:16px; line-height:1.75; color:#DEDFDD; overflow-wrap:break-word; }
+  .art-preview[hidden]{ display:none; }
+  .art-preview h2{ font-family:'Big Shoulders Stencil Display',sans-serif; text-transform:uppercase; font-size:30px; line-height:1; margin:28px 0 12px; color:var(--ice); }
+  .art-preview h3{ font-size:19px; margin:24px 0 10px; color:var(--ice); }
+  .art-preview p, .art-preview ul, .art-preview ol, .art-preview figure, .art-preview blockquote, .art-preview .embed{ margin:0 0 18px; }
+  .art-preview ul, .art-preview ol{ padding-left:22px; }
+  .art-preview a{ color:var(--hazard); }
+  .art-preview blockquote{ border-left:3px solid var(--hazard); padding:4px 0 4px 18px; color:var(--ice); font-size:18px; font-style:italic; }
+  .art-preview hr{ border:0; border-top:1px solid var(--steel); margin:28px 0; }
+  .art-preview img{ max-width:100%; display:block; border:1px solid var(--steel); }
+  .art-preview figcaption{ font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--ice-dim); margin-top:8px; }
+  .art-preview .embed{ position:relative; aspect-ratio:16/9; background:var(--panel-2); }
+  .art-preview .embed iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; }
+  .art-preview .empty{ color:var(--ice-dim); font-family:'JetBrains Mono',monospace; font-size:12px; }
+  .art-help{ margin-top:12px; font-size:12px; color:var(--ice-dim); line-height:1.7; }
+  .art-help code{ font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--ice); background:var(--black); border:1px solid var(--steel-soft); padding:1px 5px; }
+  .art-setup{ border:1px dashed var(--hazard-2); padding:16px 18px; font-size:13px; color:var(--ice-dim); margin-bottom:22px; }
+  .art-setup b{ color:var(--hazard); }
+  @media (max-width:720px){
+    .mode-switch{ width:100%; } .mode-switch button{ flex:1; }
+    .art-tabs{ margin-left:0; }
+    #aBody, .art-preview{ min-height:320px; }
+  }
 </style>
 </head>
 <body>
@@ -373,14 +425,19 @@
       <div class="nav-actions">
         <span class="mono" id="reporterBadge" style="font-size:11px; color:var(--ice-dim); letter-spacing:0.06em; text-transform:uppercase;"></span>
         <a href="index.html" class="btn btn-ghost" style="text-decoration:none;">View Site</a>
+        <div class="mode-switch" role="group" aria-label="What to edit">
+          <button type="button" id="modeReports" aria-pressed="true">Reports</button>
+          <button type="button" id="modeArticles" aria-pressed="false">Articles</button>
+        </div>
         <button class="btn btn-ghost" id="newDraftBtn">+ New Report</button>
+        <button class="btn btn-ghost" id="newArticleBtn" type="button" hidden>+ New Article</button>
         <button class="btn btn-ghost" id="lockBtn">Log Out</button>
       </div>
     </nav>
   </header>
 
   <div class="wrap">
-    <div class="layout">
+    <div class="layout" id="reportsView">
 
       <!-- DRAFTS SIDEBAR -->
       <div class="drafts-panel">
@@ -733,6 +790,140 @@
           </div>
         </div>
 
+      </div>
+    </div>
+
+    <!-- ================= ARTICLES ================= -->
+    <div class="layout" id="articlesView" hidden>
+
+      <div class="drafts-panel">
+        <div class="drafts-head">
+          <h2>Articles</h2>
+          <span class="drafts-count mono" id="artCount">0</span>
+        </div>
+        <div class="drafts-list" id="artList">
+          <div class="drafts-empty">No articles yet. Write one and hit Save Draft.</div>
+        </div>
+        <div class="drafts-foot">
+          <button class="btn btn-danger" id="artDeleteBtn" type="button">Delete This Article</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="art-setup" id="artSetup" hidden>
+          <b>One-time setup needed.</b> The articles table isn't in Supabase yet. Open Supabase → SQL Editor, paste in the contents of <span class="mono">supabase-migration-articles.sql</span> from the website's GitHub repository, and click Run. Then reload this page.
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h2>Article</h2></div>
+          <div class="panel-body">
+            <div class="field-row">
+              <div class="field" style="grid-column:1 / -1;">
+                <label for="aTitle">Headline</label>
+                <input type="text" id="aTitle" maxlength="140" placeholder="e.g. Why Timothy Kazda Is the OHL's Fastest Riser">
+                <div class="art-slug" id="aSlugLine"></div>
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field" style="grid-column:1 / -1;">
+                <label for="aDek">Summary</label>
+                <textarea id="aDek" maxlength="280" style="min-height:76px;" placeholder="One or two sentences. Shows on the Articles page and when the link is shared."></textarea>
+                <span class="art-count" id="aDekCount">0 / 280</span>
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field" style="grid-column:1 / -1;">
+                <label for="aTags">Tags</label>
+                <input type="text" id="aTags" placeholder="e.g. OHL, 2027 Draft, Rankings">
+                <span class="hint">Separate tags with commas. They show on the article card.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h2>Cover Image</h2></div>
+          <div class="panel-body">
+            <div class="field">
+              <label for="aCoverFile">Upload Image</label>
+              <input type="file" id="aCoverFile" accept="image/*">
+              <span class="hint">Wide images work best (16:9, at least 1200 px across). Used on the article card, at the top of the article, and in link previews. Under 5 MB.</span>
+            </div>
+            <div class="thumbnail-preview" id="aCoverPreview">
+              <div class="video-placeholder">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" stroke="none"/><path d="M21 15l-5-5L5 21"/></svg>
+                <p>NO COVER IMAGE YET</p>
+              </div>
+            </div>
+            <div id="aCoverStatus" class="mono" style="font-size:11px; color:var(--ice-dim); margin-top:8px;"></div>
+            <button class="btn btn-ghost" id="aCoverRemoveBtn" type="button" style="display:none; margin-top:10px;">Remove Cover Image</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h2>Story</h2></div>
+          <div class="panel-body">
+            <div class="art-toolbar" role="toolbar" aria-label="Formatting">
+              <button type="button" data-fmt="h2" title="Section heading">H2</button>
+              <button type="button" data-fmt="h3" title="Smaller heading">H3</button>
+              <span class="sep"></span>
+              <button type="button" data-fmt="bold" title="Bold"><b>B</b></button>
+              <button type="button" data-fmt="italic" title="Italic"><i>I</i></button>
+              <button type="button" data-fmt="link" title="Link">Link</button>
+              <span class="sep"></span>
+              <button type="button" data-fmt="quote" title="Pull quote">Quote</button>
+              <button type="button" data-fmt="list" title="Bullet list">• List</button>
+              <button type="button" data-fmt="hr" title="Divider">―</button>
+              <span class="sep"></span>
+              <button type="button" data-fmt="image" title="Upload an image into the story">Image</button>
+              <button type="button" data-fmt="video" title="YouTube video">Video</button>
+              <input type="file" id="aInlineImage" accept="image/*" hidden>
+              <div class="art-tabs">
+                <button type="button" id="aTabWrite" aria-pressed="true">Write</button>
+                <button type="button" id="aTabPreview" aria-pressed="false">Preview</button>
+              </div>
+            </div>
+            <div class="field">
+              <label for="aBody" class="sr-only" style="position:absolute; left:-9999px;">Story</label>
+              <textarea id="aBody" placeholder="Start writing. Leave a blank line between paragraphs."></textarea>
+            </div>
+            <div class="art-preview" id="aPreview" hidden></div>
+            <div id="aInlineStatus" class="mono" style="font-size:11px; color:var(--ice-dim); margin-top:8px;"></div>
+            <p class="art-help">
+              Formatting: <code>## Heading</code> · <code>**bold**</code> · <code>*italic*</code> · <code>[link text](https://…)</code> · <code>&gt; quote</code> · <code>- list item</code> · <code>---</code> divider.
+              A YouTube link on its own line becomes a video. <span id="aWordCount"></span>
+            </p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h2>Schedule Release</h2></div>
+          <div class="panel-body">
+            <p style="font-size:13px; color:var(--ice-dim); margin-bottom:16px;">
+              Pick a future date and time and the article publishes itself. Uses your local time zone.
+            </p>
+            <div class="field-row">
+              <div class="field" style="grid-column:1 / -1;">
+                <label for="aScheduleAt">Release Date &amp; Time</label>
+                <input type="datetime-local" id="aScheduleAt">
+              </div>
+            </div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+              <button class="btn btn-ghost" id="aScheduleBtn" type="button">Schedule Release</button>
+              <button class="btn btn-ghost" id="aCancelScheduleBtn" type="button" style="display:none;">Cancel Schedule</button>
+            </div>
+            <div id="aScheduleStatus" class="mono" style="font-size:11px; color:var(--ice-dim); margin-top:10px;"></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="action-bar">
+            <button class="btn btn-primary" id="aSaveBtn" type="button">Save Draft</button>
+            <button class="btn btn-ghost" id="aPublishBtn" type="button">Publish to Site</button>
+            <a class="btn btn-ghost" id="aViewBtn" href="#" target="_blank" rel="noopener" style="text-decoration:none; display:none;">View on Site</a>
+            <span class="save-status mono" id="aSaveStatus"></span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -1899,7 +2090,467 @@
     loadTrackerCorrections();
   }
 
+
+  // ============ ARTICLES ============
+  // Long-form articles live in their own table (puckbunker_articles, created by
+  // supabase-migration-articles.sql). Every admin sees and can edit every
+  // article; the byline stays with whoever started it.
+  const ART_TABLE = 'puckbunker_articles';
+  let arts = [];
+  let artId = null;
+  let artSlug = '';
+  let artSlugLocked = false;  // true once an article has been published: its address never changes after that
+  let artCoverUrl = '';
+  let artDirty = false;
+  let artLoaded = false;
+
+  function aField(id){ return document.getElementById(id); }
+  function artSetStatus(msg, saved){
+    const el = aField('aSaveStatus');
+    el.textContent = msg;
+    el.classList.toggle('saved', !!saved);
+  }
+  function artMarkUnsaved(){ artDirty = true; artSetStatus('Unsaved changes'); }
+
+  function artMissingTable(error){
+    return error && (error.code === '42P01' || error.code === 'PGRST205' || /does not exist|could not find the table/i.test(error.message || ''));
+  }
+
+  async function artLoad(){
+    const { data, error } = await sb.from(ART_TABLE).select('*').order('updated_at', { ascending: false });
+    aField('artSetup').hidden = !artMissingTable(error);
+    if (error) {
+      if (!artMissingTable(error)) console.error('Failed to load articles:', error);
+      arts = [];
+      if (!artMissingTable(error)) artSetStatus('Could not load articles: ' + error.message);
+      return;
+    }
+    arts = data || [];
+  }
+
+  function artDate(iso){
+    return iso ? new Date(iso).toLocaleDateString(undefined, { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' }) : '';
+  }
+
+  function artRenderList(){
+    const list = aField('artList');
+    aField('artCount').textContent = arts.length;
+    list.innerHTML = '';
+    if (!arts.length){
+      list.innerHTML = '<div class="drafts-empty">No articles yet. Write one and hit Save Draft.</div>';
+      return;
+    }
+    arts.forEach(a => {
+      const el = document.createElement('div');
+      el.className = 'draft-item' + (a.id === artId ? ' active' : '');
+      let tag;
+      if (a.status === 'published') tag = '<span style="color:var(--hazard);">LIVE</span>';
+      else if (a.status === 'scheduled') tag = `<span style="color:var(--cyan);">SCHEDULED · ${escapeHtml(artDate(a.scheduled_at))}</span>`;
+      else tag = '<span style="color:var(--ice-dim);">DRAFT</span>';
+      el.innerHTML = `
+        <div class="name">${escapeHtml(a.title || 'Untitled article')}</div>
+        <div class="meta">${escapeHtml(a.author_name || '')} · ${escapeHtml(artDate(a.updated_at))} · ${tag}</div>`;
+      el.addEventListener('click', () => artOpen(a.id));
+      list.appendChild(el);
+    });
+  }
+
+  function artConfirmLeave(){
+    return !artDirty || confirm('This article has unsaved changes. Leave without saving?');
+  }
+
+  function artOpen(id){
+    if (id !== artId && !artConfirmLeave()) return;
+    const a = arts.find(x => x.id === id);
+    if (!a) return;
+    artId = id;
+    artFill(a);
+    artRenderList();
+  }
+
+  function artNew(){
+    if (!artConfirmLeave()) return;
+    artId = null;
+    artFill({ title:'', dek:'', body:'', tags:[], cover_url:'', slug:'', status:'draft' });
+    artRenderList();
+    aField('aTitle').focus();
+  }
+
+  function artFill(a){
+    aField('aTitle').value = a.title || '';
+    aField('aDek').value = a.dek || '';
+    aField('aTags').value = (a.tags || []).join(', ');
+    aField('aBody').value = a.body || '';
+    artCoverUrl = a.cover_url || '';
+    artSlug = a.slug || '';
+    artSlugLocked = !!a.published_at;
+    aField('aCoverStatus').textContent = '';
+    aField('aInlineStatus').textContent = '';
+    aField('aScheduleStatus').textContent = '';
+    artUpdateCover();
+    artUpdateSlugLine();
+    artUpdateCounts();
+    artUpdateButtons(a);
+    artShowTab(false);
+    artDirty = false;
+    artSetStatus('');
+  }
+
+  function artRead(){
+    const tags = aField('aTags').value.split(',').map(t => t.trim()).filter(Boolean).slice(0, 8);
+    return {
+      title: aField('aTitle').value.trim(),
+      dek: aField('aDek').value.trim(),
+      body: aField('aBody').value.replace(/\s+$/, ''),
+      tags,
+      cover_url: artCoverUrl || null,
+      slug: artCurrentSlug(),
+    };
+  }
+
+  // The address follows the headline until the article is first published.
+  function artCurrentSlug(){
+    if (artSlugLocked || artSlug) return artSlug || PBArticle.slugify(aField('aTitle').value) || 'article';
+    return PBArticle.slugify(aField('aTitle').value) || 'article';
+  }
+  function artUniqueSlug(base){
+    const taken = new Set(arts.filter(a => a.id !== artId).map(a => a.slug));
+    let s = base, n = 2;
+    while (taken.has(s)) s = `${base}-${n++}`;
+    return s;
+  }
+
+  function artUpdateSlugLine(){
+    const line = aField('aSlugLine');
+    const slug = artUniqueSlug(artCurrentSlug());
+    line.innerHTML = `puckbunker.com/article/<b>${escapeHtml(slug)}</b>`;
+    if (artSlugLocked) {
+      line.insertAdjacentHTML('beforeend', ' <span>· set when it was published</span>');
+    } else {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = artSlug ? 'Reset to headline' : 'Edit address';
+      btn.addEventListener('click', () => {
+        if (artSlug) { artSlug = ''; }
+        else {
+          const v = prompt('Article address (letters, numbers and dashes):', slug);
+          if (v === null) return;
+          artSlug = PBArticle.slugify(v);
+        }
+        artUpdateSlugLine();
+        artMarkUnsaved();
+      });
+      line.appendChild(btn);
+    }
+  }
+
+  function artUpdateCounts(){
+    const n = aField('aDek').value.length;
+    const c = aField('aDekCount');
+    c.textContent = `${n} / 280`;
+    c.classList.toggle('over', n > 240);
+    const words = PBArticle.plainText(aField('aBody').value).split(' ').filter(Boolean).length;
+    aField('aWordCount').textContent = words ? `${words.toLocaleString()} words · about ${PBArticle.readingMinutes(aField('aBody').value)} min read.` : '';
+  }
+
+  function artUpdateCover(){
+    const box = aField('aCoverPreview');
+    if (artCoverUrl) {
+      box.innerHTML = '';
+      const img = document.createElement('img');
+      img.src = artCoverUrl; img.alt = 'Cover image';
+      box.appendChild(img);
+    } else {
+      box.innerHTML = '<div class="video-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" stroke="none"/><path d="M21 15l-5-5L5 21"/></svg><p>NO COVER IMAGE YET</p></div>';
+    }
+    aField('aCoverRemoveBtn').style.display = artCoverUrl ? '' : 'none';
+  }
+
+  function artUpdateButtons(a){
+    a = a || arts.find(x => x.id === artId) || {};
+    const pub = aField('aPublishBtn');
+    pub.textContent = a.status === 'published' ? 'Unpublish (Move to Draft)'
+      : a.status === 'scheduled' ? 'Publish Now (Skip Schedule)' : 'Publish to Site';
+    const view = aField('aViewBtn');
+    view.style.display = a.status === 'published' && a.slug ? '' : 'none';
+    if (a.slug) view.href = `/article/${encodeURIComponent(a.slug)}`;
+    const sched = a.status === 'scheduled';
+    aField('aCancelScheduleBtn').style.display = sched ? '' : 'none';
+    aField('aScheduleBtn').textContent = sched ? 'Change Release Time' : 'Schedule Release';
+    aField('aScheduleAt').value = sched && a.scheduled_at ? toLocalDatetimeInputValue(new Date(a.scheduled_at)) : '';
+    if (sched && a.scheduled_at) aField('aScheduleStatus').textContent = `Scheduled for ${new Date(a.scheduled_at).toLocaleString()}`;
+    aField('artDeleteBtn').disabled = !artId;
+  }
+
+  async function artUpload(file, statusEl){
+    if (!file) return null;
+    if (!file.type.startsWith('image/')) { statusEl.textContent = 'Please choose an image file.'; return null; }
+    if (file.size > 5 * 1024 * 1024) { statusEl.textContent = 'Image is too large. Keep it under 5 MB.'; return null; }
+    statusEl.textContent = 'Uploading…';
+    const ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '');
+    const path = `articles/${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;
+    const { error } = await sb.storage.from('report-thumbnails').upload(path, file, { cacheControl: '3600', upsert: false });
+    if (error) { statusEl.textContent = 'Upload failed: ' + error.message; return null; }
+    return sb.storage.from('report-thumbnails').getPublicUrl(path).data.publicUrl;
+  }
+
+  async function artCoverUpload(e){
+    const url = await artUpload(e.target.files[0], aField('aCoverStatus'));
+    e.target.value = '';
+    if (!url) return;
+    artCoverUrl = url;
+    artUpdateCover();
+    aField('aCoverStatus').textContent = 'Uploaded. Click Save Draft to keep it.';
+    artMarkUnsaved();
+  }
+
+  // ---- formatting toolbar ----
+  function artInsert(before, after, placeholder, ownLine){
+    const ta = aField('aBody');
+    const start = ta.selectionStart, end = ta.selectionEnd;
+    const v = ta.value;
+    let sel = v.slice(start, end) || placeholder || '';
+    let pre = before, post = after || '';
+    if (ownLine) {
+      if (start > 0 && v[start - 1] !== '\n') pre = '\n\n' + pre;
+      else if (start > 1 && v[start - 2] !== '\n') pre = '\n' + pre;
+      post = post + (v[end] === '\n' ? '\n' : '\n\n');
+    }
+    ta.setRangeText(pre + sel + post, start, end, 'end');
+    // select the placeholder so it can be typed over
+    if (!v.slice(start, end) && placeholder) {
+      const s = start + pre.length;
+      ta.setSelectionRange(s, s + placeholder.length);
+    }
+    ta.focus();
+    artUpdateCounts();
+    artMarkUnsaved();
+  }
+  function artPrefixLines(prefix, placeholder){
+    const ta = aField('aBody');
+    const start = ta.selectionStart, end = ta.selectionEnd;
+    if (start === end) return artInsert(prefix, '', placeholder, true);
+    const lineStart = ta.value.lastIndexOf('\n', start - 1) + 1;
+    const block = ta.value.slice(lineStart, end).split('\n').map(l => l.trim() ? prefix + l.replace(/^(#{1,3}|>|[-*+])\s+/, '') : l).join('\n');
+    ta.setRangeText(block, lineStart, end, 'end');
+    ta.focus(); artUpdateCounts(); artMarkUnsaved();
+  }
+  function artFormat(kind){
+    if (!aField('aPreview').hidden) artShowTab(false);
+    if (kind === 'bold') return artInsert('**', '**', 'bold text');
+    if (kind === 'italic') return artInsert('*', '*', 'italic text');
+    if (kind === 'h2') return artPrefixLines('## ', 'Section heading');
+    if (kind === 'h3') return artPrefixLines('### ', 'Smaller heading');
+    if (kind === 'quote') return artPrefixLines('> ', 'A line worth pulling out');
+    if (kind === 'list') return artPrefixLines('- ', 'List item');
+    if (kind === 'hr') return artInsert('---', '', '', true);
+    if (kind === 'link') {
+      const url = prompt('Link address (starts with https://):', 'https://');
+      if (!url || url === 'https://') return;
+      return artInsert('[', `](${url.trim()})`, 'link text');
+    }
+    if (kind === 'video') {
+      const url = prompt('YouTube video link:');
+      if (!url) return;
+      if (!PBArticle.youtubeId(url)) { aField('aInlineStatus').textContent = "That doesn't look like a YouTube video link."; return; }
+      return artInsert(url.trim(), '', '', true);
+    }
+    if (kind === 'image') aField('aInlineImage').click();
+  }
+  async function artInlineImage(e){
+    const status = aField('aInlineStatus');
+    const url = await artUpload(e.target.files[0], status);
+    e.target.value = '';
+    if (!url) return;
+    artInsert('![', `](${url})`, 'Caption (optional)', true);
+    status.textContent = 'Image added. Type a caption between the [ ] or delete the words to leave it blank.';
+  }
+
+  function artShowTab(preview){
+    aField('aTabWrite').setAttribute('aria-pressed', String(!preview));
+    aField('aTabPreview').setAttribute('aria-pressed', String(preview));
+    aField('aBody').parentElement.hidden = preview;
+    const pv = aField('aPreview');
+    pv.hidden = !preview;
+    if (preview) {
+      const d = artRead();
+      const cover = d.cover_url ? `<figure><img src="${escapeHtml(d.cover_url)}" alt=""></figure>` : '';
+      const head = (d.title ? `<h2 style="font-size:40px;margin-top:0;">${escapeHtml(d.title)}</h2>` : '') + (d.dek ? `<p style="color:var(--ice-dim);font-size:18px;">${escapeHtml(d.dek)}</p>` : '');
+      const body = PBArticle.render(d.body);
+      pv.innerHTML = (head || cover || body) ? cover + head + body : '<p class="empty">Nothing to preview yet.</p>';
+    }
+  }
+
+  // ---- save / publish / schedule / delete ----
+  function artValidate(forPublish){
+    const d = artRead();
+    if (!d.title) return 'Add a headline first.';
+    if (forPublish && !d.body) return 'Write the story before publishing.';
+    return '';
+  }
+
+  async function artWrite(extra){
+    const d = artRead();
+    const row = { ...d, ...extra };
+    row.slug = artUniqueSlug(row.slug);
+    let error, saved;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      if (!artId) {
+        ({ data: saved, error } = await sb.from(ART_TABLE)
+          .insert({ ...row, author_name: currentReporterName }).select().single());
+      } else {
+        ({ data: saved, error } = await sb.from(ART_TABLE).update(row).eq('id', artId).select().single());
+      }
+      // Someone else took this address in the meantime: try the next number.
+      if (error && error.code === '23505' && !artSlugLocked) { row.slug = `${PBArticle.slugify(d.slug)}-${Math.random().toString(36).slice(2,5)}`; continue; }
+      break;
+    }
+    if (error) return { error };
+    artId = saved.id;
+    artSlug = saved.slug;
+    artSlugLocked = !!saved.published_at;
+    artDirty = false;
+    await artLoad();
+    artRenderList();
+    artUpdateSlugLine();
+    artUpdateButtons(saved);
+    return { saved };
+  }
+
+  async function artSave(){
+    const problem = artValidate(false);
+    if (problem) { artSetStatus(problem); return; }
+    artSetStatus('Saving…');
+    const current = arts.find(x => x.id === artId);
+    const { error } = await artWrite(current ? {} : { status: 'draft' });
+    if (error) {
+      artSetStatus(artMissingTable(error) ? 'Save failed: run the one-time Supabase setup above.' : 'Save failed: ' + error.message);
+      aField('artSetup').hidden = !artMissingTable(error);
+      return;
+    }
+    artSetStatus('Saved ' + new Date().toLocaleTimeString(), true);
+  }
+
+  async function artTogglePublish(){
+    const current = arts.find(x => x.id === artId);
+    const goingLive = !(current && current.status === 'published');
+    if (goingLive) {
+      const problem = artValidate(true);
+      if (problem) { artSetStatus(problem); return; }
+    }
+    artSetStatus(goingLive ? 'Publishing…' : 'Unpublishing…');
+    const extra = goingLive
+      ? { status: 'published', scheduled_at: null, published_at: (current && current.published_at) || new Date().toISOString() }
+      : { status: 'draft', scheduled_at: null };
+    const { error, saved } = await artWrite(extra);
+    if (error) { artSetStatus('Failed: ' + error.message); return; }
+    aField('aScheduleStatus').textContent = '';
+    artSetStatus(goingLive ? 'Live on the site' : 'Moved back to draft', true);
+    if (goingLive && saved) aField('aViewBtn').style.display = '';
+  }
+
+  async function artSchedule(){
+    const status = aField('aScheduleStatus');
+    const v = aField('aScheduleAt').value;
+    if (!v) { status.textContent = 'Pick a release date and time first.'; return; }
+    const when = new Date(v);
+    if (when.getTime() <= Date.now()) { status.textContent = 'Pick a time in the future.'; return; }
+    const problem = artValidate(true);
+    if (problem) { status.textContent = problem; return; }
+    const current = arts.find(x => x.id === artId);
+    if (current && current.status === 'published') { status.textContent = "This article is already live. Unpublish it first if you want to schedule it."; return; }
+    status.textContent = 'Scheduling…';
+    const { error } = await artWrite({ status: 'scheduled', scheduled_at: when.toISOString() });
+    if (error) { status.textContent = 'Failed: ' + error.message; return; }
+    status.textContent = `Scheduled for ${when.toLocaleString()}`;
+    artSetStatus('Saved and scheduled', true);
+  }
+
+  async function artCancelSchedule(){
+    if (!artId) return;
+    aField('aScheduleStatus').textContent = 'Cancelling…';
+    const { error } = await artWrite({ status: 'draft', scheduled_at: null });
+    if (error) { aField('aScheduleStatus').textContent = 'Failed: ' + error.message; return; }
+    aField('aScheduleStatus').textContent = '';
+    artSetStatus('Schedule cancelled. Back to draft.', true);
+  }
+
+  async function artDelete(){
+    const a = arts.find(x => x.id === artId);
+    if (!a) return;
+    const live = a.status === 'published' ? ' It will come off the site right away.' : '';
+    if (!confirm(`Delete "${a.title || 'this article'}"?${live} This can't be undone.`)) return;
+    const { error } = await sb.from(ART_TABLE).delete().eq('id', artId);
+    if (error) { alert('Delete failed: ' + error.message); return; }
+    artDirty = false;
+    await artLoad();
+    artId = null;
+    if (arts.length) artOpen(arts[0].id); else artNew();
+    artRenderList();
+  }
+
+  // ---- Reports / Articles switch ----
+  async function setAdminMode(mode){
+    const articles = mode === 'articles';
+    if (!articles && !artConfirmLeave()) return;
+    if (!articles) artDirty = false;
+    document.getElementById('reportsView').hidden = articles;
+    aField('articlesView').hidden = !articles;
+    document.getElementById('modeReports').setAttribute('aria-pressed', String(!articles));
+    document.getElementById('modeArticles').setAttribute('aria-pressed', String(articles));
+    document.getElementById('newDraftBtn').hidden = articles;
+    aField('newArticleBtn').hidden = !articles;
+    try { localStorage.setItem('pbAdminMode', mode); } catch (e) {}
+    if (articles && !artLoaded) {
+      artLoaded = true;
+      await artLoad();
+      artRenderList();
+      if (arts.length) artOpen(arts[0].id); else artNew();
+    }
+  }
+
+  let artWired = false;
+  function initArticles(){
+    if (artWired) return;
+    artWired = true;
+    document.getElementById('modeReports').addEventListener('click', () => setAdminMode('reports'));
+    document.getElementById('modeArticles').addEventListener('click', () => setAdminMode('articles'));
+    aField('newArticleBtn').addEventListener('click', artNew);
+    aField('aTitle').addEventListener('input', () => { artUpdateSlugLine(); artMarkUnsaved(); });
+    aField('aDek').addEventListener('input', () => { artUpdateCounts(); artMarkUnsaved(); });
+    aField('aTags').addEventListener('input', artMarkUnsaved);
+    aField('aBody').addEventListener('input', () => { artUpdateCounts(); artMarkUnsaved(); });
+    aField('aBody').addEventListener('keydown', e => {
+      if (!(e.metaKey || e.ctrlKey)) return;
+      const k = e.key.toLowerCase();
+      if (k === 'b') { e.preventDefault(); artFormat('bold'); }
+      else if (k === 'i') { e.preventDefault(); artFormat('italic'); }
+      else if (k === 'k') { e.preventDefault(); artFormat('link'); }
+      else if (k === 's') { e.preventDefault(); artSave(); }
+    });
+    document.querySelectorAll('.art-toolbar [data-fmt]').forEach(b => b.addEventListener('click', () => artFormat(b.dataset.fmt)));
+    aField('aInlineImage').addEventListener('change', artInlineImage);
+    aField('aTabWrite').addEventListener('click', () => artShowTab(false));
+    aField('aTabPreview').addEventListener('click', () => artShowTab(true));
+    aField('aCoverFile').addEventListener('change', artCoverUpload);
+    aField('aCoverRemoveBtn').addEventListener('click', () => {
+      artCoverUrl = ''; artUpdateCover();
+      aField('aCoverStatus').textContent = 'Removed. Click Save Draft to confirm.';
+      artMarkUnsaved();
+    });
+    aField('aSaveBtn').addEventListener('click', artSave);
+    aField('aPublishBtn').addEventListener('click', artTogglePublish);
+    aField('aScheduleBtn').addEventListener('click', artSchedule);
+    aField('aCancelScheduleBtn').addEventListener('click', artCancelSchedule);
+    aField('artDeleteBtn').addEventListener('click', artDelete);
+    window.addEventListener('beforeunload', e => { if (artDirty) { e.preventDefault(); e.returnValue = ''; } });
+    let mode = 'reports';
+    try { mode = localStorage.getItem('pbAdminMode') || 'reports'; } catch (e) {}
+    if (mode === 'articles') setAdminMode('articles');
+  }
+
   async function initAdmin(){
+    initArticles();
     await loadDrafts();
     renderDraftsList();
     loadExcludedEpisodes();

@@ -8,6 +8,7 @@
   "rewrites": [
     { "source": "/sitemap.xml", "destination": "/api/sitemap" },
     { "source": "/report/:slug", "destination": "/api/r/:slug" },
-    { "source": "/player/:player", "destination": "/api/p/:player" }
+    { "source": "/player/:player", "destination": "/api/p/:player" },
+    { "source": "/article/:slug", "destination": "/api/a/:slug" }
   ]
 }
