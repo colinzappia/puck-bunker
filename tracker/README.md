@@ -9,13 +9,13 @@ Everything lives in the website's own GitHub repository: the update scripts and 
 | Leagues | Source | Accuracy |
 |---|---|---|
 | OHL, WHL, QMJHL, USHL/NTDP | Official league game summaries (`daily_points.py`) | **Official**: every goal and assist, by player ID |
-| Europe, Russia, NCAA | **1. Elite Prospects official data feed (API)**, if you add a key | **Official**: per-game goals, assists, goals against, saves |
-| | **2. Manual entries** in `data/manual.json` | Whatever you enter, e.g. from the daily updates with Claude |
-| | **3. Elite Prospects public player pages**, as a fallback | Season-total changes from one day to the next (see below) |
+| Europe, Russia, NCAA, high school and other leagues | **Weekly spreadsheet**, loaded through the Admin page's Point Corrections (or a one-time SQL import) | Whatever the spreadsheet says. This is how these players are updated now. |
+| | Manual entries in `data/manual.json` | Still works: `europe_points.py` merges any rows for the dates it is rebuilding |
+| | Elite Prospects API, if you ever add a key (`EP_API_KEY`) | **Official**: per-game goals, assists, goals against, saves |
 
-For each player and date, the script keeps the best source available: API first, then manual entries, then public pages.
+**Elite Prospects is not used automatically (Oct 28, 2026).** Elite Prospects blocks automated reads of its public pages (every request from GitHub returned 403), and this site has no API key, so the daily update no longer tries. Nothing was removed: set `EP_PUBLIC_PAGES=1` to turn the page reader back on, or add an `EP_API_KEY` secret to use the official feed. The `ep_id` numbers in `players_europe.json` are only used by those two routes.
 
-**How the public-page fallback works.** Each morning, `europe_points.py` saves every player's season totals and compares them with the day before.
+**How the public-page fallback worked (now off).** Each morning, `europe_points.py` saves every player's season totals and compares them with the day before.
 - If his totals went up and **exactly one game** was played since the last check, the points go on that game's date. They're counted, and marked with * on the site.
 - If **more than one game** was played since the last check, the points are listed as **Probable (not counted)** with the possible dates.
 - Goalies aren't read from public pages, because those pages show goals-against average, not goals against per game. Goalie games come from the API or manual entries only.
@@ -24,10 +24,10 @@ For each player and date, the script keeps the best source available: API first,
 ## Files (all paths are inside the website repository)
 
 - **`tracker/daily_points.py`**: OHL, WHL, QMJHL and USHL. **`tracker/players.json`** lists the tracked players in those leagues.
-- **`tracker/europe_points.py`**: Europe, Russia and NCAA. **`tracker/players_europe.json`** lists those players, each with an Elite Prospects player number (`ep_id`).
+- **`tracker/europe_points.py`**: merges hand-entered European, Russian and NCAA rows (and uses an Elite Prospects API key if you ever add one). **`tracker/players_europe.json`** lists those players; the Elite Prospects number (`ep_id`) is only needed for the API route.
 - **`tracker/data/points.json`**: all results, which the Prospect Tracker page reads. It's preloaded with Oct 13–18.
 - **`tracker/data/manual.json`**: hand-entered rows. It's preloaded with the Oct 13–18 European results, plus the "probable" ones.
-- **`tracker/data/ep_snapshots.json`**: yesterday's season totals, used by the public-page fallback. It's created automatically.
+- **`tracker/data/ep_snapshots.json`**: season totals saved by the public-page fallback. It stays empty while that fallback is off.
 - **`.github/workflows/daily.yml`**: runs both scripts every morning on GitHub (free) and saves the results.
 - **`prospect-tracker.html`**: the page on the website. It has a tab for each day plus Totals, shows goalies with 2 or fewer goals against, and lists probable points separately.
 
@@ -54,14 +54,10 @@ For each player and date, the script keeps the best source available: API first,
 - **Problems** are listed under `"problems"` in `tracker/data/points.json`, and the run shows a red X if something fails outright.
 - **How many days show:** the page has a tab for the last 7 days. To change that, edit `DAYS_SHOWN` near the bottom of `prospect-tracker.html`.
 
-## If Elite Prospects' public pages can't be read
+## If you want Elite Prospects data back
 
-- **Pages refuse the request** (status 403 or 429): Elite Prospects may block GitHub's servers. The API isn't affected by this.
-- **"Could not read season stats":** the page layout may have changed. Run this, then send Claude the saved `debug_ep_1010942.html` so the reader can be adjusted:
-  ```
-  python europe_points.py --debug-ep 1010942
-  ```
-- **Note:** the public-page reader was written without access to live pages and tested on sample pages, so expect to adjust it after the first real run.
+- **Pages refuse the request (status 403):** Elite Prospects blocks GitHub's servers. That is why the page reader is off. Turning it on again (`EP_PUBLIC_PAGES=1`) will log a "403" for every player until they stop blocking.
+- **The proper fix is their API:** add the key as the `EP_API_KEY` secret in GitHub (Settings, Secrets and variables, Actions). The numbers in `players_europe.json` are then used for official per-game results, goalies included.
 
 ## Before going public
 
