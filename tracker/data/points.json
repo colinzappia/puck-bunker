@@ -4233,6 +4233,11 @@
    "games_checked": [
     {
      "league": "WHL",
+     "game_id": "1023221",
+     "matchup": "BDN @ MJ"
+    },
+    {
+     "league": "WHL",
      "game_id": "1023222",
      "matchup": "SAS @ RD"
     },
@@ -4240,80 +4245,310 @@
      "league": "WHL",
      "game_id": "1023223",
      "matchup": "EVT @ REG"
+    }
+   ],
+   "updated": "2026-10-29T13:29:58-04:00"
+  },
+  "2026-10-28": {
+   "date": "2026-10-28",
+   "points": [
+    {
+     "date": "2026-10-28",
+     "player": "Max Delisle",
+     "team": "Owen Sound",
+     "league": "OHL",
+     "opponent": "vs Sarnia",
+     "g": 1,
+     "a": 1,
+     "game_id": "29128",
+     "score": "SAR 3 @ OS 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-28",
+     "player": "Kohyn Eshkawkogan",
+     "team": "Ottawa",
+     "league": "OHL",
+     "opponent": "vs Brampton",
+     "g": 1,
+     "a": 1,
+     "game_id": "29127",
+     "score": "BRAM 2 @ OTT 5",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-28",
+     "player": "Carter Moen",
+     "team": "Swift Current",
+     "league": "WHL",
+     "opponent": "vs Seattle",
+     "g": 1,
+     "a": 1,
+     "game_id": "1023226",
+     "score": "SEA 0 @ SC 3",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-28",
+     "player": "Brock Cripps",
+     "team": "Prince Albert",
+     "league": "WHL",
+     "opponent": "vs Brandon",
+     "g": 0,
+     "a": 2,
+     "game_id": "1023225",
+     "score": "BDN 2 @ PA 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-28",
+     "player": "Trevor Daley Jr.",
+     "team": "Soo",
+     "league": "OHL",
+     "opponent": "vs Saginaw",
+     "g": 0,
+     "a": 2,
+     "game_id": "29129",
+     "score": "SAG 2 @ SOO 5",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-28",
+     "player": "Noah Laus",
+     "team": "Soo",
+     "league": "OHL",
+     "opponent": "vs Saginaw",
+     "g": 1,
+     "a": 0,
+     "game_id": "29129",
+     "score": "SAG 2 @ SOO 5",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-28",
+     "player": "Tyler Martyniuk",
+     "team": "Saginaw",
+     "league": "OHL",
+     "opponent": "@ Sault Ste. Marie",
+     "g": 1,
+     "a": 0,
+     "game_id": "29129",
+     "score": "SAG 2 @ SOO 5",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-28",
+     "player": "Chase Surkan",
+     "team": "Brandon",
+     "league": "WHL",
+     "opponent": "@ Prince Albert",
+     "g": 1,
+     "a": 0,
+     "game_id": "1023225",
+     "score": "BDN 2 @ PA 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-28",
+     "player": "Brock Chitaroni",
+     "team": "Ottawa",
+     "league": "OHL",
+     "opponent": "vs Brampton",
+     "g": 0,
+     "a": 1,
+     "game_id": "29127",
+     "score": "BRAM 2 @ OTT 5",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-28",
+     "player": "Ben Harvey",
+     "team": "Prince Albert",
+     "league": "WHL",
+     "opponent": "vs Brandon",
+     "g": 0,
+     "a": 1,
+     "game_id": "1023225",
+     "score": "BDN 2 @ PA 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-28",
+     "player": "Jaxon Jacobson",
+     "team": "Brandon",
+     "league": "WHL",
+     "opponent": "@ Prince Albert",
+     "g": 0,
+     "a": 1,
+     "game_id": "1023225",
+     "score": "BDN 2 @ PA 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-28",
+     "player": "Easton Walos",
+     "team": "Sarnia",
+     "league": "OHL",
+     "opponent": "@ Owen Sound",
+     "g": 0,
+     "a": 1,
+     "game_id": "29128",
+     "score": "SAR 3 @ OS 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-28",
+     "player": "Braidy Wassilyn",
+     "team": "Saginaw",
+     "league": "OHL",
+     "opponent": "@ Sault Ste. Marie",
+     "g": 0,
+     "a": 1,
+     "game_id": "29129",
+     "score": "SAG 2 @ SOO 5",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-28",
+     "player": "Dima Zhilkin",
+     "team": "Saginaw",
+     "league": "OHL",
+     "opponent": "@ Sault Ste. Marie",
+     "g": 0,
+     "a": 1,
+     "game_id": "29129",
+     "score": "SAG 2 @ SOO 5",
+     "source": "hockeytech",
+     "confidence": "official"
+    }
+   ],
+   "goalies": [
+    {
+     "date": "2026-10-28",
+     "goalie": "David Vermirovsky",
+     "team": "Sault Ste. Marie",
+     "league": "OHL",
+     "opponent": "vs Saginaw",
+     "shots": 31,
+     "saves": 29,
+     "ga": 2,
+     "toi": "60:00",
+     "qualifies": true,
+     "game_id": "29129",
+     "score": "SAG 2 @ SOO 5",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-28",
+     "goalie": "Carsten Leyerzapf",
+     "team": "Wenatchee",
+     "league": "WHL",
+     "opponent": "vs Medicine Hat",
+     "shots": 38,
+     "saves": 36,
+     "ga": 2,
+     "toi": "60:00",
+     "qualifies": true,
+     "game_id": "1023227",
+     "score": "MH 2 @ WEN 7",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-28",
+     "goalie": "Carter Casey",
+     "team": "Medicine Hat",
+     "league": "WHL",
+     "opponent": "@ Wenatchee",
+     "shots": 28,
+     "saves": 24,
+     "ga": 4,
+     "toi": "43:16",
+     "qualifies": false,
+     "game_id": "1023227",
+     "score": "MH 2 @ WEN 7",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-28",
+     "goalie": "Cash Christie",
+     "team": "Medicine Hat",
+     "league": "WHL",
+     "opponent": "@ Wenatchee",
+     "shots": 13,
+     "saves": 10,
+     "ga": 3,
+     "toi": "16:44",
+     "qualifies": false,
+     "game_id": "1023227",
+     "score": "MH 2 @ WEN 7",
+     "source": "hockeytech",
+     "confidence": "official"
+    }
+   ],
+   "games_checked": [
+    {
+     "league": "OHL",
+     "game_id": "29128",
+     "matchup": "SAR @ OS"
+    },
+    {
+     "league": "OHL",
+     "game_id": "29127",
+     "matchup": "BRAM @ OTT"
+    },
+    {
+     "league": "OHL",
+     "game_id": "29129",
+     "matchup": "SAG @ SOO"
     },
     {
      "league": "WHL",
-     "game_id": "1023221",
-     "matchup": "BDN @ MJ"
+     "game_id": "1023225",
+     "matchup": "BDN @ PA"
+    },
+    {
+     "league": "WHL",
+     "game_id": "1023226",
+     "matchup": "SEA @ SC"
+    },
+    {
+     "league": "WHL",
+     "game_id": "1023227",
+     "matchup": "MH @ WEN"
+    },
+    {
+     "league": "WHL",
+     "game_id": "1023224",
+     "matchup": "VAN @ POR"
+    },
+    {
+     "league": "USHL",
+     "game_id": "13560",
+     "matchup": "MKG @ NTDP"
     }
    ],
-   "updated": "2026-10-28T13:16:20-04:00"
+   "updated": "2026-10-29T13:29:54-04:00"
   }
  },
- "updated": "2026-10-28T13:19:04-04:00",
+ "updated": "2026-10-29T13:29:58-04:00",
  "problems": {
   "hockeytech": [],
-  "europe": [
-   "Theo Berggren: EP page returned 403 (blocked or down)",
-   "Tom Bjurman: EP page returned 403 (blocked or down)",
-   "Oscar Blom: EP page returned 403 (blocked or down)",
-   "Dorian Eklund-Aspe: EP page returned 403 (blocked or down)",
-   "Wiggo Forsberg: EP page returned 403 (blocked or down)",
-   "Douglas Johnsson: EP page returned 403 (blocked or down)",
-   "Charlie Kalldin: EP page returned 403 (blocked or down)",
-   "Loui Karlsson: EP page returned 403 (blocked or down)",
-   "Ellioth Lahtinen: EP page returned 403 (blocked or down)",
-   "Yelverton Lindberg Steen: EP page returned 403 (blocked or down)",
-   "Bosse Meijer: EP page returned 403 (blocked or down)",
-   "Noel Nord: EP page returned 403 (blocked or down)",
-   "Vilgot Nygren: EP page returned 403 (blocked or down)",
-   "Benjamin Nyström: EP page returned 403 (blocked or down)",
-   "Kellan Case O'Leary: EP page returned 403 (blocked or down)",
-   "Simon Sejc: EP page returned 403 (blocked or down)",
-   "Oliver Sundberg: EP page returned 403 (blocked or down)",
-   "Milan Sundström: EP page returned 403 (blocked or down)",
-   "Olle Törnqvist: EP page returned 403 (blocked or down)",
-   "Leo Ulrich: EP page returned 403 (blocked or down)",
-   "Ludvig Vestman: EP page returned 403 (blocked or down)",
-   "Olle Zetterstedt: EP page returned 403 (blocked or down)",
-   "Joel Ikonen: EP page returned 403 (blocked or down)",
-   "Joonas Lehtinen: EP page returned 403 (blocked or down)",
-   "Max Syrjäläinen: EP page returned 403 (blocked or down)",
-   "Roni Kuukasjärvi: EP page returned 403 (blocked or down)",
-   "Miska Liljeberg: EP page returned 403 (blocked or down)",
-   "Max Poikela: EP page returned 403 (blocked or down)",
-   "Lenni Kokkonen: EP page returned 403 (blocked or down)",
-   "Olli Kylmälä: EP page returned 403 (blocked or down)",
-   "Luukas Kokkonen: EP page returned 403 (blocked or down)",
-   "Jonas Schwarz: EP page returned 403 (blocked or down)",
-   "Jonah Neuenschwander: EP page returned 403 (blocked or down)",
-   "Max Calce: EP page returned 403 (blocked or down)",
-   "Melichar Kovar: EP page returned 403 (blocked or down)",
-   "Matus Valek: EP page returned 403 (blocked or down)",
-   "Michal Hartl: EP page returned 403 (blocked or down)",
-   "Tomas Selic: EP page returned 403 (blocked or down)",
-   "Sean Zuffa: EP page returned 403 (blocked or down)",
-   "Lukas Kachlir: EP page returned 403 (blocked or down)",
-   "Stepan Tomka: EP page returned 403 (blocked or down)",
-   "Davids Tarvids: EP page returned 403 (blocked or down)",
-   "Petr Tomek: EP page returned 403 (blocked or down)",
-   "Jakub Simoncic: EP page returned 403 (blocked or down)",
-   "Oliver Botka: EP page returned 403 (blocked or down)",
-   "Miroslav Kalousek: EP page returned 403 (blocked or down)",
-   "Patrik Rychlik: EP page returned 403 (blocked or down)",
-   "Nazar Privalov: EP page returned 403 (blocked or down)",
-   "Sergei Skvortsov: EP page returned 403 (blocked or down)",
-   "Andrei Pustovoy: EP page returned 403 (blocked or down)",
-   "Ruslan Umerov: EP page returned 403 (blocked or down)",
-   "Yevgeni Yakunin: EP page returned 403 (blocked or down)",
-   "Illarion Babkin: EP page returned 403 (blocked or down)",
-   "Daniil Yermolov: EP page returned 403 (blocked or down)",
-   "Semyon Gerasimov: EP page returned 403 (blocked or down)",
-   "Ilya Kolomytsev: EP page returned 403 (blocked or down)",
-   "Daniil Savin: EP page returned 403 (blocked or down)",
-   "Roman Kozhevnikov: EP page returned 403 (blocked or down)",
-   "Landon DuPont: EP page returned 403 (blocked or down)",
-   "Sammy Nelson: EP page returned 403 (blocked or down)"
-  ]
+  "europe": []
  }
 }
