@@ -8,6 +8,8 @@
 // Rendered on the server so search engines and link previews see the real
 // content, same as the individual report pages.
 
+const { buildConsensus, SPLIT_GAP } = require("../../scout-consensus.js");
+
 const SUPABASE_URL = "https://bwexpvzstgkllkjaitzy.supabase.co";
 const SUPABASE_KEY = "sb_publishable_AqjW7wYPhZ6OTpM1W-jVew_1L18nkZE";
 const SITE_URL = "https://www.puckbunker.com";
@@ -84,6 +86,141 @@ function renderNotFoundPage() {
   </div>
 </body>
 </html>`;
+}
+
+const firstName = s => String(s || "").split(" ")[0];
+const gradeColor = g => g && g[0] === "A" ? "var(--cyan)" : g && g[0] === "B" ? "var(--ice)" : "var(--hazard)";
+
+// "Bunker Consensus" + "Scout vs. Scout": every report on the player combined
+// (see scout-consensus.js for how the averages work).
+function renderConsensus(c, name) {
+  if (!c) return "";
+  const multi = c.scouts.length > 1;
+  const allValues = c.rows.flatMap(r => r.each.map(e => e.value));
+  const lo = Math.min(4, Math.floor(Math.min(...allValues)));
+  const hi = 10;
+  const pos = v => (((v - lo) / (hi - lo)) * 100).toFixed(2);
+
+  const cards = `
+      <div class="sc-card">
+        <div class="sc-label"><span class="sc-tick-key"></span>Consensus · all ${c.reports} reports</div>
+        <div class="sc-grade" style="color:${gradeColor(c.grade)}">${escapeHtml(c.grade)}</div>
+        <div class="sc-num"><b>${c.overall.toFixed(1)}</b> average</div>
+      </div>
+      ${c.scouts.map(s => `
+      <div class="sc-card">
+        <div class="sc-label"><span class="sc-dot" style="background:${s.color}"></span>${escapeHtml(s.name)}</div>
+        <div class="sc-grade" style="color:${s.color}">${escapeHtml(s.grade)}</div>
+        <div class="sc-num"><b>${s.avg.toFixed(1)}</b> · ${s.reports} report${s.reports === 1 ? "" : "s"}</div>
+      </div>`).join("")}`;
+
+  const strongest = [...c.rows].sort((a, b) => b.avg - a.avg || a.order - b.order)[0];
+  let verdict;
+  if (multi) {
+    const biggest = [...c.rows].sort((a, b) => b.gap - a.gap || a.order - b.order)[0];
+    const names = c.scouts.map(s => firstName(s.name));
+    const who = names.length === 2 ? `${names[0]} and ${names[1]}` : "The scouts";
+    verdict = `${who} are within a point of each other on <b>${c.agree} of ${c.compared}</b> categories. ` +
+      (c.splits.length
+        ? `Biggest split: <b>${escapeHtml(biggest.category)}</b> (${biggest.byScout.filter(v => v !== null).map(v => v.toFixed(1)).join(" vs. ")}). `
+        : `No category splits by ${SPLIT_GAP} or more. `);
+  } else {
+    verdict = `${c.reports === 2 ? "Both" : `All ${c.reports}`} reports so far are from <b>${escapeHtml(c.scouts[0].name)}</b>. `;
+  }
+  verdict += strongest ? `Strongest tool: <b>${escapeHtml(strongest.category)}</b> at ${strongest.avg.toFixed(1)}.` : "";
+
+  const ticks = [];
+  for (let v = lo; v <= hi; v++) ticks.push(`<span style="left:${pos(v)}%">${v}</span>`);
+  const gridLines = ticks.slice(1, -1).map((t, i) => `<span class="sc-gl" style="left:${pos(lo + i + 1)}%"></span>`).join("");
+
+  const rows = c.rows.map(r => {
+    const present = r.byScout.map((v, i) => ({ v, s: c.scouts[i] })).filter(x => x.v !== null);
+    const vals = present.map(x => x.v);
+    const bar = vals.length > 1
+      ? `<span class="sc-bar" style="left:${pos(Math.min(...vals))}%; width:${(pos(Math.max(...vals)) - pos(Math.min(...vals))).toFixed(2)}%"></span>` : "";
+    const ghosts = r.each.map(e => {
+      const s = c.scouts.find(x => x.name === e.scout);
+      return `<span class="sc-pt sc-ghost" style="left:${pos(e.value)}%; background:${s ? s.color : "var(--ice-dim)"}"></span>`;
+    }).join("");
+    const dots = present.map(x => `<span class="sc-pt" style="left:${pos(x.v)}%; background:${x.s.color}"></span>`).join("");
+    const sub = multi
+      ? present.map(x => `${escapeHtml(firstName(x.s.name))} ${x.v.toFixed(1)}`).join(" · ")
+      : `${r.each.length} report${r.each.length === 1 ? "" : "s"}`;
+    const chip = !multi || present.length < 2 ? ""
+      : r.split ? `<span class="sc-chip sc-split">Split ${r.gap.toFixed(1)}</span>`
+      : r.gap < 0.5 ? `<span class="sc-chip">Agree</span>` : "";
+    const label = `${r.category}: consensus ${r.avg.toFixed(1)}` + (multi ? ", " + present.map(x => `${x.s.name} ${x.v.toFixed(1)}`).join(", ") : "");
+    const detail = r.each.map(e => {
+      const s = c.scouts.find(x => x.name === e.scout);
+      return `<li><span class="sc-dot" style="background:${s ? s.color : "var(--ice-dim)"}"></span>${escapeHtml(firstName(e.scout))} · ${escapeHtml(fmtDate(e.date))} · <b>${e.value.toFixed(1)}</b></li>`;
+    }).join("");
+    return `
+        <details class="sc-row${r.split && multi ? " is-split" : ""}" data-order="${r.order}" data-gap="${r.gap}" data-avg="${r.avg}">
+          <summary aria-label="${escapeHtml(label)}">
+            <span class="sc-cat">${escapeHtml(r.category)}<small>${sub}</small></span>
+            <span class="sc-track">${gridLines}${bar}${ghosts}<span class="sc-avg" style="left:${pos(r.avg)}%"></span>${dots}</span>
+            <span class="sc-val"><b>${r.avg.toFixed(1)}</b>${chip}</span>
+          </summary>
+          <ul class="sc-detail">${detail}</ul>
+        </details>`;
+  }).join("");
+
+  const legend = c.scouts.map(s => `<span><span class="sc-dot" style="background:${s.color}"></span>${escapeHtml(s.name)}</span>`).join("") +
+    `<span><span class="sc-tick-key"></span>Consensus</span>`;
+
+  const sortButtons = multi ? `
+        <div class="sc-sort" role="group" aria-label="Sort categories">
+          <button type="button" data-sort="order" aria-pressed="true">Standard</button>
+          <button type="button" data-sort="gap" aria-pressed="false">Biggest split</button>
+          <button type="button" data-sort="avg" aria-pressed="false">Strongest</button>
+        </div>` : `
+        <div class="sc-sort" role="group" aria-label="Sort categories">
+          <button type="button" data-sort="order" aria-pressed="true">Standard</button>
+          <button type="button" data-sort="avg" aria-pressed="false">Strongest</button>
+        </div>`;
+
+  const note = multi
+    ? `Each dot is that scout's average for the category across their reports. The white tick is the consensus: the average of every report, each counted once. A red dashed gap means the scouts are ${SPLIT_GAP} points or more apart. Tap a row to see every report's score.`
+    : `Each small dot is one report. The white tick is the average of all of them. The scout-vs-scout comparison appears once a second scout files on ${escapeHtml(name)}. Tap a row to see every report's score.`;
+
+  return `
+    <section class="sc" id="consensus">
+      <div class="sc-head"><h2>Bunker Consensus</h2></div>
+      <div class="sc-cards sc-n${Math.min(c.scouts.length + 1, 4)}">${cards}</div>
+      <p class="sc-verdict">${verdict}</p>
+    </section>
+
+    <section class="sc" id="scout-vs-scout">
+      <div class="sc-head">
+        <h2>${multi ? "The M.O. — Scout vs. Scout" : "The M.O. — Average Across Reports"}</h2>${sortButtons}
+      </div>
+      <div class="sc-body">
+        <div class="sc-legend">${legend}</div>
+        <div class="sc-axis" aria-hidden="true"><span class="sc-axis-lbl">Category</span><span class="sc-scale">${ticks.join("")}</span><span class="sc-axis-avg">Avg</span></div>
+        <div class="sc-rows">${rows}</div>
+        <p class="sc-note">${note}</p>
+      </div>
+    </section>
+    <script>
+      (function () {
+        var box = document.querySelector('#scout-vs-scout .sc-rows');
+        var btns = document.querySelectorAll('#scout-vs-scout .sc-sort button');
+        if (!box) return;
+        btns.forEach(function (b) {
+          b.addEventListener('click', function () {
+            var key = b.getAttribute('data-sort');
+            btns.forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+            var rows = Array.prototype.slice.call(box.children);
+            rows.sort(function (x, y) {
+              var o = +x.dataset.order - +y.dataset.order;
+              if (key === 'order') return o;
+              return (+y.dataset[key] - +x.dataset[key]) || o;
+            });
+            rows.forEach(function (r) { box.appendChild(r); });
+          });
+        });
+      })();
+    </script>`;
 }
 
 function renderPlayerPage(reports, slug) {
@@ -251,6 +388,72 @@ ${JSON.stringify(jsonLd).replace(/</g, "\\u003c")}
   .notes p{ margin-bottom:14px; color:var(--ice-dim); overflow-wrap:break-word; word-break:break-word; white-space:pre-wrap; }
   .notes p:last-child{ margin-bottom:0; }
   @media (max-width:600px){ .wrap{ padding:32px 18px 60px; } }
+
+  /* ---------- Bunker Consensus / Scout vs. Scout ---------- */
+  .sc{ background:var(--panel); border:1px solid var(--steel); margin-top:28px; word-break:normal; }
+  .sc + .sc{ margin-top:22px; }
+  .sc-head{ padding:16px 20px; border-bottom:1px solid var(--steel); display:flex; flex-wrap:wrap; gap:10px 16px; align-items:center; justify-content:space-between; }
+  .sc-head h2{ font-size:12px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--ice-dim); }
+  .sc-cards{ display:grid; gap:1px; background:var(--steel); grid-template-columns:repeat(var(--cols,3),minmax(0,1fr)); }
+  .sc-n2{ --cols:2; } .sc-n3{ --cols:3; } .sc-n4{ --cols:4; }
+  .sc-card{ background:var(--panel); padding:18px 20px; min-width:0; }
+  .sc-label{ font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:0.08em; text-transform:uppercase; color:var(--ice-dim); display:flex; align-items:center; gap:8px; }
+  .sc-grade{ font-family:'Big Shoulders Stencil Display',sans-serif; font-size:60px; line-height:1; margin-top:8px; }
+  .sc-num{ font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--ice-dim); margin-top:4px; font-variant-numeric:tabular-nums; }
+  .sc-num b{ color:var(--ice); }
+  .sc-dot{ width:10px; height:10px; border-radius:50%; display:inline-block; flex:none; }
+  .sc-tick-key{ width:3px; height:14px; background:var(--ice); display:inline-block; flex:none; }
+  .sc-verdict{ padding:14px 20px; border-top:1px solid var(--steel); font-size:14px; color:var(--ice-dim); }
+  .sc-verdict b{ color:var(--ice); }
+
+  .sc-sort{ display:inline-flex; border:1px solid var(--steel); }
+  .sc-sort button{ background:none; border:0; color:var(--ice-dim); font:600 11px 'Archivo',sans-serif; letter-spacing:0.08em; text-transform:uppercase; padding:8px 12px; cursor:pointer; }
+  .sc-sort button + button{ border-left:1px solid var(--steel); }
+  .sc-sort button[aria-pressed="true"]{ background:var(--steel); color:var(--ice); }
+  .sc-sort button:focus-visible, .sc-row summary:focus-visible{ outline:2px solid var(--hazard); outline-offset:2px; }
+
+  .sc-body{ padding:18px 20px 20px; --lbl:190px; --val:92px; }
+  .sc-legend{ display:flex; flex-wrap:wrap; gap:8px 18px; font-size:12px; color:var(--ice-dim); margin-bottom:14px; }
+  .sc-legend > span{ display:inline-flex; align-items:center; gap:7px; }
+  .sc-axis, .sc-row summary{ display:grid; grid-template-columns:var(--lbl) minmax(0,1fr) var(--val); gap:14px; align-items:center; }
+  .sc-axis{ font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--ice-dim); padding-bottom:6px; }
+  .sc-axis-avg{ text-align:right; }
+  .sc-scale{ position:relative; height:14px; }
+  .sc-scale span{ position:absolute; transform:translateX(-50%); }
+  .sc-scale span:first-child{ transform:none; } .sc-scale span:last-child{ transform:translateX(-100%); }
+  .sc-row{ border-top:1px solid var(--steel-soft); }
+  .sc-row summary{ list-style:none; cursor:pointer; padding:11px 0; }
+  .sc-row summary::-webkit-details-marker{ display:none; }
+  .sc-row summary:hover{ background:rgba(255,255,255,0.015); }
+  .sc-cat{ font-size:13px; font-weight:600; min-width:0; overflow-wrap:break-word; }
+  .sc-cat small{ display:block; font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:500; letter-spacing:0.05em; color:var(--ice-dim); text-transform:uppercase; margin-top:2px; }
+  .sc-track{ position:relative; height:26px; }
+  .sc-track::before{ content:""; position:absolute; left:0; right:0; top:50%; height:1px; background:var(--steel); }
+  .sc-gl{ position:absolute; top:4px; bottom:4px; width:1px; background:var(--steel-soft); }
+  .sc-bar{ position:absolute; top:50%; height:4px; margin-top:-2px; background:var(--steel); }
+  .sc-row.is-split .sc-bar{ background:repeating-linear-gradient(90deg, var(--red) 0 4px, transparent 4px 7px); }
+  .sc-pt{ position:absolute; top:50%; width:14px; height:14px; margin:-7px 0 0 -7px; border-radius:50%; border:2px solid var(--black); }
+  .sc-pt.sc-ghost{ width:8px; height:8px; margin:-4px 0 0 -4px; border:0; opacity:0.55; }
+  .sc-avg{ position:absolute; top:3px; bottom:3px; width:3px; margin-left:-1.5px; background:var(--ice); }
+  .sc-val{ text-align:right; font-family:'JetBrains Mono',monospace; font-variant-numeric:tabular-nums; }
+  .sc-val b{ font-size:15px; display:block; }
+  .sc-chip{ display:inline-block; font-size:9.5px; letter-spacing:0.06em; text-transform:uppercase; padding:2px 6px; margin-top:3px; border:1px solid var(--steel); color:var(--ice-dim); }
+  .sc-chip.sc-split{ color:var(--red); border-color:var(--red); }
+  .sc-detail{ list-style:none; display:flex; flex-wrap:wrap; gap:6px; margin:0 0 12px calc(var(--lbl) + 14px); }
+  .sc-detail li{ font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--ice-dim); border:1px solid var(--steel); padding:4px 8px; display:flex; align-items:center; gap:7px; }
+  .sc-detail b{ color:var(--ice); }
+  .sc-note{ font-size:12.5px; color:var(--ice-dim); margin-top:16px; max-width:68ch; }
+  @media (max-width:680px){
+    .sc-cards{ --cols:2; }
+    .sc-cards .sc-card:first-child, .sc-n2 .sc-card{ grid-column:1 / -1; }
+    .sc-grade{ font-size:50px; }
+    .sc-head, .sc-card, .sc-verdict{ padding-left:16px; padding-right:16px; }
+    .sc-body{ padding:16px; --val:64px; }
+    .sc-axis, .sc-row summary{ grid-template-columns:minmax(0,1fr) var(--val); }
+    .sc-axis-lbl{ display:none; }
+    .sc-row summary .sc-cat{ grid-column:1 / -1; }
+    .sc-detail{ margin-left:0; }
+  }
   .deco{ position:absolute; top:0; left:0; right:0; height:700px; overflow:hidden; pointer-events:none; z-index:0; }
   .crosshair{ position:absolute; top:40px; right:40px; width:100px; height:100px; opacity:0.7; z-index:2; pointer-events:none; }
   .crosshair circle{ transform-origin:center; }
@@ -289,6 +492,7 @@ ${JSON.stringify(jsonLd).replace(/</g, "\\u003c")}
     ${metaLine ? `<div class="prospect-meta">${metaLine}</div>` : ""}
     <div class="pp-count">${n} scouting report${n === 1 ? "" : "s"}</div>
     ${n > 1 ? `<div class="gh-wrap"><h2 class="gh-title">Grade history · by date filed</h2><div class="gh">${history}</div></div>` : ""}
+    ${n > 1 ? renderConsensus(buildConsensus(reports), name) : ""}
 
     ${blocks}
   </div>
