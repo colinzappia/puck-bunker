@@ -20,6 +20,8 @@ const SUPABASE_KEY = "sb_publishable_AqjW7wYPhZ6OTpM1W-jVew_1L18nkZE";
 const SITE_URL = "https://www.puckbunker.com";
 const LOGO_URL = `${SITE_URL}/puck-bunker-logo.png`;
 
+const { buildConsensus } = require("../../scout-consensus.js");
+
 function escapeHtml(str) {
   return String(str || "")
     .replace(/&/g, "&amp;")
@@ -44,19 +46,20 @@ function playerSlug(name) {
     .replace(/^-+|-+$/g, "");
 }
 
-// How many published reports exist on this player. Returns 0 on any failure,
-// so the report page still renders even if this lookup has a problem.
-async function countPlayerReports(name) {
+// Every published report on this player (just what the consensus needs),
+// newest first. Returns [] on any failure, so the report page still renders
+// even if this lookup has a problem.
+async function fetchPlayerReports(name) {
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/puckbunker_reports?status=eq.published&select=name`, {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/puckbunker_reports?status=eq.published&select=name,scores,overall_score,reporter_name,created_at&order=created_at.desc`, {
       headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
     });
-    if (!res.ok) return 0;
+    if (!res.ok) return [];
     const rows = await res.json();
     const slug = playerSlug(name);
-    return rows.filter(r => playerSlug(r.name) === slug).length;
+    return rows.filter(r => playerSlug(r.name) === slug);
   } catch (e) {
-    return 0;
+    return [];
   }
 }
 
@@ -101,7 +104,9 @@ function renderNotFoundPage() {
 </html>`;
 }
 
-function renderReportPage(report, reqHost, playerCount) {
+function renderReportPage(report, reqHost, playerReports) {
+  const playerCount = playerReports.length;
+  const consensus = playerCount > 1 ? buildConsensus(playerReports) : null;
   const letter = report.overall_grade || "B";
   const gClass = gradeClass(letter);
   const pageTitle = `${report.name} — Grade ${letter} | Puck Bunker`;
@@ -218,6 +223,14 @@ ${JSON.stringify({
   .byline{ font-family:'JetBrains Mono',monospace; font-size:12px; color:#CFD1D4; margin:18px 0; letter-spacing:0.06em; }
   .player-link{ display:inline-block; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--hazard); border:1px solid var(--hazard-2); padding:8px 14px; margin:0 0 6px; }
   .player-link:hover{ background:var(--panel-2); border-color:var(--hazard); }
+  .consensus-link{ display:flex; align-items:center; gap:16px; flex-wrap:wrap; background:var(--panel); border:1px solid var(--hazard-2); padding:12px 16px; margin:4px 0 6px; color:var(--ice); transition:background .15s, border-color .15s; }
+  .consensus-link:hover{ background:var(--panel-2); border-color:var(--hazard); }
+  .cl-grade{ font-family:'Big Shoulders Stencil Display',sans-serif; font-size:40px; line-height:1; min-width:44px; }
+  .cl-A{ color:var(--cyan); } .cl-B{ color:var(--ice); } .cl-C, .cl-D{ color:var(--hazard); }
+  .cl-text{ display:flex; flex-direction:column; gap:2px; min-width:0; flex:1 1 180px; }
+  .cl-label{ font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--hazard); }
+  .cl-sub{ font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--ice-dim); }
+  .cl-go{ font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--hazard); white-space:nowrap; }
   .patreon-link{
     display:inline-flex; align-items:center; gap:10px;
     background:var(--panel); border:1px solid var(--hazard-2); color:var(--hazard);
@@ -279,7 +292,14 @@ ${JSON.stringify({
     ${metaLine ? `<div class="prospect-meta">${metaLine}</div>` : ""}
     ${report.title && report.title.trim() ? `<div class="subline" style="font-style:italic;">${escapeHtml(report.title)}</div>` : ""}
     ${bylineHtml}
-    ${playerCount > 1 ? `<a class="player-link" href="/player/${playerSlug(report.name)}">All ${playerCount} reports on ${escapeHtml(report.name)} →</a>` : ""}
+    ${consensus ? `<a class="consensus-link" href="/player/${playerSlug(report.name)}#consensus">
+      <span class="cl-grade cl-${consensus.grade[0]}">${escapeHtml(consensus.grade)}</span>
+      <span class="cl-text">
+        <span class="cl-label">Bunker consensus · ${playerCount} reports</span>
+        <span class="cl-sub">${consensus.overall.toFixed(1)} average · ${escapeHtml(consensus.scouts.map(s => `${s.name.split(" ")[0]} ${s.grade}`).join(" · "))}</span>
+      </span>
+      <span class="cl-go">${consensus.scouts.length > 1 ? "Scout vs. scout" : `All ${playerCount} reports`} →</span>
+    </a>` : playerCount > 1 ? `<a class="player-link" href="/player/${playerSlug(report.name)}">All ${playerCount} reports on ${escapeHtml(report.name)} →</a>` : ""}
 
     ${videoHtml}
 
@@ -318,8 +338,8 @@ module.exports = async (req, res) => {
     res.statusCode = 200;
     res.setHeader("Content-Type", "text/html; charset=utf-8");
     res.setHeader("Cache-Control", "public, s-maxage=300, stale-while-revalidate=600");
-    const playerCount = await countPlayerReports(report.name);
-    res.end(renderReportPage(report, req.headers.host, playerCount));
+    const playerReports = await fetchPlayerReports(report.name);
+    res.end(renderReportPage(report, req.headers.host, playerReports));
   } catch (err) {
     console.error("report page error:", err);
     res.statusCode = 500;
