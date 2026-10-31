@@ -425,6 +425,7 @@
   .dossier:hover .tool-tags span{ border-color:var(--cyan-dim); color:var(--ice); }
 
   /* Article boxes inside "Fresh off the desk" */
+  .feed-more{ display:flex; flex-wrap:wrap; gap:12px; margin-top:34px; }
   .ar-stamp{
     position:absolute; top:10px; right:10px; z-index:2;
     font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700;
@@ -699,6 +700,10 @@
           <div class="tool-tags"><span>Compete</span><span>IQ</span></div>
         </div>
       </article>
+    </div>
+    <div class="feed-more">
+      <a href="scouting-reports.html" class="btn btn-ghost">All scouting reports →</a>
+      <a href="articles.html" class="btn btn-ghost">All articles →</a>
     </div>
   </div>
 </section>
@@ -979,10 +984,19 @@
 <script src="public-reports.js"></script>
 <script src="article-format.js"></script>
 <script>
-// "Fresh off the desk": the newest scouting reports, then the newest article(s) as boxes of the same
-// size and shape. Articles are written in the Admin page's Articles tab. The article box is added only
-// after the reports have loaded, because loading the reports replaces everything in the grid.
-var PB_HOME_ARTICLES = 1;   // how many of the newest articles to show here (1 to 3)
+// "Fresh off the desk": the newest scouting reports (the videos) and articles together, newest first.
+// It shows 12 when at least 12 have been posted, otherwise 9. With fewer than 9 posted it shows as many
+// as fit in complete rows of 3, so the grid never ends with a lone box. Articles are written in the
+// Admin page's Articles tab.
+function pbFeedCount(n) { return n >= 12 ? 12 : n >= 9 ? 9 : n >= 3 ? n - (n % 3) : n; }
+
+// When a report went live: its scheduled release time if it was scheduled, otherwise when it was created.
+function pbReportPostedAt(r) {
+  var made = new Date(r.created_at).getTime() || 0;
+  var sched = r.scheduled_at ? new Date(r.scheduled_at).getTime() : 0;
+  return sched && sched <= Date.now() && sched > made ? sched : made;
+}
+
 function pbArticleCard(a) {
   function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
   var lib = window.PBArticle;
@@ -1000,8 +1014,14 @@ function pbArticleCard(a) {
   var body = el('div', 'dossier-body');
   body.append(el('h3', null, a.title || 'Untitled'));
   var d = a.published_at ? new Date(a.published_at) : null;
-  var meta = [a.author_name, d && !isNaN(d) ? d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '', lib && a.body ? lib.readingMinutes(a.body) + ' min read' : ''].filter(Boolean).join(' · ');
+  var meta = [d && !isNaN(d) ? d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '', lib && a.body ? lib.readingMinutes(a.body) + ' min read' : ''].filter(Boolean).join(' · ');
   if (meta) body.append(el('div', 'prospect-meta', meta));
+  if (a.author_name) {                       // same author dog tag the report boxes show for the scout
+    var by = el('div', null, 'WRITTEN BY ' + a.author_name.toUpperCase());
+    by.setAttribute('data-scout', a.author_name);
+    by.style.cssText = "font-family:'JetBrains Mono',monospace; font-size:11px; color:#CFD1D4; margin-bottom:10px;";
+    body.append(by);
+  }
   var ex = a.dek || (lib && a.body ? lib.excerpt(a.body, 220) : '');
   body.append(el('p', 'pb-excerpt', ex || 'Read the full article.'));
   var more = el('div', 'pb-more-row'); more.append(el('span', 'pb-readmore', 'Read more →')); body.append(more);
@@ -1011,19 +1031,33 @@ function pbArticleCard(a) {
   card.append(thumb, body); link.append(card);
   return link;
 }
-async function pbAddLatestArticles(gridId) {
+
+async function pbLoadFeed(gridId) {
   var grid = document.getElementById(gridId);
   if (!grid || typeof puckBunkerDB === 'undefined') return;
   try {
-    var res = await puckBunkerDB.from('puckbunker_articles')
-      .select('slug,title,dek,body,cover_url,tags,author_name,published_at')
-      .eq('status', 'published').order('published_at', { ascending: false }).limit(Math.max(1, Math.min(3, PB_HOME_ARTICLES)));
-    if (res.error || !res.data || !res.data.length) return;
-    if (typeof pbInjectCardStyles === 'function') pbInjectCardStyles();   // same equal-height card layout the reports use
-    res.data.forEach(function (a) { grid.append(pbArticleCard(a)); });
-  } catch (e) { console.error('Puck Bunker: failed to load latest articles', e); }
+    function ask(q) { return Promise.resolve(q).then(function (r) { return (r && !r.error && r.data) ? r.data : []; }, function () { return []; }); }
+    var got = await Promise.all([
+      ask(puckBunkerDB.from('puckbunker_reports').select('*').eq('status', 'published').order('created_at', { ascending: false }).limit(24)),
+      ask(puckBunkerDB.from('puckbunker_articles').select('slug,title,dek,body,cover_url,tags,author_name,published_at').eq('status', 'published').order('published_at', { ascending: false }).limit(12))
+    ]);
+    var items = got[0].map(function (r) { return { type: 'report', at: pbReportPostedAt(r), data: r }; })
+      .concat(got[1].map(function (a) { return { type: 'article', at: new Date(a.published_at).getTime() || 0, data: a }; }));
+    if (!items.length) return;                       // nothing posted yet: keep the sample cards as they are
+    items.sort(function (x, y) { return y.at - x.at; });
+    items = items.slice(0, pbFeedCount(items.length));
+    PB_COUNTS = await pbPlayerCounts();
+    pbInjectCardStyles();
+    grid.innerHTML = '';
+    items.forEach(function (it) {
+      if (it.type === 'report') grid.insertAdjacentHTML('beforeend', pbBuildCard(it.data));
+      else grid.append(pbArticleCard(it.data));
+    });
+    pbWireMultiLinks(grid);
+    pbWireReadMore(grid);
+  } catch (e) { console.error('Puck Bunker: failed to load the home feed', e); }
 }
-pbLoadPublished('intelGrid', 3).then(function () { return pbAddLatestArticles('intelGrid'); });
+pbLoadFeed('intelGrid');
 </script>
 <script>
 // Scrolling ticker: the latest published scouting reports, each linking to its full report.
