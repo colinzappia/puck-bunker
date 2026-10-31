@@ -985,10 +985,10 @@
 <script src="article-format.js"></script>
 <script>
 // "Fresh off the desk": the newest scouting reports (the videos) and articles together, newest first.
-// It shows 12 when at least 12 have been posted, otherwise 9. With fewer than 9 posted it shows as many
-// as fit in complete rows of 3, so the grid never ends with a lone box. Articles are written in the
+// It shows the 6 newest (two full rows of 3). With fewer than 6 posted it shows 3, or whatever there is
+// if fewer than 3, so the grid never ends with a lone box. Articles are written in the
 // Admin page's Articles tab.
-function pbFeedCount(n) { return n >= 12 ? 12 : n >= 9 ? 9 : n >= 3 ? n - (n % 3) : n; }
+function pbFeedCount(n) { return n >= 6 ? 6 : n >= 3 ? 3 : n; }
 
 // When a report went live: its scheduled release time if it was scheduled, otherwise when it was created.
 function pbReportPostedAt(r) {
@@ -1039,7 +1039,7 @@ async function pbLoadFeed(gridId) {
     function ask(q) { return Promise.resolve(q).then(function (r) { return (r && !r.error && r.data) ? r.data : []; }, function () { return []; }); }
     var got = await Promise.all([
       ask(puckBunkerDB.from('puckbunker_reports').select('*').eq('status', 'published').order('created_at', { ascending: false }).limit(24)),
-      ask(puckBunkerDB.from('puckbunker_articles').select('slug,title,dek,body,cover_url,tags,author_name,published_at').eq('status', 'published').order('published_at', { ascending: false }).limit(12))
+      ask(puckBunkerDB.from('puckbunker_articles').select('slug,title,dek,body,cover_url,tags,author_name,published_at').eq('status', 'published').order('published_at', { ascending: false }).limit(6))
     ]);
     var items = got[0].map(function (r) { return { type: 'report', at: pbReportPostedAt(r), data: r }; })
       .concat(got[1].map(function (a) { return { type: 'article', at: new Date(a.published_at).getTime() || 0, data: a }; }));
