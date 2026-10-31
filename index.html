@@ -424,23 +424,17 @@
   }
   .dossier:hover .tool-tags span{ border-color:var(--cyan-dim); color:var(--ice); }
 
-  /* ---------- Latest articles strip ---------- */
-  #articles[hidden]{ display:none; }
-  #articleGridHome .dossier-thumb img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transition:transform .5s ease; }
-  #articleGridHome .dossier:hover .dossier-thumb img{ transform:scale(1.04); }
-  #articleGridHome .doc-ico{ width:54px; height:54px; border:2px solid var(--ice); border-radius:50%; display:flex; align-items:center; justify-content:center; opacity:0.75; position:relative; z-index:1; transition:opacity .15s, border-color .15s, transform .2s; }
-  #articleGridHome .dossier:hover .doc-ico{ opacity:1; border-color:var(--cyan); transform:scale(1.08); }
-  #articleGridHome .doc-ico svg{ width:22px; height:22px; fill:none; stroke:var(--ice); stroke-width:1.6; stroke-linejoin:round; stroke-linecap:round; }
-  /* equal-height cards, independent of the reports section above */
-  #articleGridHome{ grid-auto-rows:1fr; align-items:stretch; }
-  #articleGridHome > .pb-card-link{ display:flex; min-width:0; }
-  #articleGridHome > .pb-card-link > .dossier{ width:100%; display:flex; flex-direction:column; }
-  #articleGridHome .dossier-body{ display:flex; flex-direction:column; flex:1 1 auto; }
-  #articleGridHome .pb-excerpt{ display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:4; line-clamp:4; overflow:hidden; margin-bottom:14px; }
-  #articleGridHome .pb-card-foot{ margin-top:auto; display:flex; flex-direction:column; gap:12px; align-items:flex-start; }
-  .ar-cue{ font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--hazard); border:1px solid var(--hazard-2); padding:7px 12px; display:inline-block; transition:background .15s, color .15s; }
-  .dossier:hover .ar-cue{ background:var(--hazard); color:var(--black); }
-  .ar-all{ margin-top:34px; }
+  /* Article boxes inside "Fresh off the desk" */
+  .ar-stamp{
+    position:absolute; top:10px; right:10px; z-index:2;
+    font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700;
+    padding:4px 8px; border:1px solid currentColor; letter-spacing:0.05em;
+    transform:rotate(4deg); backdrop-filter:blur(2px); background:rgba(20,26,20,0.4);
+    color:var(--hazard); text-shadow:0 0 10px rgba(203,174,126,0.4);
+  }
+  .dossier-thumb .doc-ico{ width:54px; height:54px; border:2px solid var(--ice); border-radius:50%; display:flex; align-items:center; justify-content:center; opacity:0.8; position:relative; z-index:1; transition:opacity .15s, border-color .15s, box-shadow .2s, transform .2s; }
+  .dossier:hover .dossier-thumb .doc-ico{ opacity:1; border-color:var(--cyan); box-shadow:0 0 24px 2px rgba(220,221,221,0.5); transform:scale(1.08); }
+  .dossier-thumb .doc-ico svg{ width:22px; height:22px; fill:none; stroke:var(--ice); stroke-width:1.6; stroke-linejoin:round; stroke-linecap:round; }
 
   /* ---------- Draft board ---------- */
   .board{ margin-top:48px; border:1px solid var(--steel); }
@@ -706,18 +700,6 @@
         </div>
       </article>
     </div>
-  </div>
-</section>
-
-<section id="articles" hidden>
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <div class="eyebrow">From the desk</div>
-      <h2 class="stencil">Latest articles.</h2>
-      <p>In-depth breakdowns and scouting theory. The stuff that needs more than a video.</p>
-    </div>
-    <div class="dossier-grid" id="articleGridHome"></div>
-    <div class="ar-all"><a href="/articles.html" class="btn btn-ghost">All articles →</a></div>
   </div>
 </section>
 
@@ -995,50 +977,53 @@
 </script>
 
 <script src="public-reports.js"></script>
-<script>pbLoadPublished('intelGrid', 3);</script>
 <script src="article-format.js"></script>
 <script>
-// The newest published articles (written in the Admin page's Articles tab). The whole section
-// stays hidden unless at least one article is published.
-(function () {
-  var sec = document.getElementById('articles'), grid = document.getElementById('articleGridHome');
-  if (!sec || !grid || typeof puckBunkerDB === 'undefined') return;
+// "Fresh off the desk": the newest scouting reports, then the newest article(s) as boxes of the same
+// size and shape. Articles are written in the Admin page's Articles tab. The article box is added only
+// after the reports have loaded, because loading the reports replaces everything in the grid.
+var PB_HOME_ARTICLES = 1;   // how many of the newest articles to show here (1 to 3)
+function pbArticleCard(a) {
   function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
-  function fmt(iso) { var d = new Date(iso); return isNaN(d) ? '' : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); }
-  puckBunkerDB.from('puckbunker_articles')
-    .select('slug,title,dek,body,cover_url,tags,author_name,published_at')
-    .eq('status', 'published')
-    .order('published_at', { ascending: false })
-    .limit(3)
-    .then(function (res) {
-      if (res.error || !res.data || !res.data.length) return;
-      var fmtLib = window.PBArticle;
-      res.data.forEach(function (a) {
-        var link = el('a', 'pb-card-link'); link.href = '/article/' + encodeURIComponent(a.slug); link.style.cssText = 'text-decoration:none; color:inherit;';
-        var card = el('article', 'dossier hud reveal in');
-        card.append(el('span', 'hud-bl'), el('span', 'hud-br'));
-        var thumb = el('div', 'dossier-thumb');
-        if (/^https:\/\//i.test(a.cover_url || '')) {
-          var img = el('img'); img.src = a.cover_url; img.alt = ''; img.loading = 'lazy'; thumb.append(img);
-        } else {
-          thumb.insertAdjacentHTML('beforeend', '<span class="doc-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 12h7M9 16h7"/></svg></span>');
-        }
-        thumb.append(el('span', 'file-tag', 'ARTICLE'));
-        var body = el('div', 'dossier-body');
-        body.append(el('h3', null, a.title || 'Untitled'));
-        var by = [a.author_name ? 'By ' + a.author_name : '', fmt(a.published_at), fmtLib && a.body ? fmtLib.readingMinutes(a.body) + ' min read' : ''].filter(Boolean).join(' · ');
-        if (by) body.append(el('div', 'prospect-meta', by));
-        var ex = a.dek || (fmtLib && a.body ? fmtLib.excerpt(a.body, 170) : '');
-        if (ex) body.append(el('p', 'pb-excerpt', ex));
-        var foot = el('div', 'pb-card-foot');
-        if (a.tags && a.tags.length) { var tags = el('div', 'tool-tags'); a.tags.slice(0, 3).forEach(function (t) { tags.append(el('span', null, t)); }); foot.append(tags); }
-        foot.append(el('span', 'ar-cue', 'Read article →'));
-        body.append(foot);
-        card.append(thumb, body); link.append(card); grid.append(link);
-      });
-      sec.hidden = false;
-    }, function () {});
-})();
+  var lib = window.PBArticle;
+  var link = el('a', 'pb-card-link'); link.href = '/article/' + encodeURIComponent(a.slug); link.style.cssText = 'text-decoration:none; color:inherit;';
+  var card = el('article', 'dossier hud');
+  card.append(el('span', 'hud-bl'), el('span', 'hud-br'));
+  var thumb = el('div', 'dossier-thumb');
+  if (/^https:\/\//i.test(a.cover_url || '')) {
+    var img = el('img'); img.src = a.cover_url; img.alt = ''; img.loading = 'lazy';
+    img.style.cssText = 'position:absolute; inset:0; width:100%; height:100%; object-fit:cover;'; thumb.append(img);
+  } else {
+    thumb.insertAdjacentHTML('beforeend', '<span class="doc-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 12h7M9 16h7"/></svg></span>');
+  }
+  thumb.append(el('span', 'ar-stamp', 'ARTICLE'));
+  var body = el('div', 'dossier-body');
+  body.append(el('h3', null, a.title || 'Untitled'));
+  var d = a.published_at ? new Date(a.published_at) : null;
+  var meta = [a.author_name, d && !isNaN(d) ? d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '', lib && a.body ? lib.readingMinutes(a.body) + ' min read' : ''].filter(Boolean).join(' · ');
+  if (meta) body.append(el('div', 'prospect-meta', meta));
+  var ex = a.dek || (lib && a.body ? lib.excerpt(a.body, 220) : '');
+  body.append(el('p', 'pb-excerpt', ex || 'Read the full article.'));
+  var more = el('div', 'pb-more-row'); more.append(el('span', 'pb-readmore', 'Read more →')); body.append(more);
+  var foot = el('div', 'pb-card-foot'), tags = el('div', 'tool-tags');
+  (a.tags || []).slice(0, 3).forEach(function (t) { tags.append(el('span', null, t)); });
+  foot.append(tags); body.append(foot);
+  card.append(thumb, body); link.append(card);
+  return link;
+}
+async function pbAddLatestArticles(gridId) {
+  var grid = document.getElementById(gridId);
+  if (!grid || typeof puckBunkerDB === 'undefined') return;
+  try {
+    var res = await puckBunkerDB.from('puckbunker_articles')
+      .select('slug,title,dek,body,cover_url,tags,author_name,published_at')
+      .eq('status', 'published').order('published_at', { ascending: false }).limit(Math.max(1, Math.min(3, PB_HOME_ARTICLES)));
+    if (res.error || !res.data || !res.data.length) return;
+    if (typeof pbInjectCardStyles === 'function') pbInjectCardStyles();   // same equal-height card layout the reports use
+    res.data.forEach(function (a) { grid.append(pbArticleCard(a)); });
+  } catch (e) { console.error('Puck Bunker: failed to load latest articles', e); }
+}
+pbLoadPublished('intelGrid', 3).then(function () { return pbAddLatestArticles('intelGrid'); });
 </script>
 <script>
 // Scrolling ticker: the latest published scouting reports, each linking to its full report.
