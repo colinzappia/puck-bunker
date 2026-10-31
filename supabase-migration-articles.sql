@@ -79,3 +79,9 @@ create policy "Admins delete articles"
   on public.puckbunker_articles for delete
   to authenticated
   using (true);
+
+-- Let the website reach the table. Newer Supabase projects don't grant this
+-- automatically for tables made in the SQL Editor; the policies above still
+-- decide which rows each visitor can see or change.
+grant select on public.puckbunker_articles to anon;
+grant select, insert, update, delete on public.puckbunker_articles to authenticated;
