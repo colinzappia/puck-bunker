@@ -78,7 +78,9 @@ function pbCardSections(card) {
 }
 
 function pbAlignCards(root) {
-  const cards = [...(root || document).querySelectorAll('.pb-card-link .dossier')];
+  // Cards whose link is marked data-noalign (the home page's lead and side cards, which have a different
+  // shape from their neighbours) are left alone.
+  const cards = [...(root || document).querySelectorAll('.pb-card-link:not([data-noalign]) .dossier')];
   cards.forEach(c => pbCardSections(c).forEach(el => { if (el) el.style.marginTop = ''; }));
   const rows = new Map();
   cards.forEach(c => {
