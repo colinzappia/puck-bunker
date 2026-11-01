@@ -5552,22 +5552,6 @@
     },
     {
      "date": "2026-10-30",
-     "goalie": "Jan Larys",
-     "team": "Drummondville",
-     "league": "QMJHL",
-     "opponent": "@ Rimouski",
-     "shots": 25,
-     "saves": 22,
-     "ga": 3,
-     "toi": "59:26",
-     "qualifies": false,
-     "game_id": "33012",
-     "score": "Dru 2 @ Rim 3",
-     "source": "hockeytech",
-     "confidence": "official"
-    },
-    {
-     "date": "2026-10-30",
      "goalie": "Parker Stockseth",
      "team": "Sherbrooke",
      "league": "QMJHL",
@@ -5579,6 +5563,22 @@
      "qualifies": true,
      "game_id": "33141",
      "score": "Chi 2 @ She 1",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-30",
+     "goalie": "Jan Larys",
+     "team": "Drummondville",
+     "league": "QMJHL",
+     "opponent": "@ Rimouski",
+     "shots": 25,
+     "saves": 22,
+     "ga": 3,
+     "toi": "59:26",
+     "qualifies": false,
+     "game_id": "33012",
+     "score": "Dru 2 @ Rim 3",
      "source": "hockeytech",
      "confidence": "official"
     },
@@ -5627,8 +5627,8 @@
     },
     {
      "league": "OHL",
-     "game_id": "29141",
-     "matchup": "LDN @ SBY"
+     "game_id": "29138",
+     "matchup": "BAR @ SAG"
     },
     {
      "league": "OHL",
@@ -5637,8 +5637,8 @@
     },
     {
      "league": "OHL",
-     "game_id": "29138",
-     "matchup": "BAR @ SAG"
+     "game_id": "29141",
+     "matchup": "LDN @ SBY"
     },
     {
      "league": "OHL",
@@ -5657,13 +5657,13 @@
     },
     {
      "league": "WHL",
-     "game_id": "1023232",
-     "matchup": "CGY @ RD"
+     "game_id": "1023231",
+     "matchup": "SEA @ PA"
     },
     {
      "league": "WHL",
-     "game_id": "1023231",
-     "matchup": "SEA @ PA"
+     "game_id": "1023232",
+     "matchup": "CGY @ RD"
     },
     {
      "league": "WHL",
@@ -5682,13 +5682,13 @@
     },
     {
      "league": "WHL",
-     "game_id": "1023233",
-     "matchup": "MH @ SPO"
+     "game_id": "1023230",
+     "matchup": "TC @ PEN"
     },
     {
      "league": "WHL",
-     "game_id": "1023230",
-     "matchup": "TC @ PEN"
+     "game_id": "1023233",
+     "matchup": "MH @ SPO"
     },
     {
      "league": "QMJHL",
@@ -5702,8 +5702,8 @@
     },
     {
      "league": "QMJHL",
-     "game_id": "33012",
-     "matchup": "Dru @ Rim"
+     "game_id": "33173",
+     "matchup": "Sha @ VdO"
     },
     {
      "league": "QMJHL",
@@ -5712,8 +5712,8 @@
     },
     {
      "league": "QMJHL",
-     "game_id": "33173",
-     "matchup": "Sha @ VdO"
+     "game_id": "33012",
+     "matchup": "Dru @ Rim"
     },
     {
      "league": "QMJHL",
@@ -5727,18 +5727,8 @@
     },
     {
      "league": "USHL",
-     "game_id": "13561",
-     "matchup": "YNG @ DSM"
-    },
-    {
-     "league": "USHL",
-     "game_id": "13562",
-     "matchup": "SF @ GB"
-    },
-    {
-     "league": "USHL",
-     "game_id": "13563",
-     "matchup": "OMA @ LIN"
+     "game_id": "13565",
+     "matchup": "CHI @ TC"
     },
     {
      "league": "USHL",
@@ -5747,14 +5737,669 @@
     },
     {
      "league": "USHL",
-     "game_id": "13565",
-     "matchup": "CHI @ TC"
+     "game_id": "13563",
+     "matchup": "OMA @ LIN"
+    },
+    {
+     "league": "USHL",
+     "game_id": "13561",
+     "matchup": "YNG @ DSM"
+    },
+    {
+     "league": "USHL",
+     "game_id": "13562",
+     "matchup": "SF @ GB"
     }
    ],
-   "updated": "2026-10-31T12:14:54-04:00"
+   "updated": "2026-11-01T12:13:54-05:00"
+  },
+  "2026-10-31": {
+   "date": "2026-10-31",
+   "points": [
+    {
+     "date": "2026-10-31",
+     "player": "Lauri Kouhia",
+     "team": "Fargo",
+     "league": "USHL",
+     "opponent": "@ Sioux City",
+     "g": 3,
+     "a": 1,
+     "game_id": "13570",
+     "score": "FGO 6 @ SC 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-31",
+     "player": "Daniil Butin",
+     "team": "Sioux City",
+     "league": "USHL",
+     "opponent": "vs Fargo",
+     "g": 2,
+     "a": 1,
+     "game_id": "13570",
+     "score": "FGO 6 @ SC 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-31",
+     "player": "Bogdan Yakushevsky",
+     "team": "Windsor",
+     "league": "OHL",
+     "opponent": "@ Owen Sound",
+     "g": 1,
+     "a": 2,
+     "game_id": "29143",
+     "score": "WSR 8 @ OS 0",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-31",
+     "player": "Jesse Debruyn",
+     "team": "Windsor",
+     "league": "OHL",
+     "opponent": "@ Owen Sound",
+     "g": 0,
+     "a": 3,
+     "game_id": "29143",
+     "score": "WSR 8 @ OS 0",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-31",
+     "player": "Adam Israilov",
+     "team": "Omaha",
+     "league": "USHL",
+     "opponent": "vs Lincoln",
+     "g": 2,
+     "a": 0,
+     "game_id": "13569",
+     "score": "LIN 4 @ OMA 6",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-31",
+     "player": "Carter Meyer",
+     "team": "Québec",
+     "league": "QMJHL",
+     "opponent": "vs Baie-Comeau",
+     "g": 2,
+     "a": 0,
+     "game_id": "32980",
+     "score": "BaC 1 @ Que 6",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-31",
+     "player": "Sebastian Mogull",
+     "team": "Barrie",
+     "league": "OHL",
+     "opponent": "@ Flint",
+     "g": 2,
+     "a": 0,
+     "game_id": "29142",
+     "score": "BAR 3 @ FLNT 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-31",
+     "player": "Caine Bickel",
+     "team": "Omaha",
+     "league": "USHL",
+     "opponent": "vs Lincoln",
+     "g": 1,
+     "a": 1,
+     "game_id": "13569",
+     "score": "LIN 4 @ OMA 6",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-31",
+     "player": "Brock England",
+     "team": "Seattle",
+     "league": "WHL",
+     "opponent": "@ Saskatoon",
+     "g": 1,
+     "a": 1,
+     "game_id": "1023240",
+     "score": "SEA 5 @ SAS 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-31",
+     "player": "Shaeffer Gordon-Carroll",
+     "team": "Medicine Hat",
+     "league": "WHL",
+     "opponent": "@ Tri-City",
+     "g": 1,
+     "a": 1,
+     "game_id": "1023241",
+     "score": "MH 5 @ TC 1",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-31",
+     "player": "Ethan Sung",
+     "team": "Sioux Falls",
+     "league": "USHL",
+     "opponent": "@ Green Bay",
+     "g": 1,
+     "a": 1,
+     "game_id": "13568",
+     "score": "SF 4 @ GB 3",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-31",
+     "player": "Jacob Dumansky",
+     "team": "Kamloops",
+     "league": "WHL",
+     "opponent": "@ Edmonton",
+     "g": 0,
+     "a": 2,
+     "game_id": "1023237",
+     "score": "KAM 4 @ EDM 1",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-31",
+     "player": "Logan Anderson",
+     "team": "Youngstown",
+     "league": "USHL",
+     "opponent": "@ Des Moines",
+     "g": 1,
+     "a": 0,
+     "game_id": "13567",
+     "score": "YNG 3 @ DSM 1",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-31",
+     "player": "Ty Bergeron",
+     "team": "Windsor",
+     "league": "OHL",
+     "opponent": "@ Owen Sound",
+     "g": 1,
+     "a": 0,
+     "game_id": "29143",
+     "score": "WSR 8 @ OS 0",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-31",
+     "player": "Jamie Glance",
+     "team": "Saint John",
+     "league": "QMJHL",
+     "opponent": "vs Moncton",
+     "g": 1,
+     "a": 0,
+     "game_id": "33078",
+     "score": "Mon 1 @ SNB 3",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-31",
+     "player": "Samuel Rheault",
+     "team": "Rouyn-Noranda",
+     "league": "QMJHL",
+     "opponent": "vs Shawinigan",
+     "g": 1,
+     "a": 0,
+     "game_id": "33043",
+     "score": "Sha 3 @ Rou 9",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-31",
+     "player": "Aleksandr Sokolov",
+     "team": "Tri-City",
+     "league": "USHL",
+     "opponent": "vs Chicago",
+     "g": 1,
+     "a": 0,
+     "game_id": "13571",
+     "score": "CHI 1 @ TC 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-31",
+     "player": "Kayden Stroeder",
+     "team": "Edmonton",
+     "league": "WHL",
+     "opponent": "vs Kamloops",
+     "g": 1,
+     "a": 0,
+     "game_id": "1023237",
+     "score": "KAM 4 @ EDM 1",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-31",
+     "player": "Liam Armit",
+     "team": "Baie-Comeau",
+     "league": "QMJHL",
+     "opponent": "@ Québec",
+     "g": 0,
+     "a": 1,
+     "game_id": "32980",
+     "score": "BaC 1 @ Que 6",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-31",
+     "player": "Aden Bouchard",
+     "team": "Tri-City",
+     "league": "WHL",
+     "opponent": "vs Medicine Hat",
+     "g": 0,
+     "a": 1,
+     "game_id": "1023241",
+     "score": "MH 5 @ TC 1",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-31",
+     "player": "Loïk Gariépy",
+     "team": "Victoriaville",
+     "league": "QMJHL",
+     "opponent": "vs Halifax",
+     "g": 0,
+     "a": 1,
+     "game_id": "33207",
+     "score": "Hal 3 @ Vic 6",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-31",
+     "player": "Levi Harper",
+     "team": "Saginaw",
+     "league": "OHL",
+     "opponent": "vs Guelph",
+     "g": 0,
+     "a": 1,
+     "game_id": "29144",
+     "score": "GUE 5 @ SAG 3",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-31",
+     "player": "Deryk Lemaire",
+     "team": "Victoriaville",
+     "league": "QMJHL",
+     "opponent": "vs Halifax",
+     "g": 0,
+     "a": 1,
+     "game_id": "33207",
+     "score": "Hal 3 @ Vic 6",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-31",
+     "player": "Pavel Martinu",
+     "team": "Sioux Falls",
+     "league": "USHL",
+     "opponent": "@ Green Bay",
+     "g": 0,
+     "a": 1,
+     "game_id": "13568",
+     "score": "SF 4 @ GB 3",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-31",
+     "player": "Tyler Martyniuk",
+     "team": "Saginaw",
+     "league": "OHL",
+     "opponent": "vs Guelph",
+     "g": 0,
+     "a": 1,
+     "game_id": "29144",
+     "score": "GUE 5 @ SAG 3",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-31",
+     "player": "William Matte",
+     "team": "Kelowna",
+     "league": "WHL",
+     "opponent": "@ Portland",
+     "g": 0,
+     "a": 1,
+     "game_id": "1023239",
+     "score": "KEL 4 @ POR 2",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-31",
+     "player": "Bastien Michaud",
+     "team": "Quebec",
+     "league": "QMJHL",
+     "opponent": "vs Baie-Comeau",
+     "g": 0,
+     "a": 1,
+     "game_id": "32980",
+     "score": "BaC 1 @ Que 6",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-31",
+     "player": "Oliver Ozogany",
+     "team": "Saint John",
+     "league": "QMJHL",
+     "opponent": "vs Moncton",
+     "g": 0,
+     "a": 1,
+     "game_id": "33078",
+     "score": "Mon 1 @ SNB 3",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-31",
+     "player": "Jaxon Pisani",
+     "team": "Everett",
+     "league": "WHL",
+     "opponent": "@ Moose Jaw",
+     "g": 0,
+     "a": 1,
+     "game_id": "1023238",
+     "score": "EVT 2 @ MJ 3",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-31",
+     "player": "Ryland Rooney",
+     "team": "Sioux Falls",
+     "league": "USHL",
+     "opponent": "@ Green Bay",
+     "g": 0,
+     "a": 1,
+     "game_id": "13568",
+     "score": "SF 4 @ GB 3",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-31",
+     "player": "Dmitri Savin",
+     "team": "Saginaw",
+     "league": "OHL",
+     "opponent": "vs Guelph",
+     "g": 0,
+     "a": 1,
+     "game_id": "29144",
+     "score": "GUE 5 @ SAG 3",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-31",
+     "player": "Vladimir Shtyrkhunov",
+     "team": "Shawinigan",
+     "league": "QMJHL",
+     "opponent": "@ Rouyn-Noranda",
+     "g": 0,
+     "a": 1,
+     "game_id": "33043",
+     "score": "Sha 3 @ Rou 9",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-31",
+     "player": "Jackson Smith",
+     "team": "Tri-City",
+     "league": "USHL",
+     "opponent": "vs Chicago",
+     "g": 0,
+     "a": 1,
+     "game_id": "13571",
+     "score": "CHI 1 @ TC 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-31",
+     "player": "Michael Tang",
+     "team": "Barrie",
+     "league": "OHL",
+     "opponent": "@ Flint",
+     "g": 0,
+     "a": 1,
+     "game_id": "29142",
+     "score": "BAR 3 @ FLNT 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-31",
+     "player": "Jaakko Wycisk",
+     "team": "Guelph",
+     "league": "OHL",
+     "opponent": "@ Saginaw",
+     "g": 0,
+     "a": 1,
+     "game_id": "29144",
+     "score": "GUE 5 @ SAG 3",
+     "source": "hockeytech",
+     "confidence": "official"
+    }
+   ],
+   "goalies": [
+    {
+     "date": "2026-10-31",
+     "goalie": "Harrison Boettiger",
+     "team": "Kelowna",
+     "league": "WHL",
+     "opponent": "@ Portland",
+     "shots": 37,
+     "saves": 35,
+     "ga": 2,
+     "toi": "60:00",
+     "qualifies": true,
+     "game_id": "1023239",
+     "score": "KEL 4 @ POR 2",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-31",
+     "goalie": "Carter Casey",
+     "team": "Medicine Hat",
+     "league": "WHL",
+     "opponent": "@ Tri-City",
+     "shots": 26,
+     "saves": 25,
+     "ga": 1,
+     "toi": "60:00",
+     "qualifies": true,
+     "game_id": "1023241",
+     "score": "MH 5 @ TC 1",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-31",
+     "goalie": "Jacoby Weiner",
+     "team": "Moncton",
+     "league": "QMJHL",
+     "opponent": "@ Saint John",
+     "shots": 30,
+     "saves": 28,
+     "ga": 2,
+     "toi": "57:58",
+     "qualifies": true,
+     "game_id": "33078",
+     "score": "Mon 1 @ SNB 3",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-31",
+     "goalie": "Andrei Nikolayev",
+     "team": "Victoriaville",
+     "league": "QMJHL",
+     "opponent": "vs Halifax",
+     "shots": 40,
+     "saves": 37,
+     "ga": 3,
+     "toi": "60:00",
+     "qualifies": false,
+     "game_id": "33207",
+     "score": "Hal 3 @ Vic 6",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-10-31",
+     "goalie": "Sebastian Charvat",
+     "team": "Waterloo",
+     "league": "USHL",
+     "opponent": "vs Dubuque",
+     "shots": 20,
+     "saves": 18,
+     "ga": 2,
+     "toi": "60:26",
+     "qualifies": true,
+     "game_id": "13572",
+     "score": "DBQ 2 @ WAT 3",
+     "source": "hockeytech",
+     "confidence": "official"
+    }
+   ],
+   "games_checked": [
+    {
+     "league": "OHL",
+     "game_id": "29143",
+     "matchup": "WSR @ OS"
+    },
+    {
+     "league": "OHL",
+     "game_id": "29142",
+     "matchup": "BAR @ FLNT"
+    },
+    {
+     "league": "OHL",
+     "game_id": "29144",
+     "matchup": "GUE @ SAG"
+    },
+    {
+     "league": "WHL",
+     "game_id": "1023237",
+     "matchup": "KAM @ EDM"
+    },
+    {
+     "league": "WHL",
+     "game_id": "1023238",
+     "matchup": "EVT @ MJ"
+    },
+    {
+     "league": "WHL",
+     "game_id": "1023240",
+     "matchup": "SEA @ SAS"
+    },
+    {
+     "league": "WHL",
+     "game_id": "1023239",
+     "matchup": "KEL @ POR"
+    },
+    {
+     "league": "WHL",
+     "game_id": "1023241",
+     "matchup": "MH @ TC"
+    },
+    {
+     "league": "QMJHL",
+     "game_id": "32949",
+     "matchup": "Cha @ NFL"
+    },
+    {
+     "league": "QMJHL",
+     "game_id": "33043",
+     "matchup": "Sha @ Rou"
+    },
+    {
+     "league": "QMJHL",
+     "game_id": "32980",
+     "matchup": "BaC @ Que"
+    },
+    {
+     "league": "QMJHL",
+     "game_id": "32693",
+     "matchup": "Chi @ BLB"
+    },
+    {
+     "league": "QMJHL",
+     "game_id": "33078",
+     "matchup": "Mon @ SNB"
+    },
+    {
+     "league": "QMJHL",
+     "game_id": "33207",
+     "matchup": "Hal @ Vic"
+    },
+    {
+     "league": "USHL",
+     "game_id": "13568",
+     "matchup": "SF @ GB"
+    },
+    {
+     "league": "USHL",
+     "game_id": "13572",
+     "matchup": "DBQ @ WAT"
+    },
+    {
+     "league": "USHL",
+     "game_id": "13571",
+     "matchup": "CHI @ TC"
+    },
+    {
+     "league": "USHL",
+     "game_id": "13570",
+     "matchup": "FGO @ SC"
+    },
+    {
+     "league": "USHL",
+     "game_id": "13567",
+     "matchup": "YNG @ DSM"
+    },
+    {
+     "league": "USHL",
+     "game_id": "13569",
+     "matchup": "LIN @ OMA"
+    }
+   ],
+   "updated": "2026-11-01T12:13:18-05:00"
   }
  },
- "updated": "2026-10-31T12:15:00-04:00",
+ "updated": "2026-11-01T12:13:54-05:00",
  "problems": {
   "hockeytech": [],
   "europe": []
