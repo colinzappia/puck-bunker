@@ -529,6 +529,87 @@
     .brand-mark{ width:28px; height:28px; }
     nav .btn-primary{ padding:8px 12px !important; font-size:11px; }
   }
+
+  /* =====================================================================
+     FRONT-PAGE LAYOUT (v2): split hero, lead story + side stories, the
+     board beside the join card, tool tiles. These rules come last on
+     purpose, so they win over the older centred-layout rules above.
+     ===================================================================== */
+
+  /* ---- hero: copy on the left, crest on the right ---- */
+  .hero{ padding:0; }
+  .hero-grid{ position:relative; z-index:2; display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,0.85fr); gap:48px; align-items:center; padding-top:64px; padding-bottom:64px; }
+  .hero-copy{ min-width:0; }
+  .hero .eyebrow{ justify-content:flex-start; }
+  .hero h1{ font-size:clamp(44px,6.4vw,88px); line-height:0.9; margin:18px 0 20px; }
+  .hero p.tagline{ font-size:clamp(20px,2.6vw,28px); margin-bottom:16px; }
+  .hero p.lede{ font-size:17px; max-width:560px; margin:0 0 30px; }
+  .hero .cta-row{ justify-content:flex-start; margin-bottom:0; }
+  .hero-crest{ width:100%; max-width:440px; margin:0 0 0 auto; aspect-ratio:1/1; position:relative; display:flex; align-items:center; justify-content:center; }
+  .hero-crest img{ width:78%; position:relative; z-index:2; }
+  .crest-ring{ position:absolute; border-radius:50%; pointer-events:none; }
+  .crest-sweep{ background:conic-gradient(from 0deg, rgba(220,221,221,0.16), transparent 24%, transparent 100%); animation:spin 9s linear infinite; }
+  @media (prefers-reduced-motion:reduce){ .crest-sweep{ animation:none; } }
+
+  /* ---- Fresh off the desk: heading row + feed grid ---- */
+  .sec-top{ display:flex; align-items:flex-end; justify-content:space-between; gap:24px; flex-wrap:wrap; }
+  .sec-top .sec-head{ margin-bottom:0; max-width:560px; }
+  .sec-top .feed-more{ margin-top:0; }
+  #intelGrid{ grid-template-columns:repeat(12,minmax(0,1fr)); grid-auto-rows:auto; gap:22px; margin-top:40px; }
+  #intelGrid > .dossier, #intelGrid > .pb-card-link{ grid-column:span 4; }
+  #intelGrid > .pb-lead{ grid-column:1 / span 7; grid-row:1 / span 2; }
+  #intelGrid > .pb-s1{ grid-column:8 / span 5; grid-row:1; }
+  #intelGrid > .pb-s2{ grid-column:8 / span 5; grid-row:2; }
+  #intelGrid > .pb-lead .dossier-body h3{ font-size:clamp(26px,3vw,36px); line-height:1.08; }
+  #intelGrid > .pb-lead .pb-excerpt{ -webkit-line-clamp:9; line-clamp:9; font-size:16px; }
+  #intelGrid > .pb-side .dossier{ flex-direction:row; }
+  #intelGrid > .pb-side .dossier-thumb{ flex:0 0 42%; aspect-ratio:auto; border-bottom:none; border-right:1px solid var(--steel); }
+  #intelGrid > .pb-side .dossier-thumb img{ object-fit:contain !important; }   /* show the whole video frame, never a cropped sliver */
+  #intelGrid > .pb-side .dossier-body{ flex:1 1 0; min-width:0; }
+  #intelGrid > .pb-side .pb-excerpt{ -webkit-line-clamp:4; line-clamp:4; }
+
+  /* ---- the board, with the join card beside it ---- */
+  .split{ display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:40px; align-items:start; }
+  .split-main{ grid-column:1 / span 7; min-width:0; }
+  .join-card{ grid-column:8 / span 5; min-width:0; position:relative; background:var(--panel); border:1px solid var(--hazard-2); padding:34px 30px 32px; box-shadow:0 0 40px -18px rgba(203,174,126,0.35); scroll-margin-top:90px; }
+  .join-card h2{ font-size:clamp(40px,4.6vw,60px); line-height:0.92; margin:16px 0 16px; text-shadow:0 0 40px rgba(203,174,126,0.2); }
+  .join-card p{ color:var(--ice-dim); font-size:16px; margin-bottom:24px; }
+  .join-card .cta-row{ margin-bottom:0; justify-content:flex-start; }
+  .join-socials{ display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; padding-top:22px; border-top:1px solid var(--steel); }
+  .join-socials a{ display:inline-flex; align-items:center; min-height:44px; padding:0 14px; border:1px solid var(--steel); font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:0.06em; text-transform:uppercase; color:var(--ice); transition:border-color .15s, color .15s; }
+  .join-socials a:hover{ border-color:var(--cyan); color:var(--cyan); }
+
+  /* ---- The M.O.: tiles beside the sample readout ---- */
+  #method .sec-head{ max-width:640px; }
+  .method-layout{ display:grid; grid-template-columns:minmax(0,7fr) minmax(0,5fr); gap:40px; align-items:start; margin-top:40px; }
+  .tool-tiles{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+  .tool-tile{ background:var(--panel); border:1px solid var(--steel); padding:16px 18px 18px; transition:border-color .2s; }
+  .tool-tile:hover{ border-color:var(--cyan-dim); }
+  .tool-n{ font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700; color:var(--hazard); letter-spacing:0.08em; }
+  .tool-tile h3{ font-size:15px; font-weight:700; margin:6px 0 4px; line-height:1.25; }
+  .tool-tile p{ font-size:13px; color:var(--ice-dim); line-height:1.45; margin:0; }
+
+  /* ---- narrow screens ---- */
+  @media (max-width:900px){
+    .hero-grid{ grid-template-columns:minmax(0,1fr); gap:28px; padding-top:36px; padding-bottom:44px; }
+    .hero-crest{ order:-1; max-width:250px; margin:0 auto; }
+    .hero h1{ font-size:clamp(40px,12vw,56px); }
+    #intelGrid{ grid-template-columns:minmax(0,1fr); }
+    #intelGrid > .dossier, #intelGrid > .pb-card-link, #intelGrid > .pb-lead, #intelGrid > .pb-s1, #intelGrid > .pb-s2{ grid-column:1 / -1; grid-row:auto; }
+    #intelGrid > .pb-side .dossier{ flex-direction:column; }
+    #intelGrid > .pb-side .dossier-thumb{ flex:0 0 auto; aspect-ratio:16/9; border-right:none; border-bottom:1px solid var(--steel); }
+    #intelGrid > .pb-side .dossier-thumb img{ object-fit:cover !important; }
+    #intelGrid > .pb-side .dossier-body{ flex:1 1 auto; }
+    .split{ grid-template-columns:minmax(0,1fr); gap:36px; }
+    .split-main, .join-card{ grid-column:1 / -1; }
+    .method-layout{ grid-template-columns:minmax(0,1fr); gap:28px; }
+  }
+  @media (max-width:600px){
+    .tool-tiles{ grid-template-columns:minmax(0,1fr); }
+    .join-card{ padding:28px 22px; }
+    .sec-top .feed-more .btn{ width:100%; justify-content:center; }
+    .board-row.head span:nth-child(3){ display:none; }   /* the Trend column is hidden at this width, so hide its header too */
+  }
 </style>
 <script src="/traffic.js"></script>
 <script src="/badges.js" defer></script>
@@ -621,28 +702,34 @@
       <line x1="96" y1="60" x2="120" y2="60" opacity="0.8"/>
     </svg>
   </div>
-  <div class="wrap hero-inner">
-    <div class="hero-crest"><img src="puck-bunker-logo.png" alt="Puck Bunker crest"></div>
-    <div class="eyebrow">TRANSMISSION ACTIVE</div>
-    <h1 class="stencil">
-      <span class="line">Hockey scouting,</span>
-      <span class="line">dug in.</span>
-    </h1>
-    <p class="tagline stencil">The tape doesn't lie. <span class="glow">Neither do we.</span></p>
-    <p class="lede">Two scouts, one screening room, no agenda. We break down prospects the way NHL scouts do; frame by frame, tool by tool, full games not highlight clips, and grade what actually translates to the next level. No hot takes. Just the tape, published every week on YouTube.</p>
-    <div class="cta-row">
-      <a href="#intel" class="btn btn-primary">
-        <svg viewBox="0 0 24 24"><path fill="currentColor" d="M8 5v14l11-7z"/></svg>
-        Read Latest Report
-      </a>
-      <a href="https://www.youtube.com/@PuckBunker" target="_blank" rel="noopener" class="btn btn-ghost">Subscribe on YouTube</a>
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <div class="eyebrow">TRANSMISSION ACTIVE</div>
+      <h1 class="stencil">
+        <span class="line">Hockey scouting,</span>
+        <span class="line">dug in.</span>
+      </h1>
+      <p class="tagline stencil">The tape doesn't lie. <span class="glow">Neither do we.</span></p>
+      <p class="lede">Two scouts, one screening room, no agenda. We break down prospects the way NHL scouts do; frame by frame, tool by tool, full games not highlight clips, and grade what actually translates to the next level. No hot takes. Just the tape, published every week on YouTube.</p>
+      <div class="cta-row">
+        <a href="#intel" class="btn btn-primary">
+          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M8 5v14l11-7z"/></svg>
+          Read Latest Report
+        </a>
+        <a href="https://www.youtube.com/@PuckBunker" target="_blank" rel="noopener" class="btn btn-ghost">Subscribe on YouTube</a>
+      </div>
+    </div>
+    <div class="hero-crest">
+      <span class="crest-ring" style="inset:-6%; border:1px solid rgba(220,221,221,0.16);" aria-hidden="true"></span>
+      <span class="crest-ring crest-sweep" style="inset:-22%; border:1px solid rgba(220,221,221,0.1);" aria-hidden="true"></span>
+      <span class="crest-ring" style="inset:-38%; border:1px solid rgba(220,221,221,0.07);" aria-hidden="true"></span>
+      <img src="puck-bunker-logo.png" alt="Puck Bunker crest">
     </div>
   </div>
   <div class="ticker" id="reportTicker" style="display:none;" aria-label="Latest scouting reports">
     <div class="ticker-track" id="reportTickerTrack"></div>
   </div>
 </section>
-
 
 
 <section id="intel">
@@ -661,10 +748,16 @@
   </div>
 
   <div class="wrap">
-    <div class="sec-head reveal">
-      <div class="eyebrow">Latest intel</div>
-      <h2 class="stencil">Fresh off the desk.</h2>
-      <p>New dossiers every week. Full breakdowns, graded and filed.</p>
+    <div class="sec-top">
+      <div class="sec-head reveal">
+        <div class="eyebrow">Latest intel</div>
+        <h2 class="stencil">Fresh off the desk.</h2>
+        <p>New dossiers every week. Full breakdowns, graded and filed.</p>
+      </div>
+      <div class="feed-more">
+        <a href="scouting-reports.html" class="btn btn-ghost">All scouting reports →</a>
+        <a href="articles.html" class="btn btn-ghost">All articles →</a>
+      </div>
     </div>
     <div class="dossier-grid" id="intelGrid">
       <article class="dossier hud reveal">
@@ -701,10 +794,6 @@
         </div>
       </article>
     </div>
-    <div class="feed-more">
-      <a href="scouting-reports.html" class="btn btn-ghost">All scouting reports →</a>
-      <a href="articles.html" class="btn btn-ghost">All articles →</a>
-    </div>
   </div>
 </section>
 
@@ -721,9 +810,33 @@
         <line x1="96" y1="60" x2="120" y2="60" opacity="0.8"/>
       </svg>
     </div>
+    <div class="mini-target" style="--s:50px; right:12%; top:56px; --spd:6.5s; --d:-2.5s;">
+      <div class="mini-sweep"></div>
+      <svg viewBox="0 0 120 120" fill="none" stroke="var(--cyan)" stroke-width="1.5">
+        <circle cx="60" cy="60" r="50" opacity="0.5"/>
+        <circle cx="60" cy="60" r="30" opacity="0.7"/>
+        <line x1="60" y1="0" x2="60" y2="24" opacity="0.8"/>
+        <line x1="60" y1="96" x2="60" y2="120" opacity="0.8"/>
+        <line x1="0" y1="60" x2="24" y2="60" opacity="0.8"/>
+        <line x1="96" y1="60" x2="120" y2="60" opacity="0.8"/>
+      </svg>
+    </div>
+    <div class="mini-target" style="--s:40px; left:2%; bottom:44px; --spd:8.5s; --dir:reverse; --o:0.45;">
+      <div class="mini-sweep"></div>
+      <svg viewBox="0 0 120 120" fill="none" stroke="var(--cyan)" stroke-width="1.5">
+        <circle cx="60" cy="60" r="50" opacity="0.5"/>
+        <circle cx="60" cy="60" r="30" opacity="0.7"/>
+        <line x1="60" y1="0" x2="60" y2="24" opacity="0.8"/>
+        <line x1="60" y1="96" x2="60" y2="120" opacity="0.8"/>
+        <line x1="0" y1="60" x2="24" y2="60" opacity="0.8"/>
+        <line x1="96" y1="60" x2="120" y2="60" opacity="0.8"/>
+      </svg>
+    </div>
   </div>
 
   <div class="wrap">
+    <div class="split">
+      <div class="split-main">
     <div class="sec-head reveal">
       <div class="eyebrow">The board</div>
       <h2 class="stencil">2027 rankings,<br><em>updated monthly.</em></h2>
@@ -759,6 +872,27 @@
       </div>
       </div>
     </div>
+      </div>
+      <aside class="join-card hud reveal" id="join" aria-label="Join the bunker">
+        <span class="hud-bl"></span><span class="hud-br"></span>
+        <div class="eyebrow">Enlist</div>
+        <h2 class="stencil">Join the bunker.</h2>
+        <p>New reports every week, straight to your feed. No noise, no clickbait grades — just the tape and the truth.</p>
+        <div class="cta-row">
+          <a href="https://www.youtube.com/@PuckBunker" target="_blank" rel="noopener" class="btn btn-primary">
+            <svg viewBox="0 0 24 24"><path fill="currentColor" d="M8 5v14l11-7z"/></svg>
+            Subscribe on YouTube
+          </a>
+        </div>
+        <div class="join-socials">
+          <a href="https://www.youtube.com/@PuckBunker" target="_blank" rel="noopener">YouTube</a>
+          <a href="https://open.spotify.com/show/2gvDW1nPBT3U8j0Hl0p3XM" target="_blank" rel="noopener">Spotify</a>
+          <a href="https://x.com/puckbunker?lang=en" target="_blank" rel="noopener">Twitter/X</a>
+          <a href="https://www.instagram.com/puckbunker/" target="_blank" rel="noopener">Instagram</a>
+          <a href="https://www.patreon.com/PuckBunker" target="_blank" rel="noopener">Patreon</a>
+        </div>
+      </aside>
+    </div>
   </div>
 </section>
 
@@ -792,20 +926,20 @@
     <div class="sec-head reveal">
       <div class="eyebrow">The M.O.</div>
       <h2 class="stencil">10 Tools.<br><em>No shortcuts.</em></h2>
+      <p>Every prospect gets scored on the same 10 tools NHL scouts actually track — not vibes, not box scores. We watch shifts without the puck as closely as the ones with it.</p>
     </div>
     <div class="method-layout">
-      <div class="method-copy reveal">
-        <p>Every prospect gets scored on the same 10 tools NHL scouts actually track — not vibes, not box scores. We watch shifts without the puck as closely as the ones with it.</p>
-        <p><strong style="color:var(--ice);">Skating - Speed/Power</strong> — top-end speed, explosiveness, and stride power in open ice.</p>
-        <p><strong style="color:var(--ice);">Skating - Quickness/Agility</strong> — first-three-steps, edges, and change of direction.</p>
-        <p><strong style="color:var(--ice);">Shot</strong> — release, accuracy, and whether it beats a set goalie.</p>
-        <p><strong style="color:var(--ice);">Puck Skills</strong> — hands in tight spaces, protection, and control at speed.</p>
-        <p><strong style="color:var(--ice);">Playmaking</strong> — vision, timing, and setting teammates up to score.</p>
-        <p><strong style="color:var(--ice);">OZ Hockey Sense</strong> — reads and support with the puck in the attacking zone.</p>
-        <p><strong style="color:var(--ice);">DZ Hockey Sense</strong> — gap control, positioning, and reads without the puck.</p>
-        <p><strong style="color:var(--ice);">Compete</strong> — puck battles, board work, what happens after the whistle.</p>
-        <p><strong style="color:var(--ice);">Physicality</strong> — strength on the puck, contact, and willingness to engage.</p>
-        <p><strong style="color:var(--ice);">Size/Strength</strong> — frame, reach, and physical strength to win puck battles.</p>
+      <div class="tool-tiles reveal">
+        <div class="tool-tile"><span class="tool-n">01</span><h3>Skating - Speed/Power</h3><p>Top-end speed, explosiveness, and stride power in open ice.</p></div>
+        <div class="tool-tile"><span class="tool-n">02</span><h3>Skating - Quickness/Agility</h3><p>First-three-steps, edges, and change of direction.</p></div>
+        <div class="tool-tile"><span class="tool-n">03</span><h3>Shot</h3><p>Release, accuracy, and whether it beats a set goalie.</p></div>
+        <div class="tool-tile"><span class="tool-n">04</span><h3>Puck Skills</h3><p>Hands in tight spaces, protection, and control at speed.</p></div>
+        <div class="tool-tile"><span class="tool-n">05</span><h3>Playmaking</h3><p>Vision, timing, and setting teammates up to score.</p></div>
+        <div class="tool-tile"><span class="tool-n">06</span><h3>OZ Hockey Sense</h3><p>Reads and support with the puck in the attacking zone.</p></div>
+        <div class="tool-tile"><span class="tool-n">07</span><h3>DZ Hockey Sense</h3><p>Gap control, positioning, and reads without the puck.</p></div>
+        <div class="tool-tile"><span class="tool-n">08</span><h3>Compete</h3><p>Puck battles, board work, what happens after the whistle.</p></div>
+        <div class="tool-tile"><span class="tool-n">09</span><h3>Physicality</h3><p>Strength on the puck, contact, and willingness to engage.</p></div>
+        <div class="tool-tile"><span class="tool-n">10</span><h3>Size/Strength</h3><p>Frame, reach, and physical strength to win puck battles.</p></div>
       </div>
       <div class="gauge-card hud reveal">
         <span class="hud-bl"></span><span class="hud-br"></span>
@@ -855,45 +989,6 @@
   </div>
 </section>
 
-<section id="join" class="recruit">
-  <div class="mini-layer" aria-hidden="true">
-    <div class="mini-target" style="--s:50px; right:12%; top:56px; --spd:6.5s; --d:-2.5s;">
-      <div class="mini-sweep"></div>
-      <svg viewBox="0 0 120 120" fill="none" stroke="var(--cyan)" stroke-width="1.5">
-        <circle cx="60" cy="60" r="50" opacity="0.5"/>
-        <circle cx="60" cy="60" r="30" opacity="0.7"/>
-        <line x1="60" y1="0" x2="60" y2="24" opacity="0.8"/>
-        <line x1="60" y1="96" x2="60" y2="120" opacity="0.8"/>
-        <line x1="0" y1="60" x2="24" y2="60" opacity="0.8"/>
-        <line x1="96" y1="60" x2="120" y2="60" opacity="0.8"/>
-      </svg>
-    </div>
-    <div class="mini-target" style="--s:40px; left:10%; bottom:64px; --spd:8.5s; --dir:reverse; --o:0.45;">
-      <div class="mini-sweep"></div>
-      <svg viewBox="0 0 120 120" fill="none" stroke="var(--cyan)" stroke-width="1.5">
-        <circle cx="60" cy="60" r="50" opacity="0.5"/>
-        <circle cx="60" cy="60" r="30" opacity="0.7"/>
-        <line x1="60" y1="0" x2="60" y2="24" opacity="0.8"/>
-        <line x1="60" y1="96" x2="60" y2="120" opacity="0.8"/>
-        <line x1="0" y1="60" x2="24" y2="60" opacity="0.8"/>
-        <line x1="96" y1="60" x2="120" y2="60" opacity="0.8"/>
-      </svg>
-    </div>
-  </div>
-
-  <div class="grid-bg" style="opacity:0.6;"></div>
-  <div class="wrap reveal">
-    <div class="eyebrow">Enlist</div>
-    <h2 class="stencil">Join the bunker.</h2>
-    <p>New reports every week, straight to your feed. No noise, no clickbait grades — just the tape and the truth.</p>
-    <div class="cta-row">
-      <a href="https://www.youtube.com/@PuckBunker" target="_blank" rel="noopener" class="btn btn-primary">
-        <svg viewBox="0 0 24 24"><path fill="currentColor" d="M8 5v14l11-7z"/></svg>
-        Subscribe on YouTube
-      </a>
-    </div>
-  </div>
-</section>
 
 <footer>
   <div class="wrap">
@@ -1049,9 +1144,18 @@ async function pbLoadFeed(gridId) {
     PB_COUNTS = await pbPlayerCounts();
     pbInjectCardStyles();
     grid.innerHTML = '';
-    items.forEach(function (it) {
+    // With 3 or more items the first is the lead story (large) and the next two sit beside it; the rest
+    // are standard boxes. The lead and side cards have a different shape from their neighbours, so they
+    // are flagged to stay out of the "line up every card in a row" logic (data-noalign).
+    var layout = items.length >= 3;
+    items.forEach(function (it, i) {
       if (it.type === 'report') grid.insertAdjacentHTML('beforeend', pbBuildCard(it.data));
       else grid.append(pbArticleCard(it.data));
+      var wrapper = grid.lastElementChild;
+      if (layout && i < 3) {
+        wrapper.classList.add(i === 0 ? 'pb-lead' : 'pb-side', i === 1 ? 'pb-s1' : i === 2 ? 'pb-s2' : 'pb-x');
+        wrapper.setAttribute('data-noalign', '');
+      }
     });
     pbWireMultiLinks(grid);
     pbWireReadMore(grid);
