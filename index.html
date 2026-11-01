@@ -551,23 +551,6 @@
   .crest-sweep{ background:conic-gradient(from 0deg, rgba(220,221,221,0.16), transparent 24%, transparent 100%); animation:spin 9s linear infinite; }
   @media (prefers-reduced-motion:reduce){ .crest-sweep{ animation:none; } }
 
-  /* ---- Fresh off the desk: heading row + feed grid ---- */
-  .sec-top{ display:flex; align-items:flex-end; justify-content:space-between; gap:24px; flex-wrap:wrap; }
-  .sec-top .sec-head{ margin-bottom:0; max-width:560px; }
-  .sec-top .feed-more{ margin-top:0; }
-  #intelGrid{ grid-template-columns:repeat(12,minmax(0,1fr)); grid-auto-rows:auto; gap:22px; margin-top:40px; }
-  #intelGrid > .dossier, #intelGrid > .pb-card-link{ grid-column:span 4; }
-  #intelGrid > .pb-lead{ grid-column:1 / span 7; grid-row:1 / span 2; }
-  #intelGrid > .pb-s1{ grid-column:8 / span 5; grid-row:1; }
-  #intelGrid > .pb-s2{ grid-column:8 / span 5; grid-row:2; }
-  #intelGrid > .pb-lead .dossier-body h3{ font-size:clamp(26px,3vw,36px); line-height:1.08; }
-  #intelGrid > .pb-lead .pb-excerpt{ -webkit-line-clamp:9; line-clamp:9; font-size:16px; }
-  #intelGrid > .pb-side .dossier{ flex-direction:row; }
-  #intelGrid > .pb-side .dossier-thumb{ flex:0 0 42%; aspect-ratio:auto; border-bottom:none; border-right:1px solid var(--steel); }
-  #intelGrid > .pb-side .dossier-thumb img{ object-fit:contain !important; }   /* show the whole video frame, never a cropped sliver */
-  #intelGrid > .pb-side .dossier-body{ flex:1 1 0; min-width:0; }
-  #intelGrid > .pb-side .pb-excerpt{ -webkit-line-clamp:4; line-clamp:4; }
-
   /* ---- the board, with the join card beside it ---- */
   .split{ display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:40px; align-items:start; }
   .split-main{ grid-column:1 / span 7; min-width:0; }
@@ -594,12 +577,6 @@
     .hero-grid{ grid-template-columns:minmax(0,1fr); gap:28px; padding-top:36px; padding-bottom:44px; }
     .hero-crest{ order:-1; max-width:250px; margin:0 auto; }
     .hero h1{ font-size:clamp(40px,12vw,56px); }
-    #intelGrid{ grid-template-columns:minmax(0,1fr); }
-    #intelGrid > .dossier, #intelGrid > .pb-card-link, #intelGrid > .pb-lead, #intelGrid > .pb-s1, #intelGrid > .pb-s2{ grid-column:1 / -1; grid-row:auto; }
-    #intelGrid > .pb-side .dossier{ flex-direction:column; }
-    #intelGrid > .pb-side .dossier-thumb{ flex:0 0 auto; aspect-ratio:16/9; border-right:none; border-bottom:1px solid var(--steel); }
-    #intelGrid > .pb-side .dossier-thumb img{ object-fit:cover !important; }
-    #intelGrid > .pb-side .dossier-body{ flex:1 1 auto; }
     .split{ grid-template-columns:minmax(0,1fr); gap:36px; }
     .split-main, .join-card{ grid-column:1 / -1; }
     .method-layout{ grid-template-columns:minmax(0,1fr); gap:28px; }
@@ -607,7 +584,6 @@
   @media (max-width:600px){
     .tool-tiles{ grid-template-columns:minmax(0,1fr); }
     .join-card{ padding:28px 22px; }
-    .sec-top .feed-more .btn{ width:100%; justify-content:center; }
     .board-row.head span:nth-child(3){ display:none; }   /* the Trend column is hidden at this width, so hide its header too */
   }
 </style>
@@ -748,16 +724,10 @@
   </div>
 
   <div class="wrap">
-    <div class="sec-top">
-      <div class="sec-head reveal">
-        <div class="eyebrow">Latest intel</div>
-        <h2 class="stencil">Fresh off the desk.</h2>
-        <p>New dossiers every week. Full breakdowns, graded and filed.</p>
-      </div>
-      <div class="feed-more">
-        <a href="scouting-reports.html" class="btn btn-ghost">All scouting reports →</a>
-        <a href="articles.html" class="btn btn-ghost">All articles →</a>
-      </div>
+    <div class="sec-head reveal">
+      <div class="eyebrow">Latest intel</div>
+      <h2 class="stencil">Fresh off the desk.</h2>
+      <p>New dossiers every week. Full breakdowns, graded and filed.</p>
     </div>
     <div class="dossier-grid" id="intelGrid">
       <article class="dossier hud reveal">
@@ -793,6 +763,10 @@
           <div class="tool-tags"><span>Compete</span><span>IQ</span></div>
         </div>
       </article>
+    </div>
+    <div class="feed-more">
+      <a href="scouting-reports.html" class="btn btn-ghost">All scouting reports →</a>
+      <a href="articles.html" class="btn btn-ghost">All articles →</a>
     </div>
   </div>
 </section>
@@ -1144,18 +1118,9 @@ async function pbLoadFeed(gridId) {
     PB_COUNTS = await pbPlayerCounts();
     pbInjectCardStyles();
     grid.innerHTML = '';
-    // With 3 or more items the first is the lead story (large) and the next two sit beside it; the rest
-    // are standard boxes. The lead and side cards have a different shape from their neighbours, so they
-    // are flagged to stay out of the "line up every card in a row" logic (data-noalign).
-    var layout = items.length >= 3;
-    items.forEach(function (it, i) {
+    items.forEach(function (it) {
       if (it.type === 'report') grid.insertAdjacentHTML('beforeend', pbBuildCard(it.data));
       else grid.append(pbArticleCard(it.data));
-      var wrapper = grid.lastElementChild;
-      if (layout && i < 3) {
-        wrapper.classList.add(i === 0 ? 'pb-lead' : 'pb-side', i === 1 ? 'pb-s1' : i === 2 ? 'pb-s2' : 'pb-x');
-        wrapper.setAttribute('data-noalign', '');
-      }
     });
     pbWireMultiLinks(grid);
     pbWireReadMore(grid);
