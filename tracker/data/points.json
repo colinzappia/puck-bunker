@@ -6520,6 +6520,19 @@
     },
     {
      "date": "2026-11-01",
+     "player": "Filip Kovalcik",
+     "team": "Drummondville",
+     "league": "QMJHL",
+     "opponent": "vs Gatineau",
+     "g": 0,
+     "a": 2,
+     "game_id": "32815",
+     "score": "Gat 4 @ Dru 5",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-01",
      "player": "Aleks Kulemin",
      "team": "Kingston",
      "league": "OHL",
@@ -6749,19 +6762,6 @@
      "a": 1,
      "game_id": "33208",
      "score": "Rim 5 @ Vic 7",
-     "source": "hockeytech",
-     "confidence": "official"
-    },
-    {
-     "date": "2026-11-01",
-     "player": "Filip Kovalcik",
-     "team": "Drummondville",
-     "league": "QMJHL",
-     "opponent": "vs Gatineau",
-     "g": 0,
-     "a": 1,
-     "game_id": "32815",
-     "score": "Gat 4 @ Dru 5",
      "source": "hockeytech",
      "confidence": "official"
     },
@@ -6997,13 +6997,13 @@
     },
     {
      "league": "OHL",
-     "game_id": "29150",
-     "matchup": "FLNT @ SAR"
+     "game_id": "29152",
+     "matchup": "RN @ SBY"
     },
     {
      "league": "OHL",
-     "game_id": "29152",
-     "matchup": "RN @ SBY"
+     "game_id": "29150",
+     "matchup": "FLNT @ SAR"
     },
     {
      "league": "OHL",
@@ -7047,13 +7047,13 @@
     },
     {
      "league": "QMJHL",
-     "game_id": "32720",
-     "matchup": "SNB @ Cap"
+     "game_id": "32972",
+     "matchup": "VdO @ NtB"
     },
     {
      "league": "QMJHL",
-     "game_id": "32972",
-     "matchup": "VdO @ NtB"
+     "game_id": "32720",
+     "matchup": "SNB @ Cap"
     },
     {
      "league": "QMJHL",
@@ -7062,13 +7062,13 @@
     },
     {
      "league": "QMJHL",
-     "game_id": "32981",
-     "matchup": "BaC @ Que"
+     "game_id": "33142",
+     "matchup": "Hal @ She"
     },
     {
      "league": "QMJHL",
-     "game_id": "33142",
-     "matchup": "Hal @ She"
+     "game_id": "32981",
+     "matchup": "BaC @ Que"
     },
     {
      "league": "QMJHL",
@@ -7091,10 +7091,17 @@
      "matchup": "WAT @ DBQ"
     }
    ],
-   "updated": "2026-11-02T15:52:08-05:00"
+   "updated": "2026-11-03T13:35:35-05:00"
+  },
+  "2026-11-02": {
+   "date": "2026-11-02",
+   "points": [],
+   "goalies": [],
+   "games_checked": [],
+   "updated": "2026-11-03T13:35:10-05:00"
   }
  },
- "updated": "2026-11-02T15:52:24-05:00",
+ "updated": "2026-11-03T13:35:35-05:00",
  "problems": {
   "hockeytech": [],
   "europe": []
