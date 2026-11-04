@@ -7098,10 +7098,81 @@
    "points": [],
    "goalies": [],
    "games_checked": [],
-   "updated": "2026-11-03T13:35:10-05:00"
+   "updated": "2026-11-04T13:46:35-05:00"
+  },
+  "2026-11-03": {
+   "date": "2026-11-03",
+   "points": [
+    {
+     "date": "2026-11-03",
+     "player": "Cameron Kuzma",
+     "team": "Red Deer",
+     "league": "WHL",
+     "opponent": "vs Kamloops",
+     "g": 1,
+     "a": 2,
+     "game_id": "1023248",
+     "score": "KAM 3 @ RD 5",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-03",
+     "player": "Joaquin Geras",
+     "team": "Kamloops",
+     "league": "WHL",
+     "opponent": "@ Red Deer",
+     "g": 1,
+     "a": 1,
+     "game_id": "1023248",
+     "score": "KAM 3 @ RD 5",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-03",
+     "player": "Jacob Dumansky",
+     "team": "Kamloops",
+     "league": "WHL",
+     "opponent": "@ Red Deer",
+     "g": 0,
+     "a": 2,
+     "game_id": "1023248",
+     "score": "KAM 3 @ RD 5",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-03",
+     "player": "Timothy Kazda",
+     "team": "Guelph",
+     "league": "OHL",
+     "opponent": "@ Kitchener",
+     "g": 1,
+     "a": 0,
+     "game_id": "29153",
+     "score": "GUE 3 @ KIT 2",
+     "source": "hockeytech",
+     "confidence": "official"
+    }
+   ],
+   "goalies": [],
+   "games_checked": [
+    {
+     "league": "OHL",
+     "game_id": "29153",
+     "matchup": "GUE @ KIT"
+    },
+    {
+     "league": "WHL",
+     "game_id": "1023248",
+     "matchup": "KAM @ RD"
+    }
+   ],
+   "updated": "2026-11-04T13:46:34-05:00"
   }
  },
- "updated": "2026-11-03T13:35:35-05:00",
+ "updated": "2026-11-04T13:46:36-05:00",
  "problems": {
   "hockeytech": [],
   "europe": []
