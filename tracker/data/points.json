@@ -7169,10 +7169,343 @@
      "matchup": "KAM @ RD"
     }
    ],
-   "updated": "2026-11-04T13:46:34-05:00"
+   "updated": "2026-11-05T13:54:17-05:00"
+  },
+  "2026-11-04": {
+   "date": "2026-11-04",
+   "points": [
+    {
+     "date": "2026-11-04",
+     "player": "Max Delisle",
+     "team": "Owen Sound",
+     "league": "OHL",
+     "opponent": "@ Sarnia",
+     "g": 1,
+     "a": 1,
+     "game_id": "29156",
+     "score": "OS 4 @ SAR 5",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-04",
+     "player": "Shaeffer Gordon-Carroll",
+     "team": "Medicine Hat",
+     "league": "WHL",
+     "opponent": "@ Portland",
+     "g": 1,
+     "a": 1,
+     "game_id": "1023251",
+     "score": "MH 6 @ POR 5",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-04",
+     "player": "Artyom Katsuro",
+     "team": "Calgary",
+     "league": "WHL",
+     "opponent": "@ Prince Albert",
+     "g": 1,
+     "a": 0,
+     "game_id": "1023252",
+     "score": "CGY 3 @ PA 1",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-04",
+     "player": "Aleks Kulemin",
+     "team": "Kingston",
+     "league": "OHL",
+     "opponent": "@ Ottawa",
+     "g": 1,
+     "a": 0,
+     "game_id": "29155",
+     "score": "KGN 3 @ OTT 1",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-04",
+     "player": "Adam Nemec",
+     "team": "Brantford",
+     "league": "OHL",
+     "opponent": "@ Barrie",
+     "g": 1,
+     "a": 0,
+     "game_id": "29154",
+     "score": "SBY 3 @ BAR 1",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-04",
+     "player": "Jonas Vanicek",
+     "team": "Edmonton",
+     "league": "WHL",
+     "opponent": "vs Lethbridge",
+     "g": 1,
+     "a": 0,
+     "game_id": "1023249",
+     "score": "LET 1 @ EDM 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-04",
+     "player": "Luca Blonda",
+     "team": "Sudbury",
+     "league": "OHL",
+     "opponent": "@ Barrie",
+     "g": 0,
+     "a": 1,
+     "game_id": "29154",
+     "score": "SBY 3 @ BAR 1",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-04",
+     "player": "Dante D'Andrea",
+     "team": "Kingston",
+     "league": "OHL",
+     "opponent": "@ Ottawa",
+     "g": 0,
+     "a": 1,
+     "game_id": "29155",
+     "score": "KGN 3 @ OTT 1",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-04",
+     "player": "Alessandro Domenichelli",
+     "team": "Portland",
+     "league": "WHL",
+     "opponent": "vs Medicine Hat",
+     "g": 0,
+     "a": 1,
+     "game_id": "1023251",
+     "score": "MH 6 @ POR 5",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-04",
+     "player": "Ben Harvey",
+     "team": "Prince Albert",
+     "league": "WHL",
+     "opponent": "vs Calgary",
+     "g": 0,
+     "a": 1,
+     "game_id": "1023252",
+     "score": "CGY 3 @ PA 1",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-04",
+     "player": "Broden McArthur",
+     "team": "Erie",
+     "league": "OHL",
+     "opponent": "@ Sault Ste. Marie",
+     "g": 0,
+     "a": 1,
+     "game_id": "29157",
+     "score": "ER 7 @ SOO 0",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-04",
+     "player": "Nolan Snyder",
+     "team": "Kingston",
+     "league": "OHL",
+     "opponent": "@ Ottawa",
+     "g": 0,
+     "a": 1,
+     "game_id": "29155",
+     "score": "KGN 3 @ OTT 1",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-04",
+     "player": "Kayden Stroeder",
+     "team": "Edmonton",
+     "league": "WHL",
+     "opponent": "vs Lethbridge",
+     "g": 0,
+     "a": 1,
+     "game_id": "1023249",
+     "score": "LET 1 @ EDM 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-04",
+     "player": "Easton Walos",
+     "team": "Sarnia",
+     "league": "OHL",
+     "opponent": "vs Owen Sound",
+     "g": 0,
+     "a": 1,
+     "game_id": "29156",
+     "score": "OS 4 @ SAR 5",
+     "source": "hockeytech",
+     "confidence": "official"
+    }
+   ],
+   "goalies": [
+    {
+     "date": "2026-11-04",
+     "goalie": "Royden Smith",
+     "team": "Kingston",
+     "league": "OHL",
+     "opponent": "@ Ottawa",
+     "shots": 45,
+     "saves": 44,
+     "ga": 1,
+     "toi": "60:00",
+     "qualifies": true,
+     "game_id": "29155",
+     "score": "KGN 3 @ OTT 1",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-04",
+     "goalie": "Hagan Bach",
+     "team": "Barrie",
+     "league": "OHL",
+     "opponent": "vs Sudbury",
+     "shots": 25,
+     "saves": 23,
+     "ga": 2,
+     "toi": "58:34",
+     "qualifies": true,
+     "game_id": "29154",
+     "score": "SBY 3 @ BAR 1",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-04",
+     "goalie": "David Vermirovsky",
+     "team": "Sault Ste. Marie",
+     "league": "OHL",
+     "opponent": "vs Erie",
+     "shots": 11,
+     "saves": 6,
+     "ga": 5,
+     "toi": "20:00",
+     "qualifies": false,
+     "game_id": "29157",
+     "score": "ER 7 @ SOO 0",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-04",
+     "goalie": "Eric Tu",
+     "team": "Calgary",
+     "league": "WHL",
+     "opponent": "@ Prince Albert",
+     "shots": 30,
+     "saves": 29,
+     "ga": 1,
+     "toi": "60:00",
+     "qualifies": true,
+     "game_id": "1023252",
+     "score": "CGY 3 @ PA 1",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-04",
+     "goalie": "Carter Casey",
+     "team": "Medicine Hat",
+     "league": "WHL",
+     "opponent": "@ Portland",
+     "shots": 29,
+     "saves": 24,
+     "ga": 5,
+     "toi": "64:17",
+     "qualifies": false,
+     "game_id": "1023251",
+     "score": "MH 6 @ POR 5",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-04",
+     "goalie": "Harrison Boettiger",
+     "team": "Kelowna",
+     "league": "WHL",
+     "opponent": "vs Spokane",
+     "shots": 33,
+     "saves": 30,
+     "ga": 3,
+     "toi": "63:02",
+     "qualifies": false,
+     "game_id": "1023250",
+     "score": "SPO 3 @ KEL 2",
+     "source": "hockeytech",
+     "confidence": "official"
+    }
+   ],
+   "games_checked": [
+    {
+     "league": "OHL",
+     "game_id": "29155",
+     "matchup": "KGN @ OTT"
+    },
+    {
+     "league": "OHL",
+     "game_id": "29154",
+     "matchup": "SBY @ BAR"
+    },
+    {
+     "league": "OHL",
+     "game_id": "29156",
+     "matchup": "OS @ SAR"
+    },
+    {
+     "league": "OHL",
+     "game_id": "29157",
+     "matchup": "ER @ SOO"
+    },
+    {
+     "league": "WHL",
+     "game_id": "1023252",
+     "matchup": "CGY @ PA"
+    },
+    {
+     "league": "WHL",
+     "game_id": "1023249",
+     "matchup": "LET @ EDM"
+    },
+    {
+     "league": "WHL",
+     "game_id": "1023251",
+     "matchup": "MH @ POR"
+    },
+    {
+     "league": "WHL",
+     "game_id": "1023253",
+     "matchup": "MJ @ PG"
+    },
+    {
+     "league": "WHL",
+     "game_id": "1023250",
+     "matchup": "SPO @ KEL"
+    }
+   ],
+   "updated": "2026-11-05T13:54:13-05:00"
   }
  },
- "updated": "2026-11-04T13:46:36-05:00",
+ "updated": "2026-11-05T13:54:17-05:00",
  "problems": {
   "hockeytech": [],
   "europe": []
