@@ -164,7 +164,9 @@ ${JSON.stringify({
   .back-link:hover{ color:var(--hazard); }
   .tags{ display:flex; flex-wrap:wrap; gap:8px; margin-top:34px; }
   .tags span{ font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--hazard); border:1px solid var(--hazard-2); padding:3px 8px; letter-spacing:0.06em; text-transform:uppercase; }
-  h1{ font-size:clamp(38px,7vw,64px); line-height:0.95; margin-top:18px; text-wrap:balance; }
+  /* Headline: the site's regular bold typeface in normal capitals. The stencil face at 64px with tight
+     lines was hard to read on a long headline. */
+  h1{ font-family:'Archivo',sans-serif; font-weight:800; font-size:clamp(30px,4.8vw,44px); line-height:1.1; letter-spacing:-0.015em; margin-top:18px; text-wrap:balance; overflow-wrap:anywhere; }
   .dek{ font-size:clamp(18px,2.4vw,21px); line-height:1.5; color:#CFD1D4; margin-top:18px; max-width:62ch; }
   .byline{ font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--ice-dim); letter-spacing:0.06em; margin-top:22px; padding-bottom:22px; border-bottom:1px solid var(--steel); }
   .cover{ margin-top:30px; border:1px solid var(--steel); aspect-ratio:16/9; overflow:hidden; background:var(--panel); }
@@ -214,7 +216,7 @@ ${JSON.stringify({
     <a href="/articles.html" class="back-link">← BACK TO ARTICLES</a>
 
     ${tags.length ? `<div class="tags">${tags.map(t => `<span>${escapeHtml(t)}</span>`).join("")}</div>` : ""}
-    <h1 class="stencil"${tags.length ? "" : ' style="margin-top:34px;"'}>${escapeHtml(title)}</h1>
+    <h1${tags.length ? "" : ' style="margin-top:34px;"'}>${escapeHtml(title)}</h1>
     ${article.dek ? `<p class="dek">${escapeHtml(article.dek)}</p>` : ""}
     <div class="byline">${metaBits}</div>
 
