@@ -7502,10 +7502,152 @@
      "matchup": "SPO @ KEL"
     }
    ],
-   "updated": "2026-11-05T13:54:13-05:00"
+   "updated": "2026-11-06T13:15:53-05:00"
+  },
+  "2026-11-05": {
+   "date": "2026-11-05",
+   "points": [
+    {
+     "date": "2026-11-05",
+     "player": "Jesse Debruyn",
+     "team": "Windsor",
+     "league": "OHL",
+     "opponent": "@ Peterborough",
+     "g": 0,
+     "a": 2,
+     "game_id": "29159",
+     "score": "WSR 4 @ PBO 3",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-05",
+     "player": "Keaton Ardagh",
+     "team": "Brampton",
+     "league": "OHL",
+     "opponent": "@ Niagara",
+     "g": 1,
+     "a": 0,
+     "game_id": "29158",
+     "score": "BRAM 6 @ NIAG 3",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-05",
+     "player": "Cooper Campbell",
+     "team": "Drummondville",
+     "league": "QMJHL",
+     "opponent": "vs Rimouski",
+     "g": 1,
+     "a": 0,
+     "game_id": "32816",
+     "score": "Rim 2 @ Dru 5",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-05",
+     "player": "Ty Bergeron",
+     "team": "Windsor",
+     "league": "OHL",
+     "opponent": "@ Peterborough",
+     "g": 0,
+     "a": 1,
+     "game_id": "29159",
+     "score": "WSR 4 @ PBO 3",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-05",
+     "player": "Ryerson Edgar",
+     "team": "Niagara",
+     "league": "OHL",
+     "opponent": "vs Brampton",
+     "g": 0,
+     "a": 1,
+     "game_id": "29158",
+     "score": "BRAM 6 @ NIAG 3",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-05",
+     "player": "Caiden Pellegrino",
+     "team": "Rimouski",
+     "league": "QMJHL",
+     "opponent": "@ Drummondville",
+     "g": 0,
+     "a": 1,
+     "game_id": "32816",
+     "score": "Rim 2 @ Dru 5",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-05",
+     "player": "Matthew Perreault",
+     "team": "Peterborough",
+     "league": "OHL",
+     "opponent": "vs Windsor",
+     "g": 0,
+     "a": 1,
+     "game_id": "29159",
+     "score": "WSR 4 @ PBO 3",
+     "source": "hockeytech",
+     "confidence": "official"
+    }
+   ],
+   "goalies": [
+    {
+     "date": "2026-11-05",
+     "goalie": "Jan Larys",
+     "team": "Drummondville",
+     "league": "QMJHL",
+     "opponent": "vs Rimouski",
+     "shots": 24,
+     "saves": 22,
+     "ga": 2,
+     "toi": "60:00",
+     "qualifies": true,
+     "game_id": "32816",
+     "score": "Rim 2 @ Dru 5",
+     "source": "hockeytech",
+     "confidence": "official"
+    }
+   ],
+   "games_checked": [
+    {
+     "league": "OHL",
+     "game_id": "29158",
+     "matchup": "BRAM @ NIAG"
+    },
+    {
+     "league": "OHL",
+     "game_id": "29159",
+     "matchup": "WSR @ PBO"
+    },
+    {
+     "league": "QMJHL",
+     "game_id": "32950",
+     "matchup": "Mon @ NFL"
+    },
+    {
+     "league": "QMJHL",
+     "game_id": "33044",
+     "matchup": "Gat @ Rou"
+    },
+    {
+     "league": "QMJHL",
+     "game_id": "32816",
+     "matchup": "Rim @ Dru"
+    }
+   ],
+   "updated": "2026-11-06T13:15:44-05:00"
   }
  },
- "updated": "2026-11-05T13:54:17-05:00",
+ "updated": "2026-11-06T13:15:53-05:00",
  "problems": {
   "hockeytech": [],
   "europe": []
