@@ -148,7 +148,7 @@ ${JSON.stringify({
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@700;800;900&family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@700;800;900&family=Big+Shoulders+Display:wght@800&family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --black:#0B0C0D; --panel:#17181A; --panel-2:#1D1F21; --steel:#33363A; --steel-soft:#28292C;
@@ -164,9 +164,9 @@ ${JSON.stringify({
   .back-link:hover{ color:var(--hazard); }
   .tags{ display:flex; flex-wrap:wrap; gap:8px; margin-top:34px; }
   .tags span{ font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--hazard); border:1px solid var(--hazard-2); padding:3px 8px; letter-spacing:0.06em; text-transform:uppercase; }
-  /* Headline: the site's regular bold typeface in normal capitals. The stencil face at 64px with tight
-     lines was hard to read on a long headline. */
-  h1{ font-family:'Archivo',sans-serif; font-weight:800; font-size:clamp(30px,4.8vw,44px); line-height:1.1; letter-spacing:-0.015em; margin-top:18px; text-wrap:balance; overflow-wrap:anywhere; }
+  /* Headline: Big Shoulders Display, the same family as the logo font but without the stencil cuts, so it
+     keeps the Puck Bunker look and stays readable on a long headline. */
+  h1{ font-family:'Big Shoulders Display',sans-serif; font-weight:800; text-transform:uppercase; font-size:clamp(38px,6vw,64px); line-height:0.98; letter-spacing:0.005em; margin-top:18px; text-wrap:balance; overflow-wrap:anywhere; }
   .dek{ font-size:clamp(18px,2.4vw,21px); line-height:1.5; color:#CFD1D4; margin-top:18px; max-width:62ch; }
   .byline{ font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--ice-dim); letter-spacing:0.06em; margin-top:22px; padding-bottom:22px; border-bottom:1px solid var(--steel); }
   .cover{ margin-top:30px; border:1px solid var(--steel); aspect-ratio:16/9; overflow:hidden; background:var(--panel); }
