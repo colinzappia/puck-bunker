@@ -10207,17 +10207,17 @@
    "goalies": [
     {
      "date": "2026-11-08",
-     "goalie": "Royden Smith",
-     "team": "Kingston",
+     "goalie": "Hagan Bach",
+     "team": "Barrie",
      "league": "OHL",
-     "opponent": "vs Windsor",
-     "shots": 26,
-     "saves": 22,
-     "ga": 4,
-     "toi": "59:19",
+     "opponent": "@ Sudbury",
+     "shots": 29,
+     "saves": 23,
+     "ga": 6,
+     "toi": "60:00",
      "qualifies": false,
-     "game_id": "29173",
-     "score": "WSR 4 @ KGN 3",
+     "game_id": "29178",
+     "score": "BAR 3 @ SBY 6",
      "source": "hockeytech",
      "confidence": "official"
     },
@@ -10239,17 +10239,17 @@
     },
     {
      "date": "2026-11-08",
-     "goalie": "Hagan Bach",
-     "team": "Barrie",
+     "goalie": "Royden Smith",
+     "team": "Kingston",
      "league": "OHL",
-     "opponent": "@ Sudbury",
-     "shots": 29,
-     "saves": 23,
-     "ga": 6,
-     "toi": "60:00",
+     "opponent": "vs Windsor",
+     "shots": 26,
+     "saves": 22,
+     "ga": 4,
+     "toi": "59:19",
      "qualifies": false,
-     "game_id": "29178",
-     "score": "BAR 3 @ SBY 6",
+     "game_id": "29173",
+     "score": "WSR 4 @ KGN 3",
      "source": "hockeytech",
      "confidence": "official"
     },
@@ -10289,13 +10289,8 @@
    "games_checked": [
     {
      "league": "OHL",
-     "game_id": "29173",
-     "matchup": "WSR @ KGN"
-    },
-    {
-     "league": "OHL",
-     "game_id": "29175",
-     "matchup": "NIAG @ PBO"
+     "game_id": "29178",
+     "matchup": "BAR @ SBY"
     },
     {
      "league": "OHL",
@@ -10304,8 +10299,13 @@
     },
     {
      "league": "OHL",
-     "game_id": "29178",
-     "matchup": "BAR @ SBY"
+     "game_id": "29175",
+     "matchup": "NIAG @ PBO"
+    },
+    {
+     "league": "OHL",
+     "game_id": "29173",
+     "matchup": "WSR @ KGN"
     },
     {
      "league": "OHL",
@@ -10339,8 +10339,8 @@
     },
     {
      "league": "QMJHL",
-     "game_id": "32915",
-     "matchup": "Cap @ Mon"
+     "game_id": "33175",
+     "matchup": "Gat @ VdO"
     },
     {
      "league": "QMJHL",
@@ -10349,13 +10349,13 @@
     },
     {
      "league": "QMJHL",
-     "game_id": "33175",
-     "matchup": "Gat @ VdO"
+     "game_id": "32915",
+     "matchup": "Cap @ Mon"
     },
     {
      "league": "QMJHL",
-     "game_id": "32661",
-     "matchup": "Dru @ BaC"
+     "game_id": "33105",
+     "matchup": "She @ Sha"
     },
     {
      "league": "QMJHL",
@@ -10364,14 +10364,21 @@
     },
     {
      "league": "QMJHL",
-     "game_id": "33105",
-     "matchup": "She @ Sha"
+     "game_id": "32661",
+     "matchup": "Dru @ BaC"
     }
    ],
-   "updated": "2026-11-09T16:34:26-05:00"
+   "updated": "2026-11-10T13:45:49-05:00"
+  },
+  "2026-11-09": {
+   "date": "2026-11-09",
+   "points": [],
+   "goalies": [],
+   "games_checked": [],
+   "updated": "2026-11-10T13:45:28-05:00"
   }
  },
- "updated": "2026-11-09T16:34:58-05:00",
+ "updated": "2026-11-10T13:45:49-05:00",
  "problems": {
   "hockeytech": [],
   "europe": []
