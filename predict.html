@@ -24,8 +24,8 @@
     --steel-soft:#28292C;
     --ice:#F2F2EF;
     --ice-dim:#9A9C9F;
-    --hazard:#CBAE7E;
-    --hazard-2:#96805F;
+    --hazard:#DEAE6A;
+    --hazard-2:#AA8753;
     --cyan:#DCDDDD;
     --cyan-dim:#8B8D90;
     --red:#C1684A;
@@ -82,7 +82,7 @@
     position:fixed; inset:0; pointer-events:none; z-index:0;
     background:
       radial-gradient(700px circle at 15% 0%, rgba(220,221,221,0.09), transparent 55%),
-      radial-gradient(600px circle at 100% 30%, rgba(203,174,126,0.07), transparent 55%);
+      radial-gradient(600px circle at 100% 30%, rgba(222,174,106,0.07), transparent 55%);
   }
   /* Continuous net-mesh texture behind the entire page, not just the hero */
   .grid-bg-global{
@@ -202,7 +202,7 @@
     color:var(--ice); border-top:1px solid var(--steel-soft);
     text-transform:none; font-weight:500;
   }
-  .mobile-panel a:active{ background:rgba(203,174,126,0.08); }
+  .mobile-panel a:active{ background:rgba(222,174,106,0.08); }
   .mobile-panel a.mobile-primary{
     text-transform:uppercase; font-weight:700; letter-spacing:0.08em; color:var(--hazard);
     font-size:13px;
@@ -225,7 +225,7 @@
     position:absolute; top:calc(100% + 18px); left:50%; transform:translateX(-50%);
     background:var(--panel); border:1px solid var(--steel);
     min-width:200px; padding:6px 0;
-    box-shadow:0 16px 32px -12px rgba(0,0,0,0.6), 0 0 0 1px rgba(203,174,126,0.08);
+    box-shadow:0 16px 32px -12px rgba(0,0,0,0.6), 0 0 0 1px rgba(222,174,106,0.08);
     opacity:0; visibility:hidden; transform:translateX(-50%) translateY(-6px);
     transition:opacity .18s, transform .18s, visibility .18s;
     z-index:40;
@@ -238,10 +238,10 @@
     border-bottom:1px solid var(--steel-soft);
   }
   .dropdown-menu a:last-child{ border-bottom:none; }
-  .dropdown-menu a:hover{ color:var(--ice); background:rgba(203,174,126,0.06); text-shadow:none; }
+  .dropdown-menu a:hover{ color:var(--ice); background:rgba(222,174,106,0.06); text-shadow:none; }
   .dropdown-menu a::before{
     content:""; width:5px; height:5px; background:var(--hazard); flex-shrink:0;
-    box-shadow:0 0 6px 1px rgba(203,174,126,0.5);
+    box-shadow:0 0 6px 1px rgba(222,174,106,0.5);
   }
 
   /* ---------- Buttons ---------- */
@@ -253,11 +253,11 @@
     transition:transform .15s, box-shadow .2s, background .15s, border-color .15s;
     cursor:pointer; border:1px solid transparent; position:relative;
   }
-  .btn-primary{ background:var(--hazard); color:#1C1608; box-shadow:0 0 0 0 rgba(203,174,126,0.6); animation:pulse-glow 2.6s ease-in-out infinite; }
-  .btn-primary:hover{ background:#DEC08C; transform:translateY(-2px); }
+  .btn-primary{ background:var(--hazard); color:#1C1608; box-shadow:0 0 0 0 rgba(222,174,106,0.6); animation:pulse-glow 2.6s ease-in-out infinite; }
+  .btn-primary:hover{ background:#F3CA84; transform:translateY(-2px); }
   @keyframes pulse-glow{
-    0%,100%{ box-shadow:0 0 14px 0 rgba(203,174,126,0.45); }
-    50%{ box-shadow:0 0 26px 4px rgba(203,174,126,0.75); }
+    0%,100%{ box-shadow:0 0 14px 0 rgba(222,174,106,0.45); }
+    50%{ box-shadow:0 0 26px 4px rgba(222,174,106,0.75); }
   }
   @media (prefers-reduced-motion:reduce){ .btn-primary{ animation:none; } }
   .btn-ghost{ border-color:var(--steel); color:var(--ice); }
@@ -276,8 +276,8 @@
   .hero-crest img{
     width:100%; border-radius:50%;
     box-shadow:
-      0 0 0 1px rgba(203,174,126,0.4),
-      0 0 40px 6px rgba(203,174,126,0.25),
+      0 0 0 1px rgba(222,174,106,0.4),
+      0 0 40px 6px rgba(222,174,106,0.25),
       0 20px 50px -15px rgba(0,0,0,0.7);
     animation:crest-float 5s ease-in-out infinite;
   }
@@ -398,7 +398,7 @@
   }
   .grade-A{ color:var(--cyan); text-shadow:0 0 10px rgba(220,221,221,0.5); box-shadow:0 0 14px -3px rgba(220,221,221,0.6); }
   .grade-B{ color:var(--ice); }
-  .grade-C{ color:var(--hazard); text-shadow:0 0 10px rgba(203,174,126,0.4); }
+  .grade-C{ color:var(--hazard); text-shadow:0 0 10px rgba(222,174,106,0.4); }
   .file-tag{
     position:absolute; top:10px; left:10px; font-family:'JetBrains Mono',monospace; font-size:10px;
     color:var(--ice-dim); background:rgba(20,26,20,0.75); padding:3px 7px; letter-spacing:0.05em;
@@ -432,7 +432,7 @@
   }
   .board-row:last-child{ border-bottom:none; }
   .board-row.head{ font-family:'JetBrains Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--ice-dim); background:var(--panel); }
-  .board-row .rank{ font-family:'JetBrains Mono',monospace; color:var(--hazard); font-weight:700; font-size:19px; text-shadow:0 0 12px rgba(203,174,126,0.4); }
+  .board-row .rank{ font-family:'JetBrains Mono',monospace; color:var(--hazard); font-weight:700; font-size:19px; text-shadow:0 0 12px rgba(222,174,106,0.4); }
   .board-row .name{ font-weight:700; font-size:16px; }
   .board-row .pos{ color:var(--ice-dim); font-size:13px; font-weight:400; margin-left:8px; }
   .board-row .trend{ font-family:'JetBrains Mono',monospace; font-size:13px; }
@@ -465,7 +465,7 @@
   /* ---------- CTA / recruit ---------- */
   .recruit{ text-align:center; padding:110px 0; position:relative; }
   .recruit .eyebrow{ justify-content:center; }
-  .recruit h2{ font-size:clamp(42px,7.5vw,78px); margin:16px 0 20px; line-height:0.9; text-shadow:0 0 40px rgba(203,174,126,0.2); }
+  .recruit h2{ font-size:clamp(42px,7.5vw,78px); margin:16px 0 20px; line-height:0.9; text-shadow:0 0 40px rgba(222,174,106,0.2); }
   .recruit p{ color:var(--ice-dim); max-width:480px; margin:0 auto 34px; font-size:16px; }
   .recruit .cta-row{ justify-content:center; margin-bottom:0; }
 
@@ -555,7 +555,7 @@
     cursor:pointer; transition:border-color .15s, color .15s, background .15s;
   }
   .grade-btn:hover{ border-color:var(--hazard); color:var(--hazard); }
-  .grade-btn.selected{ border-color:var(--hazard); color:var(--hazard); background:rgba(203,174,126,0.1); }
+  .grade-btn.selected{ border-color:var(--hazard); color:var(--hazard); background:rgba(222,174,106,0.1); }
   .predict-result{ text-align:center; padding:20px 0; }
   .predict-result .verdict{ font-family:'Big Shoulders Stencil Display',sans-serif; text-transform:uppercase; font-size:36px; margin-bottom:10px; }
   .predict-result .verdict.hit{ color:var(--cyan); }
