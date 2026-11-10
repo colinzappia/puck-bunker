@@ -14,7 +14,7 @@ const PB_BADGES_ON = true;
 
   const SUPABASE_URL = "https://bwexpvzstgkllkjaitzy.supabase.co";
   const SUPABASE_KEY = "sb_publishable_AqjW7wYPhZ6OTpM1W-jVew_1L18nkZE";
-  const GOLD = "#CBAE7E";
+  const GOLD = "#DEAE6A";
 
   // ---------- Styles ----------
   const css = `
@@ -59,7 +59,7 @@ const PB_BADGES_ON = true;
     }
     const w = size, h = Math.round(size * 68 / 60);
     return `<span class="pb-chev" role="img" aria-label="Grade ${esc(g)}"><svg viewBox="0 0 60 68" width="${w}" height="${h}">
-      <rect x="2" y="2" width="56" height="64" rx="6" fill="#111213" stroke="#96805F" stroke-width="1.5"/>
+      <rect x="2" y="2" width="56" height="64" rx="6" fill="#111213" stroke="#AA8753" stroke-width="1.5"/>
       ${paths}
       <text x="30" y="63" text-anchor="middle" font-family="'Big Shoulders Stencil Display',sans-serif" font-weight="800" font-size="16" fill="#F2F2EF">${esc(g)}</text>
     </svg></span>`;
@@ -100,7 +100,7 @@ const PB_BADGES_ON = true;
         <linearGradient id="${id}r" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F2F2EF"/><stop offset=".5" stop-color="#8B8D90"/><stop offset="1" stop-color="#DCDDDD"/></linearGradient>
         <linearGradient id="${id}s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".20"/><stop offset=".55" stop-color="#fff" stop-opacity="0"/></linearGradient>
         <linearGradient id="${id}t" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F7F8F9"/><stop offset=".5" stop-color="#CED1D4"/><stop offset="1" stop-color="#9DA1A6"/></linearGradient>
-        <linearGradient id="${id}g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EBD9B0"/><stop offset=".55" stop-color="#CBAE7E"/><stop offset="1" stop-color="#96805F"/></linearGradient>
+        <linearGradient id="${id}g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F7DDAF"/><stop offset=".55" stop-color="#DEAE6A"/><stop offset="1" stop-color="#AA8753"/></linearGradient>
         <linearGradient id="${id}d" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D2D4D7"/><stop offset=".5" stop-color="#A3A6AA"/><stop offset="1" stop-color="#7E8185"/></linearGradient>
       </defs>
       <path d="M17 70 Q-1 48 12 22" fill="none" stroke="#8B8D90" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="0.1 3.6"/>
