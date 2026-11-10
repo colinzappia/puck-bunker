@@ -20,7 +20,7 @@ const SPLIT_GAP = 1.5;
 // Scouts in the order they're listed, each with a fixed color on the page.
 // Anyone else who files a report still shows up, in the extra colors.
 const SCOUTS = ["Rocco Zappia", "Darren Boyce"];
-const SCOUT_COLORS = ["#CBAE7E", "#7FB3C8", "#B48FD0", "#8FC79A"];
+const SCOUT_COLORS = ["#DEAE6A", "#7FB3C8", "#B48FD0", "#8FC79A"];
 
 function letterGrade(avg) {
   if (avg >= 9.0) return "A+";
