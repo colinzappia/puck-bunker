@@ -75,7 +75,7 @@ function renderNotFoundPage() {
 <style>
   body{ background:#0B0C0D; color:#F2F2EF; font-family:'Archivo',sans-serif; min-height:100vh; display:flex; align-items:center; justify-content:center; text-align:center; margin:0; }
   h1{ font-family:'Big Shoulders Stencil Display',sans-serif; text-transform:uppercase; font-size:48px; }
-  a{ color:#CBAE7E; }
+  a{ color:#DEAE6A; }
 </style>
 </head>
 <body>
@@ -330,7 +330,7 @@ ${JSON.stringify(jsonLd).replace(/</g, "\\u003c")}
 <style>
   :root{
     --black:#0B0C0D; --panel:#17181A; --panel-2:#1D1F21; --steel:#33363A; --steel-soft:#28292C;
-    --ice:#F2F2EF; --ice-dim:#9A9C9F; --hazard:#CBAE7E; --hazard-2:#96805F;
+    --ice:#F2F2EF; --ice-dim:#9A9C9F; --hazard:#DEAE6A; --hazard-2:#AA8753;
     --cyan:#DCDDDD; --cyan-dim:#8B8D90; --red:#C1684A;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
