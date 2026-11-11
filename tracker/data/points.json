@@ -10375,10 +10375,358 @@
    "points": [],
    "goalies": [],
    "games_checked": [],
-   "updated": "2026-11-10T13:45:28-05:00"
+   "updated": "2026-11-11T13:49:57-05:00"
+  },
+  "2026-11-10": {
+   "date": "2026-11-10",
+   "points": [
+    {
+     "date": "2026-11-10",
+     "player": "Ryland Rooney",
+     "team": "Sioux Falls",
+     "league": "USHL",
+     "opponent": "vs Fargo",
+     "g": 1,
+     "a": 3,
+     "game_id": "13589",
+     "score": "FGO 1 @ SF 5",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-10",
+     "player": "Artyom Katsuro",
+     "team": "Calgary",
+     "league": "WHL",
+     "opponent": "vs Lethbridge",
+     "g": 1,
+     "a": 1,
+     "game_id": "1023275",
+     "score": "LET 5 @ CGY 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-10",
+     "player": "Marcus Laraque",
+     "team": "Seattle",
+     "league": "WHL",
+     "opponent": "vs Victoria",
+     "g": 1,
+     "a": 1,
+     "game_id": "1023279",
+     "score": "VIC 5 @ SEA 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-10",
+     "player": "Adam Nemec",
+     "team": "Brantford",
+     "league": "OHL",
+     "opponent": "vs Sault Ste. Marie",
+     "g": 1,
+     "a": 1,
+     "game_id": "29179",
+     "score": "SOO 1 @ SBY 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-10",
+     "player": "Ludovic Perreault",
+     "team": "Victoria",
+     "league": "WHL",
+     "opponent": "@ Seattle",
+     "g": 1,
+     "a": 1,
+     "game_id": "1023279",
+     "score": "VIC 5 @ SEA 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-10",
+     "player": "Odin Vauhkonen",
+     "team": "Victoria",
+     "league": "WHL",
+     "opponent": "@ Seattle",
+     "g": 0,
+     "a": 2,
+     "game_id": "1023279",
+     "score": "VIC 5 @ SEA 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-10",
+     "player": "Brock England",
+     "team": "Seattle",
+     "league": "WHL",
+     "opponent": "vs Victoria",
+     "g": 1,
+     "a": 0,
+     "game_id": "1023279",
+     "score": "VIC 5 @ SEA 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-10",
+     "player": "Luca Jarvis",
+     "team": "Spokane",
+     "league": "WHL",
+     "opponent": "@ Vancouver",
+     "g": 1,
+     "a": 0,
+     "game_id": "1023280",
+     "score": "SPO 4 @ VAN 2",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-10",
+     "player": "Roberts Naudiņš",
+     "team": "Penticton",
+     "league": "WHL",
+     "opponent": "@ Prince George",
+     "g": 1,
+     "a": 0,
+     "game_id": "1023277",
+     "score": "PEN 3 @ PG 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-10",
+     "player": "Gavin Burcar",
+     "team": "Spokane",
+     "league": "WHL",
+     "opponent": "@ Vancouver",
+     "g": 0,
+     "a": 1,
+     "game_id": "1023280",
+     "score": "SPO 4 @ VAN 2",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-10",
+     "player": "Colt Carter",
+     "team": "Moose Jaw",
+     "league": "WHL",
+     "opponent": "@ Kelowna",
+     "g": 0,
+     "a": 1,
+     "game_id": "1023276",
+     "score": "MJ 5 @ KEL 8",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-10",
+     "player": "Calder Hamilton",
+     "team": "Calgary",
+     "league": "WHL",
+     "opponent": "vs Lethbridge",
+     "g": 0,
+     "a": 1,
+     "game_id": "1023275",
+     "score": "LET 5 @ CGY 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-10",
+     "player": "Tyden Lafournaise",
+     "team": "Lethbridge",
+     "league": "WHL",
+     "opponent": "@ Calgary",
+     "g": 0,
+     "a": 1,
+     "game_id": "1023275",
+     "score": "LET 5 @ CGY 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-10",
+     "player": "Pavel Martinu",
+     "team": "Sioux Falls",
+     "league": "USHL",
+     "opponent": "vs Fargo",
+     "g": 0,
+     "a": 1,
+     "game_id": "13589",
+     "score": "FGO 1 @ SF 5",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-10",
+     "player": "Mathis Paull",
+     "team": "Regina",
+     "league": "WHL",
+     "opponent": "@ Saskatoon",
+     "g": 0,
+     "a": 1,
+     "game_id": "1023278",
+     "score": "REG 5 @ SAS 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-10",
+     "player": "Rhett Sather",
+     "team": "Spokane",
+     "league": "WHL",
+     "opponent": "@ Vancouver",
+     "g": 0,
+     "a": 1,
+     "game_id": "1023280",
+     "score": "SPO 4 @ VAN 2",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-10",
+     "player": "Grayson Tash",
+     "team": "Seattle",
+     "league": "WHL",
+     "opponent": "vs Victoria",
+     "g": 0,
+     "a": 1,
+     "game_id": "1023279",
+     "score": "VIC 5 @ SEA 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-10",
+     "player": "Genc Ula",
+     "team": "Sudbury",
+     "league": "OHL",
+     "opponent": "vs Sault Ste. Marie",
+     "g": 0,
+     "a": 1,
+     "game_id": "29179",
+     "score": "SOO 1 @ SBY 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    }
+   ],
+   "goalies": [
+    {
+     "date": "2026-11-10",
+     "goalie": "David Vermirovsky",
+     "team": "Sault Ste. Marie",
+     "league": "OHL",
+     "opponent": "@ Sudbury",
+     "shots": 28,
+     "saves": 24,
+     "ga": 4,
+     "toi": "60:00",
+     "qualifies": false,
+     "game_id": "29179",
+     "score": "SOO 1 @ SBY 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-10",
+     "goalie": "Eric Tu",
+     "team": "Calgary",
+     "league": "WHL",
+     "opponent": "vs Lethbridge",
+     "shots": 34,
+     "saves": 29,
+     "ga": 5,
+     "toi": "64:42",
+     "qualifies": false,
+     "game_id": "1023275",
+     "score": "LET 5 @ CGY 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-10",
+     "goalie": "Oliver Bryks",
+     "team": "Vancouver",
+     "league": "WHL",
+     "opponent": "vs Spokane",
+     "shots": 13,
+     "saves": 12,
+     "ga": 1,
+     "toi": "28:51",
+     "qualifies": true,
+     "game_id": "1023280",
+     "score": "SPO 4 @ VAN 2",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-10",
+     "goalie": "Tomass Rutulis",
+     "team": "Fargo",
+     "league": "USHL",
+     "opponent": "@ Sioux Falls",
+     "shots": 33,
+     "saves": 28,
+     "ga": 5,
+     "toi": "60:00",
+     "qualifies": false,
+     "game_id": "13589",
+     "score": "FGO 1 @ SF 5",
+     "source": "hockeytech",
+     "confidence": "official"
+    }
+   ],
+   "games_checked": [
+    {
+     "league": "OHL",
+     "game_id": "29179",
+     "matchup": "SOO @ SBY"
+    },
+    {
+     "league": "WHL",
+     "game_id": "1023278",
+     "matchup": "REG @ SAS"
+    },
+    {
+     "league": "WHL",
+     "game_id": "1023275",
+     "matchup": "LET @ CGY"
+    },
+    {
+     "league": "WHL",
+     "game_id": "1023277",
+     "matchup": "PEN @ PG"
+    },
+    {
+     "league": "WHL",
+     "game_id": "1023280",
+     "matchup": "SPO @ VAN"
+    },
+    {
+     "league": "WHL",
+     "game_id": "1023276",
+     "matchup": "MJ @ KEL"
+    },
+    {
+     "league": "WHL",
+     "game_id": "1023279",
+     "matchup": "VIC @ SEA"
+    },
+    {
+     "league": "USHL",
+     "game_id": "13589",
+     "matchup": "FGO @ SF"
+    }
+   ],
+   "updated": "2026-11-11T13:49:56-05:00"
   }
  },
- "updated": "2026-11-10T13:45:49-05:00",
+ "updated": "2026-11-11T13:49:57-05:00",
  "problems": {
   "hockeytech": [],
   "europe": []
