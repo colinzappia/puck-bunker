@@ -10447,6 +10447,19 @@
     },
     {
      "date": "2026-11-10",
+     "player": "Tyden Lafournaise",
+     "team": "Lethbridge",
+     "league": "WHL",
+     "opponent": "@ Calgary",
+     "g": 0,
+     "a": 2,
+     "game_id": "1023275",
+     "score": "LET 5 @ CGY 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-10",
      "player": "Odin Vauhkonen",
      "team": "Victoria",
      "league": "WHL",
@@ -10529,19 +10542,6 @@
      "team": "Calgary",
      "league": "WHL",
      "opponent": "vs Lethbridge",
-     "g": 0,
-     "a": 1,
-     "game_id": "1023275",
-     "score": "LET 5 @ CGY 4",
-     "source": "hockeytech",
-     "confidence": "official"
-    },
-    {
-     "date": "2026-11-10",
-     "player": "Tyden Lafournaise",
-     "team": "Lethbridge",
-     "league": "WHL",
-     "opponent": "@ Calgary",
      "g": 0,
      "a": 1,
      "game_id": "1023275",
@@ -10723,10 +10723,261 @@
      "matchup": "FGO @ SF"
     }
    ],
-   "updated": "2026-11-11T13:49:56-05:00"
+   "updated": "2026-11-12T14:02:08-05:00"
+  },
+  "2026-11-11": {
+   "date": "2026-11-11",
+   "points": [
+    {
+     "date": "2026-11-11",
+     "player": "Sebastian Mogull",
+     "team": "Barrie",
+     "league": "OHL",
+     "opponent": "@ Owen Sound",
+     "g": 1,
+     "a": 2,
+     "game_id": "29181",
+     "score": "BAR 4 @ OS 3",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-11",
+     "player": "Carter Meyer",
+     "team": "Québec",
+     "league": "QMJHL",
+     "opponent": "@ Moncton",
+     "g": 2,
+     "a": 0,
+     "game_id": "32916",
+     "score": "Que 3 @ Mon 1",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-11",
+     "player": "Timothy Kazda",
+     "team": "Guelph",
+     "league": "OHL",
+     "opponent": "@ London",
+     "g": 1,
+     "a": 1,
+     "game_id": "29180",
+     "score": "GUE 5 @ LDN 2",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-11",
+     "player": "Chase Surkan",
+     "team": "Brandon",
+     "league": "WHL",
+     "opponent": "vs Portland",
+     "g": 1,
+     "a": 1,
+     "game_id": "1023281",
+     "score": "POR 2 @ BDN 6",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-11",
+     "player": "Jaakko Wycisk",
+     "team": "Guelph",
+     "league": "OHL",
+     "opponent": "@ London",
+     "g": 0,
+     "a": 2,
+     "game_id": "29180",
+     "score": "GUE 5 @ LDN 2",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-11",
+     "player": "Colt Carter",
+     "team": "Moose Jaw",
+     "league": "WHL",
+     "opponent": "@ Kamloops",
+     "g": 1,
+     "a": 0,
+     "game_id": "1023282",
+     "score": "MJ 2 @ KAM 5",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-11",
+     "player": "Gunnar Conboy",
+     "team": "Green Bay",
+     "league": "USHL",
+     "opponent": "vs Chicago",
+     "g": 1,
+     "a": 0,
+     "game_id": "13590",
+     "score": "CHI 3 @ GB 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-11",
+     "player": "Jacob Dumansky",
+     "team": "Kamloops",
+     "league": "WHL",
+     "opponent": "vs Moose Jaw",
+     "g": 1,
+     "a": 0,
+     "game_id": "1023282",
+     "score": "MJ 2 @ KAM 5",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-11",
+     "player": "Max Delisle",
+     "team": "Owen Sound",
+     "league": "OHL",
+     "opponent": "vs Barrie",
+     "g": 0,
+     "a": 1,
+     "game_id": "29181",
+     "score": "BAR 4 @ OS 3",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-11",
+     "player": "Alessandro Domenichelli",
+     "team": "Portland",
+     "league": "WHL",
+     "opponent": "@ Brandon",
+     "g": 0,
+     "a": 1,
+     "game_id": "1023281",
+     "score": "POR 2 @ BDN 6",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-11",
+     "player": "Colin Grubb",
+     "team": "Brandon",
+     "league": "WHL",
+     "opponent": "vs Portland",
+     "g": 0,
+     "a": 1,
+     "game_id": "1023281",
+     "score": "POR 2 @ BDN 6",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-11",
+     "player": "Jaxon Jacobson",
+     "team": "Brandon",
+     "league": "WHL",
+     "opponent": "vs Portland",
+     "g": 0,
+     "a": 1,
+     "game_id": "1023281",
+     "score": "POR 2 @ BDN 6",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-11",
+     "player": "Michael Tang",
+     "team": "Barrie",
+     "league": "OHL",
+     "opponent": "@ Owen Sound",
+     "g": 0,
+     "a": 1,
+     "game_id": "29181",
+     "score": "BAR 4 @ OS 3",
+     "source": "hockeytech",
+     "confidence": "official"
+    }
+   ],
+   "goalies": [
+    {
+     "date": "2026-11-11",
+     "goalie": "Jacoby Weiner",
+     "team": "Moncton",
+     "league": "QMJHL",
+     "opponent": "vs Québec",
+     "shots": 32,
+     "saves": 29,
+     "ga": 3,
+     "toi": "59:36",
+     "qualifies": false,
+     "game_id": "32916",
+     "score": "Que 3 @ Mon 1",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-11",
+     "goalie": "Patrick Déniger",
+     "team": "Québec",
+     "league": "QMJHL",
+     "opponent": "@ Moncton",
+     "shots": 21,
+     "saves": 20,
+     "ga": 1,
+     "toi": "60:00",
+     "qualifies": true,
+     "game_id": "32916",
+     "score": "Que 3 @ Mon 1",
+     "source": "hockeytech",
+     "confidence": "official"
+    }
+   ],
+   "games_checked": [
+    {
+     "league": "OHL",
+     "game_id": "29180",
+     "matchup": "GUE @ LDN"
+    },
+    {
+     "league": "OHL",
+     "game_id": "29181",
+     "matchup": "BAR @ OS"
+    },
+    {
+     "league": "WHL",
+     "game_id": "1023282",
+     "matchup": "MJ @ KAM"
+    },
+    {
+     "league": "WHL",
+     "game_id": "1023283",
+     "matchup": "PEN @ PG"
+    },
+    {
+     "league": "WHL",
+     "game_id": "1023284",
+     "matchup": "WEN @ SC"
+    },
+    {
+     "league": "WHL",
+     "game_id": "1023281",
+     "matchup": "POR @ BDN"
+    },
+    {
+     "league": "QMJHL",
+     "game_id": "32916",
+     "matchup": "Que @ Mon"
+    },
+    {
+     "league": "USHL",
+     "game_id": "13590",
+     "matchup": "CHI @ GB"
+    }
+   ],
+   "updated": "2026-11-12T14:02:00-05:00"
   }
  },
- "updated": "2026-11-11T13:49:57-05:00",
+ "updated": "2026-11-12T14:02:08-05:00",
  "problems": {
   "hockeytech": [],
   "europe": []
