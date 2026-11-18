@@ -14049,10 +14049,168 @@
    "points": [],
    "goalies": [],
    "games_checked": [],
-   "updated": "2026-11-17T14:58:29-05:00"
+   "updated": "2026-11-18T14:29:55-05:00"
+  },
+  "2026-11-17": {
+   "date": "2026-11-17",
+   "points": [
+    {
+     "date": "2026-11-17",
+     "player": "Marcus Laraque",
+     "team": "Seattle",
+     "league": "WHL",
+     "opponent": "@ Penticton",
+     "g": 0,
+     "a": 2,
+     "game_id": "1023306",
+     "score": "SEA 3 @ PEN 1",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-17",
+     "player": "Jacob Dumansky",
+     "team": "Kamloops",
+     "league": "WHL",
+     "opponent": "@ Victoria",
+     "g": 1,
+     "a": 0,
+     "game_id": "1023309",
+     "score": "KAM 4 @ VIC 2",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-17",
+     "player": "Kayden Stroeder",
+     "team": "Edmonton",
+     "league": "WHL",
+     "opponent": "@ Medicine Hat",
+     "g": 1,
+     "a": 0,
+     "game_id": "1023305",
+     "score": "EDM 4 @ MH 3",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-17",
+     "player": "Brock Cripps",
+     "team": "Prince Albert",
+     "league": "WHL",
+     "opponent": "vs Wenatchee",
+     "g": 0,
+     "a": 1,
+     "game_id": "1023307",
+     "score": "WEN 0 @ PA 3",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-17",
+     "player": "Denis Pasler",
+     "team": "Medicine Hat",
+     "league": "WHL",
+     "opponent": "vs Edmonton",
+     "g": 0,
+     "a": 1,
+     "game_id": "1023305",
+     "score": "EDM 4 @ MH 3",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-17",
+     "player": "Ludovic Perreault",
+     "team": "Victoria",
+     "league": "WHL",
+     "opponent": "vs Kamloops",
+     "g": 0,
+     "a": 1,
+     "game_id": "1023309",
+     "score": "KAM 4 @ VIC 2",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-17",
+     "player": "Jonas Vanicek",
+     "team": "Edmonton",
+     "league": "WHL",
+     "opponent": "@ Medicine Hat",
+     "g": 0,
+     "a": 1,
+     "game_id": "1023305",
+     "score": "EDM 4 @ MH 3",
+     "source": "hockeytech",
+     "confidence": "official"
+    }
+   ],
+   "goalies": [
+    {
+     "date": "2026-11-17",
+     "goalie": "Carsten Leyerzapf",
+     "team": "Wenatchee",
+     "league": "WHL",
+     "opponent": "@ Prince Albert",
+     "shots": 28,
+     "saves": 26,
+     "ga": 2,
+     "toi": "59:54",
+     "qualifies": true,
+     "game_id": "1023307",
+     "score": "WEN 0 @ PA 3",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-17",
+     "goalie": "Carter Casey",
+     "team": "Medicine Hat",
+     "league": "WHL",
+     "opponent": "vs Edmonton",
+     "shots": 35,
+     "saves": 32,
+     "ga": 3,
+     "toi": "65:00",
+     "qualifies": false,
+     "game_id": "1023305",
+     "score": "EDM 4 @ MH 3",
+     "source": "hockeytech",
+     "confidence": "official"
+    }
+   ],
+   "games_checked": [
+    {
+     "league": "WHL",
+     "game_id": "1023307",
+     "matchup": "WEN @ PA"
+    },
+    {
+     "league": "WHL",
+     "game_id": "1023308",
+     "matchup": "POR @ SAS"
+    },
+    {
+     "league": "WHL",
+     "game_id": "1023305",
+     "matchup": "EDM @ MH"
+    },
+    {
+     "league": "WHL",
+     "game_id": "1023306",
+     "matchup": "SEA @ PEN"
+    },
+    {
+     "league": "WHL",
+     "game_id": "1023309",
+     "matchup": "KAM @ VIC"
+    }
+   ],
+   "updated": "2026-11-18T14:29:53-05:00"
   }
  },
- "updated": "2026-11-17T14:58:47-05:00",
+ "updated": "2026-11-18T14:29:55-05:00",
  "problems": {
   "hockeytech": [],
   "europe": []
