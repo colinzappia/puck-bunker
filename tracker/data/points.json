@@ -14448,6 +14448,19 @@
     },
     {
      "date": "2026-11-18",
+     "player": "Deryk Lemaire",
+     "team": "Victoriaville",
+     "league": "QMJHL",
+     "opponent": "vs Cape Breton",
+     "g": 0,
+     "a": 1,
+     "game_id": "33211",
+     "score": "Cap 8 @ Vic 3",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-18",
      "player": "Dmitri Savin",
      "team": "Saginaw",
      "league": "OHL",
@@ -14578,10 +14591,220 @@
      "matchup": "OMA @ SC"
     }
    ],
-   "updated": "2026-11-19T14:34:51-05:00"
+   "updated": "2026-11-20T14:13:39-05:00"
+  },
+  "2026-11-19": {
+   "date": "2026-11-19",
+   "points": [
+    {
+     "date": "2026-11-19",
+     "player": "Johnny McLaughlin",
+     "team": "Windsor",
+     "league": "OHL",
+     "opponent": "vs Sault Ste. Marie",
+     "g": 1,
+     "a": 2,
+     "game_id": "29213",
+     "score": "SOO 0 @ WSR 3",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-19",
+     "player": "Dima Zhilkin",
+     "team": "Saginaw",
+     "league": "OHL",
+     "opponent": "@ Niagara",
+     "g": 1,
+     "a": 2,
+     "game_id": "29212",
+     "score": "SAG 3 @ NIAG 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-19",
+     "player": "Ryerson Edgar",
+     "team": "Niagara",
+     "league": "OHL",
+     "opponent": "vs Saginaw",
+     "g": 0,
+     "a": 2,
+     "game_id": "29212",
+     "score": "SAG 3 @ NIAG 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-19",
+     "player": "Levi Harper",
+     "team": "Saginaw",
+     "league": "OHL",
+     "opponent": "@ Niagara",
+     "g": 1,
+     "a": 0,
+     "game_id": "29212",
+     "score": "SAG 3 @ NIAG 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-19",
+     "player": "Liam Armit",
+     "team": "Baie-Comeau",
+     "league": "QMJHL",
+     "opponent": "vs Rouyn-Noranda",
+     "g": 0,
+     "a": 1,
+     "game_id": "32662",
+     "score": "Rou 0 @ BaC 3",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-19",
+     "player": "Charlie Murata",
+     "team": "Flint",
+     "league": "OHL",
+     "opponent": "@ Barrie",
+     "g": 0,
+     "a": 1,
+     "game_id": "29211",
+     "score": "FLNT 6 @ BAR 2",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-19",
+     "player": "Jackson Smith",
+     "team": "Tri-City",
+     "league": "USHL",
+     "opponent": "vs Dubuque",
+     "g": 0,
+     "a": 1,
+     "game_id": "13609",
+     "score": "DBQ 3 @ TC 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-19",
+     "player": "Aleksandr Sokolov",
+     "team": "Tri-City",
+     "league": "USHL",
+     "opponent": "vs Dubuque",
+     "g": 0,
+     "a": 1,
+     "game_id": "13609",
+     "score": "DBQ 3 @ TC 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-19",
+     "player": "Braidy Wassilyn",
+     "team": "Saginaw",
+     "league": "OHL",
+     "opponent": "@ Niagara",
+     "g": 0,
+     "a": 1,
+     "game_id": "29212",
+     "score": "SAG 3 @ NIAG 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    }
+   ],
+   "goalies": [
+    {
+     "date": "2026-11-19",
+     "goalie": "Connor Haffner",
+     "team": "Niagara",
+     "league": "OHL",
+     "opponent": "vs Saginaw",
+     "shots": 40,
+     "saves": 37,
+     "ga": 3,
+     "toi": "60:00",
+     "qualifies": false,
+     "game_id": "29212",
+     "score": "SAG 3 @ NIAG 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-19",
+     "goalie": "Hagan Bach",
+     "team": "Barrie",
+     "league": "OHL",
+     "opponent": "vs Flint",
+     "shots": 50,
+     "saves": 44,
+     "ga": 6,
+     "toi": "60:00",
+     "qualifies": false,
+     "game_id": "29211",
+     "score": "FLNT 6 @ BAR 2",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-19",
+     "goalie": "David Vermirovsky",
+     "team": "Sault Ste. Marie",
+     "league": "OHL",
+     "opponent": "@ Windsor",
+     "shots": 27,
+     "saves": 24,
+     "ga": 3,
+     "toi": "60:00",
+     "qualifies": false,
+     "game_id": "29213",
+     "score": "SOO 0 @ WSR 3",
+     "source": "hockeytech",
+     "confidence": "official"
+    }
+   ],
+   "games_checked": [
+    {
+     "league": "OHL",
+     "game_id": "29212",
+     "matchup": "SAG @ NIAG"
+    },
+    {
+     "league": "OHL",
+     "game_id": "29211",
+     "matchup": "FLNT @ BAR"
+    },
+    {
+     "league": "OHL",
+     "game_id": "29213",
+     "matchup": "SOO @ WSR"
+    },
+    {
+     "league": "QMJHL",
+     "game_id": "32757",
+     "matchup": "NFL @ Cha"
+    },
+    {
+     "league": "QMJHL",
+     "game_id": "32662",
+     "matchup": "Rou @ BaC"
+    },
+    {
+     "league": "QMJHL",
+     "game_id": "33144",
+     "matchup": "VdO @ She"
+    },
+    {
+     "league": "USHL",
+     "game_id": "13609",
+     "matchup": "DBQ @ TC"
+    }
+   ],
+   "updated": "2026-11-20T14:13:28-05:00"
   }
  },
- "updated": "2026-11-19T14:34:56-05:00",
+ "updated": "2026-11-20T14:13:39-05:00",
  "problems": {
   "hockeytech": [],
   "europe": []
