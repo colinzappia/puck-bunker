@@ -616,6 +616,18 @@
         </div>
 
         <div class="panel">
+          <div class="panel-head"><h2>Optimize Existing Images</h2></div>
+          <div class="panel-body">
+            <p style="font-size:13px; color:var(--ice-dim); margin-bottom:16px;">
+              Shrinks the large images already on the site (report thumbnails, article covers and in-article photos) so pages load faster and use less data. Step 1 only checks and reports. Step 2 shrinks them and switches the site over. The original files are left untouched in storage.
+            </p>
+            <button class="btn btn-ghost" id="optScanBtn" type="button">Step 1: Check Images</button>
+            <button class="btn btn-ghost" id="optRunBtn" type="button" disabled>Step 2: Shrink Them</button>
+            <div id="optStatus" class="mono" style="font-size:11px; color:var(--ice-dim); margin-top:12px; line-height:1.7; white-space:pre-wrap;"></div>
+          </div>
+        </div>
+
+        <div class="panel">
           <div class="panel-head"><h2>Draft Board</h2></div>
           <div class="panel-body">
             <p style="font-size:13px; color:var(--ice-dim); margin-bottom:18px;">
@@ -2568,6 +2580,97 @@
     try { mode = localStorage.getItem('pbAdminMode') || 'reports'; } catch (e) {}
     if (mode === 'articles') setAdminMode('articles');
   }
+
+  // ============ OPTIMIZE EXISTING IMAGES ============
+  const OPT_MARK = '/storage/v1/object/public/report-thumbnails/';
+  const OPT_MIN_BYTES = 150 * 1024;
+  let optCandidates = [];
+  const optMB = n => (n / 1048576).toFixed(1) + ' MB';
+
+  async function optScan(){
+    const out = document.getElementById('optStatus');
+    const runBtn = document.getElementById('optRunBtn');
+    runBtn.disabled = true; optCandidates = [];
+    out.textContent = 'Reading reports and articles…';
+    const urls = new Set();
+    const rep = await sb.from('puckbunker_reports').select('id, thumbnail_url');
+    if (rep.error){ out.textContent = 'Could not read reports: ' + rep.error.message; return; }
+    rep.data.forEach(r => { if (r.thumbnail_url && r.thumbnail_url.includes(OPT_MARK)) urls.add(r.thumbnail_url); });
+    const art = await sb.from(ART_TABLE).select('id, cover_url, body');
+    if (art.error){ out.textContent = 'Could not read articles: ' + art.error.message; return; }
+    art.data.forEach(a => {
+      if (a.cover_url && a.cover_url.includes(OPT_MARK)) urls.add(a.cover_url);
+      const re = /https?:\/\/[^\s)"'<>]+\/storage\/v1\/object\/public\/report-thumbnails\/[^\s)"'<>]+/g;
+      (a.body || '').match(re)?.forEach(u => urls.add(u));
+    });
+    const list = [...urls];
+    let big = 0, bigBytes = 0, done = 0, skipped = 0;
+    for (const u of list){
+      done++;
+      out.textContent = `Checking image ${done} of ${list.length}…`;
+      try{
+        const r = await fetch(u);
+        if (!r.ok) { skipped++; continue; }
+        const b = await r.blob();
+        if (b.size >= OPT_MIN_BYTES && b.type !== 'image/gif' && b.type !== 'image/svg+xml' && !u.includes('/optimized/')){
+          optCandidates.push({ url: u, size: b.size }); big++; bigBytes += b.size;
+        }
+      }catch(e){ skipped++; }
+    }
+    const est = bigBytes * 0.25;
+    out.textContent = `Found ${list.length} images in use. ${big} are large (${optMB(bigBytes)} in total).` +
+      (skipped ? `\n${skipped} could not be read and will be left alone.` : '') +
+      (big ? `\nShrinking should bring that down to roughly ${optMB(est)}.\nClick "Step 2" to go ahead.` : '\nNothing needs shrinking.');
+    runBtn.disabled = big === 0;
+  }
+
+  async function optRun(){
+    const out = document.getElementById('optStatus');
+    const scanBtn = document.getElementById('optScanBtn'), runBtn = document.getElementById('optRunBtn');
+    if (!optCandidates.length) return;
+    if (!confirm(`Shrink ${optCandidates.length} images and switch the site over to the smaller versions? The originals stay in storage.`)) return;
+    scanBtn.disabled = runBtn.disabled = true;
+    const rep = await sb.from('puckbunker_reports').select('id, thumbnail_url');
+    const art = await sb.from(ART_TABLE).select('id, cover_url, body');
+    if (rep.error || art.error){ out.textContent = 'Could not read data: ' + (rep.error || art.error).message; scanBtn.disabled = false; return; }
+    const reports = rep.data, articles = art.data;
+    let n = 0, shrunk = 0, savedBytes = 0, failed = 0, blocked = 0;
+    for (const c of optCandidates){
+      n++;
+      out.textContent = `Shrinking image ${n} of ${optCandidates.length}…\nDone so far: ${shrunk}, saved ${optMB(savedBytes)}.`;
+      try{
+        const r = await fetch(c.url);
+        const blob = await r.blob();
+        const orig = new File([blob], 'image', { type: blob.type });
+        const small = await pbShrinkImage(orig);
+        if (small === orig || small.size >= c.size * 0.9) continue;
+        const path = `optimized/${Date.now()}-${Math.random().toString(36).slice(2,8)}.jpg`;
+        const up = await sb.storage.from('report-thumbnails').upload(path, small, { cacheControl: '31536000', upsert: false, contentType: 'image/jpeg' });
+        if (up.error){ failed++; continue; }
+        const newUrl = sb.storage.from('report-thumbnails').getPublicUrl(path).data.publicUrl;
+        let switched = false;
+        for (const row of reports.filter(x => x.thumbnail_url === c.url)){
+          const u = await sb.from('puckbunker_reports').update({ thumbnail_url: newUrl }).eq('id', row.id).select('id');
+          if (u.error || !u.data || !u.data.length) blocked++; else { switched = true; row.thumbnail_url = newUrl; }
+        }
+        for (const row of articles.filter(x => x.cover_url === c.url || (x.body || '').includes(c.url))){
+          const patch = {};
+          if (row.cover_url === c.url) patch.cover_url = newUrl;
+          if ((row.body || '').includes(c.url)) patch.body = row.body.split(c.url).join(newUrl);
+          const u = await sb.from(ART_TABLE).update(patch).eq('id', row.id).select('id');
+          if (u.error || !u.data || !u.data.length) blocked++; else { switched = true; Object.assign(row, patch); }
+        }
+        if (switched){ shrunk++; savedBytes += c.size - small.size; }
+      }catch(e){ failed++; }
+    }
+    out.textContent = `Finished. ${shrunk} images shrunk, saving about ${optMB(savedBytes)} per full load of the site.` +
+      (failed ? `\n${failed} could not be processed and were left alone.` : '') +
+      (blocked ? `\n${blocked} items could not be switched (they may belong to another admin). Have that admin run this tool too.` : '') +
+      `\nReload the site to see the faster versions.`;
+    scanBtn.disabled = false; optCandidates = [];
+  }
+  document.getElementById('optScanBtn').addEventListener('click', optScan);
+  document.getElementById('optRunBtn').addEventListener('click', optRun);
 
   async function initAdmin(){
     initArticles();
