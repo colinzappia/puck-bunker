@@ -1175,7 +1175,7 @@
   }
 
   async function handleThumbnailUpload(e){
-    const file = e.target.files[0];
+    let file = e.target.files[0];
     const status = document.getElementById('thumbnailStatus');
     if (!file) return;
 
@@ -1189,12 +1189,13 @@
     }
 
     status.textContent = 'Uploading…';
+    file = await pbShrinkImage(file);
     const ext = file.name.split('.').pop();
     const path = `${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;
 
     const { error: uploadError } = await sb.storage
       .from('report-thumbnails')
-      .upload(path, file, { cacheControl: '3600', upsert: false });
+      .upload(path, file, { cacheControl: '31536000', upsert: false });
 
     if (uploadError){
       status.textContent = 'Upload failed: ' + uploadError.message;
@@ -2282,14 +2283,33 @@
     aField('artDeleteBtn').disabled = !artId;
   }
 
+  // Shrinks big photos before upload (max 1400px wide, JPEG) so visitors download small files.
+  async function pbShrinkImage(file){
+    try{
+      if (!file || !file.type.startsWith('image/') || file.type === 'image/gif' || file.type === 'image/svg+xml') return file;
+      if (file.size < 150 * 1024) return file;
+      const bmp = await createImageBitmap(file);
+      const scale = Math.min(1, 1400 / bmp.width);
+      const w = Math.round(bmp.width * scale), h = Math.round(bmp.height * scale);
+      const c = document.createElement('canvas'); c.width = w; c.height = h;
+      const g = c.getContext('2d');
+      g.fillStyle = '#0B0C0D'; g.fillRect(0, 0, w, h);
+      g.drawImage(bmp, 0, 0, w, h);
+      const blob = await new Promise(r => c.toBlob(r, 'image/jpeg', 0.82));
+      if (!blob || blob.size >= file.size) return file;
+      return new File([blob], file.name.replace(/\.[^.]+$/, '') + '.jpg', { type: 'image/jpeg' });
+    }catch(err){ return file; }
+  }
+
   async function artUpload(file, statusEl){
     if (!file) return null;
     if (!file.type.startsWith('image/')) { statusEl.textContent = 'Please choose an image file.'; return null; }
     if (file.size > 5 * 1024 * 1024) { statusEl.textContent = 'Image is too large. Keep it under 5 MB.'; return null; }
     statusEl.textContent = 'Uploading…';
+    file = await pbShrinkImage(file);
     const ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '');
     const path = `articles/${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;
-    const { error } = await sb.storage.from('report-thumbnails').upload(path, file, { cacheControl: '3600', upsert: false });
+    const { error } = await sb.storage.from('report-thumbnails').upload(path, file, { cacheControl: '31536000', upsert: false });
     if (error) { statusEl.textContent = 'Upload failed: ' + error.message; return null; }
     return sb.storage.from('report-thumbnails').getPublicUrl(path).data.publicUrl;
   }
