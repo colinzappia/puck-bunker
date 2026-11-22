@@ -222,7 +222,7 @@ function pbBuildCard(report) {
 
   const altText = `${report.name || 'Prospect'}${report.position ? ' — ' + report.position : ''}${report.team ? ', ' + report.team : ''} scouting report thumbnail`;
   const thumbImg = report.thumbnail_url
-    ? `<img src="${pbEscape(report.thumbnail_url)}" alt="${pbEscape(altText)}" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover;">`
+    ? `<img src="${pbEscape(report.thumbnail_url)}" alt="${pbEscape(altText)}" loading="lazy" decoding="async" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover;">`
     : '';
 
   const pslug = pbPlayerSlug(report.name);
