@@ -17260,22 +17260,6 @@
     },
     {
      "date": "2026-11-22",
-     "goalie": "Jacoby Weiner",
-     "team": "Moncton",
-     "league": "QMJHL",
-     "opponent": "vs Newfoundland",
-     "shots": 38,
-     "saves": 31,
-     "ga": 7,
-     "toi": "60:00",
-     "qualifies": false,
-     "game_id": "32920",
-     "score": "NFL 7 @ Mon 3",
-     "source": "hockeytech",
-     "confidence": "official"
-    },
-    {
-     "date": "2026-11-22",
      "goalie": "Andrei Nikolayev",
      "team": "Victoriaville",
      "league": "QMJHL",
@@ -17287,6 +17271,22 @@
      "qualifies": true,
      "game_id": "33145",
      "score": "Vic 7 @ She 2",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-22",
+     "goalie": "Jacoby Weiner",
+     "team": "Moncton",
+     "league": "QMJHL",
+     "opponent": "vs Newfoundland",
+     "shots": 38,
+     "saves": 31,
+     "ga": 7,
+     "toi": "60:00",
+     "qualifies": false,
+     "game_id": "32920",
+     "score": "NFL 7 @ Mon 3",
      "source": "hockeytech",
      "confidence": "official"
     },
@@ -17310,13 +17310,13 @@
    "games_checked": [
     {
      "league": "OHL",
-     "game_id": "29228",
-     "matchup": "BFD @ BRAM"
+     "game_id": "29231",
+     "matchup": "NIAG @ NB"
     },
     {
      "league": "OHL",
-     "game_id": "29231",
-     "matchup": "NIAG @ NB"
+     "game_id": "29228",
+     "matchup": "BFD @ BRAM"
     },
     {
      "league": "OHL",
@@ -17365,13 +17365,8 @@
     },
     {
      "league": "QMJHL",
-     "game_id": "32920",
-     "matchup": "NFL @ Mon"
-    },
-    {
-     "league": "QMJHL",
-     "game_id": "32973",
-     "matchup": "Gat @ Ott"
+     "game_id": "33145",
+     "matchup": "Vic @ She"
     },
     {
      "league": "QMJHL",
@@ -17380,24 +17375,36 @@
     },
     {
      "league": "QMJHL",
-     "game_id": "33145",
-     "matchup": "Vic @ She"
+     "game_id": "32973",
+     "matchup": "Gat @ Ott"
     },
     {
      "league": "QMJHL",
-     "game_id": "32790",
-     "matchup": "Rou @ Chi"
+     "game_id": "32920",
+     "matchup": "NFL @ Mon"
     },
     {
      "league": "QMJHL",
      "game_id": "32820",
      "matchup": "Hal @ Dru"
+    },
+    {
+     "league": "QMJHL",
+     "game_id": "32790",
+     "matchup": "Rou @ Chi"
     }
    ],
-   "updated": "2026-11-23T17:51:00-05:00"
+   "updated": "2026-11-24T16:27:19-05:00"
+  },
+  "2026-11-23": {
+   "date": "2026-11-23",
+   "points": [],
+   "goalies": [],
+   "games_checked": [],
+   "updated": "2026-11-24T16:26:58-05:00"
   }
  },
- "updated": "2026-11-23T17:51:20-05:00",
+ "updated": "2026-11-24T16:27:19-05:00",
  "problems": {
   "hockeytech": [],
   "europe": []
