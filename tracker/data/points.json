@@ -17401,10 +17401,80 @@
    "points": [],
    "goalies": [],
    "games_checked": [],
-   "updated": "2026-11-24T16:26:58-05:00"
+   "updated": "2026-11-25T15:34:48-05:00"
+  },
+  "2026-11-24": {
+   "date": "2026-11-24",
+   "points": [
+    {
+     "date": "2026-11-24",
+     "player": "Chase Surkan",
+     "team": "Brandon",
+     "league": "WHL",
+     "opponent": "@ Medicine Hat",
+     "g": 1,
+     "a": 0,
+     "game_id": "1023336",
+     "score": "BDN 2 @ MH 5",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-24",
+     "player": "Colin Grubb",
+     "team": "Brandon",
+     "league": "WHL",
+     "opponent": "@ Medicine Hat",
+     "g": 0,
+     "a": 1,
+     "game_id": "1023336",
+     "score": "BDN 2 @ MH 5",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-24",
+     "player": "Jaxon Jacobson",
+     "team": "Brandon",
+     "league": "WHL",
+     "opponent": "@ Medicine Hat",
+     "g": 0,
+     "a": 1,
+     "game_id": "1023336",
+     "score": "BDN 2 @ MH 5",
+     "source": "hockeytech",
+     "confidence": "official"
+    }
+   ],
+   "goalies": [
+    {
+     "date": "2026-11-24",
+     "goalie": "Carter Casey",
+     "team": "Medicine Hat",
+     "league": "WHL",
+     "opponent": "vs Brandon",
+     "shots": 18,
+     "saves": 16,
+     "ga": 2,
+     "toi": "60:00",
+     "qualifies": true,
+     "game_id": "1023336",
+     "score": "BDN 2 @ MH 5",
+     "source": "hockeytech",
+     "confidence": "official"
+    }
+   ],
+   "games_checked": [
+    {
+     "league": "WHL",
+     "game_id": "1023336",
+     "matchup": "BDN @ MH"
+    }
+   ],
+   "updated": "2026-11-25T15:34:47-05:00"
   }
  },
- "updated": "2026-11-24T16:27:19-05:00",
+ "updated": "2026-11-25T15:34:48-05:00",
  "problems": {
   "hockeytech": [],
   "europe": []
