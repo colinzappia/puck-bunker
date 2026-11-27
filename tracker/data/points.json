@@ -18215,6 +18215,11 @@
    "games_checked": [
     {
      "league": "OHL",
+     "game_id": "29235",
+     "matchup": "SBY @ BFD"
+    },
+    {
+     "league": "OHL",
      "game_id": "29236",
      "matchup": "LDN @ ER"
     },
@@ -18222,11 +18227,6 @@
      "league": "OHL",
      "game_id": "29237",
      "matchup": "SAG @ FLNT"
-    },
-    {
-     "league": "OHL",
-     "game_id": "29235",
-     "matchup": "SBY @ BFD"
     },
     {
      "league": "OHL",
@@ -18275,13 +18275,13 @@
     },
     {
      "league": "QMJHL",
-     "game_id": "33146",
-     "matchup": "Cha @ She"
+     "game_id": "32821",
+     "matchup": "Sha @ Dru"
     },
     {
      "league": "QMJHL",
-     "game_id": "32821",
-     "matchup": "Sha @ Dru"
+     "game_id": "33146",
+     "matchup": "Cha @ She"
     },
     {
      "league": "USHL",
@@ -18300,11 +18300,6 @@
     },
     {
      "league": "USHL",
-     "game_id": "13627",
-     "matchup": "TC @ FGO"
-    },
-    {
-     "league": "USHL",
      "game_id": "13629",
      "matchup": "DSM @ SC"
     },
@@ -18312,12 +18307,237 @@
      "league": "USHL",
      "game_id": "13628",
      "matchup": "OMA @ LIN"
+    },
+    {
+     "league": "USHL",
+     "game_id": "13627",
+     "matchup": "TC @ FGO"
     }
    ],
-   "updated": "2026-11-26T15:26:09-05:00"
+   "updated": "2026-11-27T15:10:49-05:00"
+  },
+  "2026-11-26": {
+   "date": "2026-11-26",
+   "points": [
+    {
+     "date": "2026-11-26",
+     "player": "William Dube",
+     "team": "Chicoutimi",
+     "league": "QMJHL",
+     "opponent": "@ Newfoundland",
+     "g": 1,
+     "a": 1,
+     "game_id": "32952",
+     "score": "Chi 5 @ NFL 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-26",
+     "player": "Jamie Glance",
+     "team": "Saint John",
+     "league": "QMJHL",
+     "opponent": "@ Val-d'Or",
+     "g": 0,
+     "a": 2,
+     "game_id": "33178",
+     "score": "SNB 2 @ VdO 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-26",
+     "player": "Carter Ernst",
+     "team": "Cedar Rapids",
+     "league": "USHL",
+     "opponent": "@ Waterloo",
+     "g": 1,
+     "a": 0,
+     "game_id": "13632",
+     "score": "CR 3 @ WAT 2",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-26",
+     "player": "Nolann Héroux",
+     "team": "Val-d'Or",
+     "league": "QMJHL",
+     "opponent": "vs Saint John",
+     "g": 1,
+     "a": 0,
+     "game_id": "33178",
+     "score": "SNB 2 @ VdO 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-26",
+     "player": "Alexis Joseph",
+     "team": "Saint John",
+     "league": "QMJHL",
+     "opponent": "@ Val-d'Or",
+     "g": 1,
+     "a": 0,
+     "game_id": "33178",
+     "score": "SNB 2 @ VdO 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-26",
+     "player": "Sebastian Mogull",
+     "team": "Barrie",
+     "league": "OHL",
+     "opponent": "vs Ottawa",
+     "g": 1,
+     "a": 0,
+     "game_id": "29239",
+     "score": "OTT 5 @ BAR 3",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-26",
+     "player": "Antoine Provencher",
+     "team": "Charlottetown",
+     "league": "QMJHL",
+     "opponent": "@ Gatineau",
+     "g": 1,
+     "a": 0,
+     "game_id": "32855",
+     "score": "Cha 3 @ Gat 0",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-26",
+     "player": "Michael Tang",
+     "team": "Barrie",
+     "league": "OHL",
+     "opponent": "vs Ottawa",
+     "g": 1,
+     "a": 0,
+     "game_id": "29239",
+     "score": "OTT 5 @ BAR 3",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-26",
+     "player": "David Bosco",
+     "team": "Cedar Rapids",
+     "league": "USHL",
+     "opponent": "@ Waterloo",
+     "g": 0,
+     "a": 1,
+     "game_id": "13632",
+     "score": "CR 3 @ WAT 2",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-26",
+     "player": "Oliver Ozogany",
+     "team": "Saint John",
+     "league": "QMJHL",
+     "opponent": "@ Cape Breton",
+     "g": 0,
+     "a": 1,
+     "game_id": "32723",
+     "score": "BLB 1 @ Cap 5",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-26",
+     "player": "Jaakko Wycisk",
+     "team": "Guelph",
+     "league": "OHL",
+     "opponent": "@ Peterborough",
+     "g": 0,
+     "a": 1,
+     "game_id": "29240",
+     "score": "GUE 3 @ PBO 6",
+     "source": "hockeytech",
+     "confidence": "official"
+    }
+   ],
+   "goalies": [
+    {
+     "date": "2026-11-26",
+     "goalie": "Rafael Courchesne",
+     "team": "Saint John",
+     "league": "QMJHL",
+     "opponent": "@ Val-d'Or",
+     "shots": 24,
+     "saves": 21,
+     "ga": 3,
+     "toi": "58:25",
+     "qualifies": false,
+     "game_id": "33178",
+     "score": "SNB 2 @ VdO 4",
+     "source": "hockeytech",
+     "confidence": "official"
+    },
+    {
+     "date": "2026-11-26",
+     "goalie": "Sebastian Charvat",
+     "team": "Waterloo",
+     "league": "USHL",
+     "opponent": "vs Cedar Rapids",
+     "shots": 28,
+     "saves": 25,
+     "ga": 3,
+     "toi": "62:06",
+     "qualifies": false,
+     "game_id": "13632",
+     "score": "CR 3 @ WAT 2",
+     "source": "hockeytech",
+     "confidence": "official"
+    }
+   ],
+   "games_checked": [
+    {
+     "league": "OHL",
+     "game_id": "29239",
+     "matchup": "OTT @ BAR"
+    },
+    {
+     "league": "OHL",
+     "game_id": "29240",
+     "matchup": "GUE @ PBO"
+    },
+    {
+     "league": "QMJHL",
+     "game_id": "32952",
+     "matchup": "Chi @ NFL"
+    },
+    {
+     "league": "QMJHL",
+     "game_id": "32723",
+     "matchup": "BLB @ Cap"
+    },
+    {
+     "league": "QMJHL",
+     "game_id": "32855",
+     "matchup": "Cha @ Gat"
+    },
+    {
+     "league": "QMJHL",
+     "game_id": "33178",
+     "matchup": "SNB @ VdO"
+    },
+    {
+     "league": "USHL",
+     "game_id": "13632",
+     "matchup": "CR @ WAT"
+    }
+   ],
+   "updated": "2026-11-27T15:10:27-05:00"
   }
  },
- "updated": "2026-11-26T15:26:11-05:00",
+ "updated": "2026-11-27T15:10:49-05:00",
  "problems": {
   "hockeytech": [],
   "europe": []
